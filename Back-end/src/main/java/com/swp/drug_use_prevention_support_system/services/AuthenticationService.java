@@ -12,6 +12,8 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.RefreshRe
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.UserResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.InvalidatedToken;
 import com.swp.drug_use_prevention_support_system.domain.entities.User;
+import com.swp.drug_use_prevention_support_system.domain.enums.Role;
+import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
 import com.swp.drug_use_prevention_support_system.mappers.UserMapper;
 import com.swp.drug_use_prevention_support_system.repositories.InvalidatedTokenRepository;
 import com.swp.drug_use_prevention_support_system.repositories.UserRepository;
@@ -20,6 +22,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtException;
@@ -28,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,6 +43,7 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final InvalidatedTokenRepository invalidatedTokenRepository;
+    private final UserDetailsService userDetailsService;
 
     @Value("${jwt.secret}")
     private String secretKey;
@@ -144,5 +150,32 @@ public class AuthenticationService {
             throw new JwtException("Token already invalidated!");
 
         return signedJWT;
+    }
+
+    public UserResponse findOrCreateUserFromGoogle(String email, String name) {
+        Optional<User> existing = userRepository.findByUsername(email);
+        if (existing.isPresent()) {
+            return userMapper.toDto(existing.get());
+        }
+
+        User newUser = new User();
+        newUser.setUsername(email);
+        newUser.setEmail(email);
+        newUser.setFullName(name);
+        newUser.setPassword("");
+        newUser.setStatus(UserStatus.ACTIVE);
+        newUser.setRole(Role.MEMBER);
+        userRepository.save(newUser);
+        return userMapper.toDto(newUser);
+    }
+
+    public UserDetails validateToken(String token) {
+        try {
+            SignedJWT signedJWT = verifyToken(token, false);
+            String username = signedJWT.getJWTClaimsSet().getSubject();
+            return userDetailsService.loadUserByUsername(username);
+        } catch (Exception e) {
+            throw new JwtException("Invalid token!", e);
+        }
     }
 }
