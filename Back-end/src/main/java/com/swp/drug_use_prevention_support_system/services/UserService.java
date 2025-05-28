@@ -16,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -61,6 +59,7 @@ public class UserService {
         user.setDob(request.getDob());
         user.setGender(request.getGender());
         user.setJob(request.getJob());
+        userRepository.save(user);
         return userMapper.toDto(user);
     }
 
