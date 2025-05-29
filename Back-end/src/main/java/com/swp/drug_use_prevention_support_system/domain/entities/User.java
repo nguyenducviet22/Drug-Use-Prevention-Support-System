@@ -9,6 +9,8 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -35,6 +37,43 @@ public class User {
     Role role;
     @Enumerated(EnumType.STRING)
     UserStatus status;
+
+    @OneToMany(mappedBy = "member")
+    List<UserDetails> userDetailsList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "consultant")
+    List<Qualification> qualifications = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    List<Assessment> assessments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    List<Appointment> memberAppointments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "consultant")
+    List<Appointment> consultantAppointments = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_notification",
+            joinColumns = @JoinColumn(name = "username"),
+            inverseJoinColumns = @JoinColumn(name = "notification_id")
+    )
+    List<Notification> notifications = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    List<Enrollment> enrollments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member")
+    List<Blog> blogs = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_event",
+            joinColumns = @JoinColumn(name = "member_id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id")
+    )
+    List<Event> events = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
