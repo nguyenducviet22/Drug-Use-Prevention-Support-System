@@ -1,0 +1,12 @@
+CREATE TABLE blog (
+    blog_id BINARY(16) NOT NULL PRIMARY KEY,
+    blog_name VARCHAR(255) NOT NULL,
+    rate INT,
+    img VARCHAR(255),
+    description TEXT  NOT NULL,
+    blog_type ENUM('PERSONAL', 'NICHE', 'NEWS', 'EDUCATIONAL', 'GENERAL') NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
+    member_id VARCHAR(100) NOT NULL,
+    FOREIGN KEY (member_id) REFERENCES users(username)
+);

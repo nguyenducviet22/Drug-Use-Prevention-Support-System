@@ -1,0 +1,22 @@
+package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
+
+import com.swp.drug_use_prevention_support_system.domain.enums.NotificationStatus;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class NotificationResponse {
+
+    UUID notificationID;
+    String title;
+    String description;
+    NotificationStatus status;
+    LocalDateTime createdAt;
+}
