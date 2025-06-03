@@ -9,6 +9,6 @@ CREATE TABLE users (
     job VARCHAR(255),
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL,
-    role ENUM('MEMBER', 'STAFF', 'CONSULTANT', 'MANAGER', 'ADMIN') NOT NULL,
+    role ENUM('MEMBER', 'STAFF', 'CONSULTANT', 'MANAGER', 'ADMIN'),
     status ENUM('ACTIVE', 'INACTIVE') NOT NULL
 );

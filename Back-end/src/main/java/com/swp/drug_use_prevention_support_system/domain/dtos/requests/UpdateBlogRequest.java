@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.requests;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -31,6 +32,6 @@ public class UpdateBlogRequest {
     @NotNull(message = "Blog type is required")
     BlogType blogType;
 
-    @NotBlank(message = "Member ID (username) is required")
-    String username;
+    @NotNull(message = "Blog status is required")
+    BlogStatus blogStatus;
 }

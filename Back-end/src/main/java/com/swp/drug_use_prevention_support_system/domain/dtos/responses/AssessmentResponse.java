@@ -1,6 +1,5 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
 
-import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.domain.enums.RiskLevel;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,5 +21,5 @@ public class AssessmentResponse {
     String assessmentType;
     String suggestedAction;
     LocalDateTime createdAt;
-    User user;
+    UserResponse user;
 }

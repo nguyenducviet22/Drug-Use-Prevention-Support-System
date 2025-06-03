@@ -2,7 +2,7 @@ CREATE TABLE notification (
     notification_id BINARY(16) NOT NULL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    status ENUM('SENT', 'DELIVERED', 'READ', 'UNREAD', 'CANCELLED') NOT NULL,
+    status ENUM('SENT', 'READ', 'UNREAD', 'FAILED') NOT NULL,
     created_at DATETIME NOT NULL
 );
 

@@ -1,6 +1,5 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
 
-import com.swp.drug_use_prevention_support_system.domain.entities.Event;
 import com.swp.drug_use_prevention_support_system.domain.enums.SurveyStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.SurveyType;
 import lombok.*;
@@ -22,5 +21,5 @@ public class SurveyResponse {
     String feedback;
     String description;
     LocalDateTime surveyDate;
-    Event event;
+    EventResponse event;
 }

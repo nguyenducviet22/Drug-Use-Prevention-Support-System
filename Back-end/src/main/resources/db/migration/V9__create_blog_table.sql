@@ -5,6 +5,7 @@ CREATE TABLE blog (
     img VARCHAR(255),
     description TEXT  NOT NULL,
     blog_type ENUM('PERSONAL', 'NICHE', 'NEWS', 'EDUCATIONAL', 'GENERAL') NOT NULL,
+    blog_status ENUM('DRAFT', 'PUBLISHED', 'PENDING', 'UNAVAILABLE') NOT NULL,
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL,
     member_id VARCHAR(100) NOT NULL,

@@ -9,5 +9,6 @@ import org.mapstruct.Mapper;
 public interface AssessmentMapper {
 
     Assessment toEntity(CreateAssessmentRequest request);
+    Assessment toEntity(AssessmentResponse response);
     AssessmentResponse toDto(Assessment assessment);
 }
