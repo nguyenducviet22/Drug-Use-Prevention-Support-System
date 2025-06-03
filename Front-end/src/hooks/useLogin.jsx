@@ -1,6 +1,7 @@
 import { jwtDecode } from 'jwt-decode';
 import React from 'react'
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function useLogin() {
 
@@ -11,6 +12,7 @@ export default function useLogin() {
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
         return !!localStorage.getItem("accessToken");
     });
+    const nanigate = useNavigate();
 
     const login = async (username, password) => {
         setIsLoading(true);
@@ -39,6 +41,7 @@ export default function useLogin() {
             const decodedToken = jwtDecode(token);
             localStorage.setItem("username", decodedToken?.sub);
             setIsAuthenticated(true);
+            nanigate("/");
         } catch (error) {
             console.error("Error during login: ", error);
             setError("Incorrect username or password!");

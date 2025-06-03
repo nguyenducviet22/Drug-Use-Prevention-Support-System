@@ -1,0 +1,52 @@
+/* Footer Styles */
+.footer {
+  background-color: #f8f9fa !important;
+  border-top: 1px solid #e9ecef;
+}
+
+.footer-title {
+  color: #343a40;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+.footer-link {
+  color: #6c757d;
+  transition: color 0.2s ease;
+}
+
+.footer-link:hover {
+  color: #0984e3;
+}
+
+.social-link {
+  width: 40px;
+  height: 40px;
+  background-color: #343a40;
+  color: white;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.social-link:hover {
+  background-color: #0984e3;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.contact-info .text-muted {
+  font-size: 0.9rem;
+}
+
+/* Responsive Design for Footer */
+@media (max-width: 768px) {
+  .social-link {
+    width: 35px;
+    height: 35px;
+  }
+
+  .footer-title {
+    font-size: 0.9rem;
+  }
+}
