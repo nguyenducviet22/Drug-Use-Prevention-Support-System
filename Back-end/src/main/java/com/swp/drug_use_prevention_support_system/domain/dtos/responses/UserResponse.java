@@ -8,7 +8,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,6 +27,4 @@ public class UserResponse {
     UserStatus status;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-    List<NotificationResponse> notifications;
-    List<EventResponse> events;
 }

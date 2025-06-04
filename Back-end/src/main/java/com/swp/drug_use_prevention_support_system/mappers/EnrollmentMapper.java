@@ -11,5 +11,6 @@ public interface EnrollmentMapper {
 
     Enrollment toEntity(CreateEnrollmentRequest request);
     Enrollment toEntity(UpdateEnrollmentRequest request);
+    Enrollment toEntity(EnrollmentResponse response);
     EnrollmentResponse toDto(Enrollment enrollment);
 }

@@ -9,5 +9,6 @@ import org.mapstruct.Mapper;
 public interface NotificationMapper {
 
     Notification toEntity(CreateNotificationRequest request);
+    Notification toEntity(NotificationResponse response);
     NotificationResponse toDto(Notification notification);
 }

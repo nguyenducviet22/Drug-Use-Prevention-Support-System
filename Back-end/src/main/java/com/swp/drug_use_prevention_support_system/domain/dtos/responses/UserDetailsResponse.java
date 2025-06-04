@@ -1,6 +1,5 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
 
-import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -21,5 +20,5 @@ public class UserDetailsResponse {
     String address;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-    User member;
+    UserResponse member;
 }

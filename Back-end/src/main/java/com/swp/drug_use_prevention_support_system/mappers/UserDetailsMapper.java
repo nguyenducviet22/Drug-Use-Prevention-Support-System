@@ -11,5 +11,6 @@ public interface UserDetailsMapper {
 
     UserDetails toEntity(CreateUserDetailsRequest request);
     UserDetails toEntity(UpdateUserDetailsRequest request);
+    UserDetails toEntity(UserDetailsResponse response);
     UserDetailsResponse toDto(UserDetails userDetails);
 }
