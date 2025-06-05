@@ -5,6 +5,7 @@ CREATE TABLE qualification (
     institution VARCHAR(255) NOT NULL,
     year INT NOT NULL,
     description TEXT,
+    status ENUM('AVAILABLE', 'UNAVAILABLE') NOT NULL,
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL,
     consultant_id VARCHAR(100) NOT NULL,

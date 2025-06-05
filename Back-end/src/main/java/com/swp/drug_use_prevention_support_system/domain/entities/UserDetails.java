@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.entities;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -23,6 +24,8 @@ public class UserDetails {
     String phoneNumber;
     String relationship;
     String address;
+    @Enumerated(EnumType.STRING)
+    UserStatus status;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 

@@ -40,29 +40,18 @@ public class UserService {
 
     @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     public UserResponse createInternalUser(CreateUserRequest request) {
-        String username = request.getUsername();
-        if (userRepository.existsByUsername(username))
-            throw new RuntimeException("Username existed with: " + username);
-        User newUser = userMapper.toEntity(request);
-        newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        newUser.setStatus(UserStatus.ACTIVE);
-        userRepository.save(newUser);
-        return userMapper.toDto(newUser);
+        User internalUser = userMapper.toEntity(register(request));
+        internalUser.setRole(request.getRole());
+        userRepository.save(internalUser);
+        return userMapper.toDto(internalUser);
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'STAFF')")
     public List<UserResponse> getAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream()
                 .map(user -> userMapper.toDto(user))
                 .toList();
-    }
-
-    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
-    public UserResponse getUserByUsername(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new EntityNotFoundException("User does not exist with username: " + username));
-        return userMapper.toDto(user);
     }
 
     public User getUserEntity(String username) {
@@ -77,7 +66,14 @@ public class UserService {
 
     @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse getMyInfo() {
-        return getUserByUsername(getLoginUsername());
+        User user = getUserEntity(getLoginUsername());
+        return userMapper.toDto(user);
+    }
+
+    @PreAuthorize("hasAnyRole('CONSULTANT', 'STAFF')")
+    public UserResponse getUserByUsername(String username) {
+        User user = getUserEntity(username);
+        return userMapper.toDto(user);
     }
 
     @PostAuthorize("returnObject.username == authentication.name")
@@ -90,6 +86,7 @@ public class UserService {
         user.setGender(request.getGender());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setJob(request.getJob());
+        user.setAddress(request.getAddress());
         user.setRole(Role.MEMBER);
         userRepository.save(user);
         return userMapper.toDto(user);
