@@ -45,6 +45,13 @@ public class BlogService {
                 .toList();
     }
 
+    public List<BlogResponse> getMemberBlogs(String username) {
+        List<Blog> blogs = blogRepository.findByMemberUsername(username);
+        return blogs.stream()
+                .map(blog -> blogMapper.toDto(blog))
+                .toList();
+    }
+
     public BlogResponse getBlog(UUID blogID) {
         Blog blog = blogRepository.findById(blogID)
                 .orElseThrow(() -> new EntityNotFoundException("Blog does not exist with ID: " + blogID));

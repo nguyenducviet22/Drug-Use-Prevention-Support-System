@@ -27,6 +27,7 @@ public class BlogController {
         BlogResponse response = blogService.createBlog(request);
         ApiResponse<BlogResponse> apiResponse = ApiResponse.<BlogResponse>builder()
                 .data(response)
+                .status(HttpStatus.CREATED.value())
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
@@ -36,6 +37,17 @@ public class BlogController {
         List<BlogResponse> responses = blogService.getAllBlogs();
         ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
                 .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
+
+    @GetMapping("/my-list/{username}")
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> getMemberBlogs(@PathVariable String username) {
+        List<BlogResponse> responses = blogService.getMemberBlogs(username);
+        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponses);
     }
@@ -45,6 +57,7 @@ public class BlogController {
         BlogResponse response = blogService.getBlog(id);
         ApiResponse<BlogResponse> apiResponse = ApiResponse.<BlogResponse>builder()
                 .data(response)
+                .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
@@ -55,6 +68,7 @@ public class BlogController {
         BlogResponse response = blogService.updateBlog(id, request);
         ApiResponse<BlogResponse> apiResponse = ApiResponse.<BlogResponse>builder()
                 .data(response)
+                .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
@@ -65,6 +79,7 @@ public class BlogController {
         BlogResponse response = blogService.updateBlogStatus(id, status);
         ApiResponse<BlogResponse> apiResponse = ApiResponse.<BlogResponse>builder()
                 .data(response)
+                .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponse);
     }

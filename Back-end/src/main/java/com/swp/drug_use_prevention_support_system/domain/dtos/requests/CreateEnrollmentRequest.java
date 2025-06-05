@@ -17,10 +17,6 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateEnrollmentRequest {
 
-    @NotNull(message = "Member username must not be null")
-    @Size(min = 3, max = 100, message = "Username must be between 3 and 100 characters")
-    String username;
-
     @NotNull(message = "Course ID must not be null")
     UUID courseId;
 
@@ -29,7 +25,4 @@ public class CreateEnrollmentRequest {
 
     @FutureOrPresent(message = "End date must be today or in the future")
     LocalDateTime endDate;
-
-    @NotNull(message = "Status must not be null")
-    EnrollmentStatus status;
 }

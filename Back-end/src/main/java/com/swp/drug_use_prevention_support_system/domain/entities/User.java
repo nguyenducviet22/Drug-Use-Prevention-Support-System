@@ -31,6 +31,7 @@ public class User {
     Gender gender;
     String phoneNumber;
     String job;
+    String address;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     @Enumerated(EnumType.STRING)

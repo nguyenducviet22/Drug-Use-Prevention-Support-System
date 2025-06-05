@@ -25,6 +25,7 @@ public class UserController {
         UserResponse response = userService.register(request);
         ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
                 .data(response)
+                .status(HttpStatus.CREATED.value())
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
@@ -34,6 +35,7 @@ public class UserController {
         UserResponse response = userService.createInternalUser(request);
         ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
                 .data(response)
+                .status(HttpStatus.OK.value())
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
@@ -43,6 +45,7 @@ public class UserController {
         List<UserResponse> responses = userService.getAllUsers();
         ApiResponse<List<UserResponse>> apiResponses = ApiResponse.<List<UserResponse>>builder()
                 .data(responses)
+                .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponses);
     }
@@ -52,6 +55,7 @@ public class UserController {
         UserResponse response = userService.getUserByUsername(username);
         ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
                 .data(response)
+                .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
@@ -61,6 +65,7 @@ public class UserController {
         UserResponse response = userService.getMyInfo();
         ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
                 .data(response)
+                .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
@@ -71,6 +76,7 @@ public class UserController {
         UserResponse response = userService.updateUser(username, request);
         ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
                 .data(response)
+                .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
