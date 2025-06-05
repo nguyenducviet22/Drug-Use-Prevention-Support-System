@@ -36,4 +36,8 @@ public class UpdateUserRequest {
     @NotBlank(message = "Job is required")
     @Size(max = 255, message = "Job must be less than 256 characters")
     String job;
+
+    @NotBlank(message = "Address is required")
+    @Size(max = 255, message = "Address must be less than 256 characters")
+    String address;
 }

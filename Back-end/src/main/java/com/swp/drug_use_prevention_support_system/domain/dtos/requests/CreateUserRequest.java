@@ -1,7 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.requests;
 
 import com.swp.drug_use_prevention_support_system.domain.enums.Role;
-import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
 import com.swp.drug_use_prevention_support_system.validators.PasswordMatches;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

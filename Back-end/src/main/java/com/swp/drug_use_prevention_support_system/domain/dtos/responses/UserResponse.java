@@ -24,6 +24,7 @@ public class UserResponse {
     String phoneNumber;
     String job;
     Role role;
+    String address;
     UserStatus status;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

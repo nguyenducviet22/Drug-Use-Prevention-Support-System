@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.entities;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.Degree;
 import jakarta.persistence.*;
 import lombok.*;
@@ -26,6 +27,8 @@ public class Qualification {
     String institution;
     Integer year;
     String description;
+    @Enumerated(EnumType.STRING)
+    CourseStatus status;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 
