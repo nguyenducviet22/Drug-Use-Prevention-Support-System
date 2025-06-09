@@ -52,6 +52,15 @@ public class BlogController {
         return ResponseEntity.ok(apiResponses);
     }
 
+    @GetMapping("/my-list/{username}")
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> getMemberBlogs(@PathVariable String username) {
+        List<BlogResponse> responses = blogService.getMemberBlogs(username);
+        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
+                .data(responses)
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<BlogResponse>> getBlog(@PathVariable UUID id) {
         BlogResponse response = blogService.getBlog(id);
