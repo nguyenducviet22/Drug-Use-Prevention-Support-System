@@ -2,6 +2,7 @@ package com.swp.drug_use_prevention_support_system.controllers;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateUserRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateUserRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.UserResponse;
 import com.swp.drug_use_prevention_support_system.services.UserService;
 import jakarta.validation.Valid;
@@ -20,32 +21,68 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request) {
-        UserResponse response = userService.createUser(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody CreateUserRequest request) {
+        UserResponse response = userService.register(request);
+        ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
+                .data(response)
+                .status(HttpStatus.CREATED.value())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/internal")
+    public ResponseEntity<ApiResponse<UserResponse>> createInternalUser(@Valid @RequestBody CreateUserRequest request) {
+        UserResponse response = userService.createInternalUser(request);
+        ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
+                .data(response)
+                .status(HttpStatus.OK.value())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<UserResponse>> getUsers() {
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getUsers() {
         List<UserResponse> responses = userService.getAllUsers();
-        return ResponseEntity.ok(responses);
+        ApiResponse<List<UserResponse>> apiResponses = ApiResponse.<List<UserResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<UserResponse> getUserInfo(@PathVariable String username){
+    public ResponseEntity<ApiResponse<UserResponse>> getUserInfo(@PathVariable String username) {
         UserResponse response = userService.getUserByUsername(username);
-        return ResponseEntity.ok(response);
+        ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
+                .data(response)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/myInfo")
+    public ResponseEntity<ApiResponse<UserResponse>> getMyInfo() {
+        UserResponse response = userService.getMyInfo();
+        ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
+                .data(response)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
     @PutMapping("/{username}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable String username,
-                                                   @RequestBody UpdateUserRequest request) {
+    public ResponseEntity<ApiResponse<UserResponse>> updateUser(@PathVariable String username,
+                                                                @Valid @RequestBody UpdateUserRequest request) {
         UserResponse response = userService.updateUser(username, request);
-        return ResponseEntity.ok(response);
+        ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
+                .data(response)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
     @PatchMapping("/{username}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String username) {
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }

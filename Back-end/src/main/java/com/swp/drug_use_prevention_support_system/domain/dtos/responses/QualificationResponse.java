@@ -1,6 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
 
-import com.swp.drug_use_prevention_support_system.domain.entities.User;
+import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.Degree;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,7 +21,8 @@ public class QualificationResponse {
     String institution;
     Integer year;
     String description;
+    CourseStatus status;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-    User consultant;
+    UserResponse consultant;
 }

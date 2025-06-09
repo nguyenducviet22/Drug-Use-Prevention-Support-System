@@ -29,8 +29,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS = {"/auth/login", "/auth/introspect", "/auth/logout", "/auth/refresh",
-            "api/user"};
+    private final String[] PUBLIC_POST_ENDPOINTS = {"/auth/login", "/auth/introspect", "/auth/logout", "/auth/refresh", "/api/user"};
+
+    private final String[] PUBLIC_GET_ENDPOINTS = {"/api/blog/**", "/api/course/**", "/api/enrollment/course-list/**"};
+
+    private final String[] SWAGGER_ENDPOINTS = {"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**"};
 
     private final CustomJwtDecoder customJwtDecoder;
     private final AuthenticationService authenticationService;
@@ -49,7 +52,9 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
+                        .requestMatchers(SWAGGER_ENDPOINTS).permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
@@ -57,6 +62,7 @@ public class SecurityConfig {
                                 .decoder(customJwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter())
                         )
+                        .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 )
                 .csrf(csrf -> csrf.disable())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -80,7 +86,7 @@ public class SecurityConfig {
                             OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
                             String email = oAuth2User.getAttribute("email");
                             String name = oAuth2User.getAttribute("name");
-
+//                            String avatar = oAuth2User.getAttribute("picture");
                             UserResponse user = authenticationService.findOrCreateUserFromGoogle(email, name);
                             String jwt = authenticationService.generateToken(user);
                             response.sendRedirect("http://localhost:5173/oauth2/success?token=" + jwt);
@@ -95,7 +101,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UrlBasedCorsConfigurationSource corsConfigurationSource(){
+    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.addAllowedOrigin("http://localhost:5173");

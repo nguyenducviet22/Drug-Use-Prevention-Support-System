@@ -11,5 +11,6 @@ public interface SurveyMapper {
 
     Survey toEntity(CreateSurveyRequest request);
     Survey toEntity(UpdateSurveyRequest request);
+    Survey toEntity(SurveyResponse response);
     SurveyResponse toDto(Survey survey);
 }

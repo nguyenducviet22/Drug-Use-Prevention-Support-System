@@ -11,5 +11,6 @@ public interface QualificationMapper {
 
     Qualification toEntity(CreateQualificationRequest request);
     Qualification toEntity(UpdateQualificationRequest request);
+    Qualification toEntity(QualificationResponse response);
     QualificationResponse toDto(Qualification qualification);
 }

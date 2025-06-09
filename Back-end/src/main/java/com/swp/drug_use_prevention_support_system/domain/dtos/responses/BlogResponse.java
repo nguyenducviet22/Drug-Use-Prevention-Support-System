@@ -1,6 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
 
-import com.swp.drug_use_prevention_support_system.domain.entities.User;
+import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,7 +21,8 @@ public class BlogResponse {
     String img;
     String description;
     BlogType blogType;
+    BlogStatus blogStatus;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-    User member;
+    UserResponse member;
 }

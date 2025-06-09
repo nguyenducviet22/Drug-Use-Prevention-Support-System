@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Setter
@@ -15,20 +16,20 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Enrollment {
-    @EmbeddedId
-    UserCourseId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "enrollment_id")
+    UUID enrollmentID;
     @Enumerated(EnumType.STRING)
     EnrollmentStatus status;
     LocalDateTime startDate;
     LocalDateTime endDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("username")
     @JoinColumn(name = "member_id")
     User member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("courseId")
     @JoinColumn(name = "course_id")
     Course course;
 }

@@ -11,5 +11,6 @@ public interface AppointmentMapper {
 
     Appointment toEntity(CreateAppointmentRequest request);
     Appointment toEntity(UpdateAppointmentRequest request);
+    Appointment toEntity(AppointmentResponse response);
     AppointmentResponse toDto(Appointment appointment);
 }

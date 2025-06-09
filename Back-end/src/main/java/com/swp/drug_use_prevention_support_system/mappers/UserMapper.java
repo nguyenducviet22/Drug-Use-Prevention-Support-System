@@ -11,5 +11,6 @@ public interface UserMapper {
 
     User toEntity(CreateUserRequest request);
     User toEntity(UpdateUserRequest request);
+    User toEntity(UserResponse response);
     UserResponse toDto(User user);
 }

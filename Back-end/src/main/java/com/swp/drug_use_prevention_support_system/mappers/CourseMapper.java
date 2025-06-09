@@ -11,5 +11,6 @@ public interface CourseMapper {
 
     Course toEntity(CreateCourseRequest request);
     Course toEntity(UpdateCourseRequest request);
+    Course toEntity(CourseResponse response);
     CourseResponse toDto(Course course);
 }
