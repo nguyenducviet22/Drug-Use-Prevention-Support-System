@@ -1,0 +1,74 @@
+import { Container } from "react-bootstrap"
+import { Globe, ArrowUp } from "lucide-react"
+import { Link } from "react-router-dom"
+import "./Footer.css"
+
+const Footer = () => {
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    })
+  }
+
+  return (
+    <footer className="site-footer">
+      <div className="footer-wave-container">
+        <svg
+          className="footer-wave"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1440 120"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0,64L120,80C240,96,480,128,720,128C960,128,1200,96,1320,80L1440,64L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"
+            fill="#171717"
+          ></path>
+        </svg>
+      </div>
+
+      <div className="footer-content">
+        <Container>
+          <div className="footer-brand mb-5">
+            <Link to="/" className="footer-logo">
+              <svg width="40" height="40" viewBox="0 0 32 32" fill="none" className="me-2">
+                <path d="M8 8L24 24M24 8L8 24" stroke="white" strokeWidth="3" strokeLinecap="round" />
+                <path d="M16 4L28 16L16 28L4 16L16 4Z" stroke="white" strokeWidth="2" fill="none" />
+              </svg>
+              <span className="brand-text">ReNewMe</span>
+            </Link>
+          </div>
+
+          <div className="footer-bottom">
+            <div className="footer-links">
+              <Link to="/terms" className="footer-link">
+                Term of Service
+              </Link>
+              <Link to="/privacy" className="footer-link">
+                Privacy Policy
+              </Link>
+              <Link to="/contact" className="footer-link">
+                Contact Us
+              </Link>
+            </div>
+
+            <div className="footer-copyright">
+              <p>© 2025 Company. All Rights Reserved.</p>
+            </div>
+
+            <div className="footer-actions">
+              <button className="footer-action-btn" aria-label="Language">
+                <Globe size={18} />
+              </button>
+              <button className="footer-action-btn" onClick={scrollToTop} aria-label="Scroll to top">
+                <ArrowUp size={18} />
+              </button>
+            </div>
+          </div>
+        </Container>
+      </div>
+    </footer>
+  )
+}
+
+export default Footer
