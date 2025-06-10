@@ -6,8 +6,11 @@ import AppLayout from '../layouts/AppLayout'
 import Home from '../pages/Home'
 import Login from '../pages/Login'
 import OAuth2RedirectHandler from '../components/OAuth2RedirectHandler'
-import MyInfo from '../pages/MyInfo'
 import NotFound from '../pages/NotFound'
+import MyProfile from '../pages/MyProfile'
+import BlogList from '../pages/BlogList'
+import CourseList from '../pages/CourseList'
+import EventList from '../pages/EventList'
 
 export default function AppRoute() {
     return (
@@ -15,10 +18,13 @@ export default function AppRoute() {
             <Route element={<AppLayout />}>
                 <Route path='/' element={<Home />} />
                 <Route path="/oauth2/success" element={<OAuth2RedirectHandler />} />
-                <Route path="/user/:username" element={<MyInfo />} />
+                <Route path="/blogs" element={<BlogList />} />
+                <Route path="/events" element={<EventList />} />
+                <Route path="/courses" element={<CourseList />} />
                 <Route path='*' element={<NotFound />} />
             </Route>
             <Route path='/login' element={<Login />} />
+            <Route path="/profile" element={<MyProfile />} />
         </Routes>
     )
 }

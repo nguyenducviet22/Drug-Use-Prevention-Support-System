@@ -14,7 +14,6 @@ export const useAuth = () => {
         try {
             const response = await API.post("/auth/login", { username, password });
             localStorage.setItem("token", response.data.token);
-            localStorage.setItem("username", username);
             await fetchUser();
             navigate("/");
         } catch (error) {
@@ -37,7 +36,6 @@ export const useAuth = () => {
     };
 
     const logout = () => {
-        // localStorage.removeItem("token");
         localStorage.clear();
         navigate("/");
         setUser(null);
@@ -45,9 +43,8 @@ export const useAuth = () => {
 
     const fetchUser = useCallback(async () => {
         try {
-            const username = localStorage.getItem("username");
-            const res = await API.get(`/api/user/${username}`);
-            setUser(res.data);
+            const res = await API.get(`/api/user/myInfo`);
+            setUser(res.data.data);
         } catch (err) {
             console.error("Auth error:", err);
             logout();

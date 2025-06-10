@@ -2,13 +2,11 @@ import { useState } from "react"
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import { ArrowLeft } from "lucide-react"
-import useLogin from '../hooks/useLogin';
 import "./Login.css"
 import { useAuth } from "../hooks/useAuth"
 
 export default function Login() {
 
-    // const { login } = useLogin();
     const { login, register, authLoading, error } = useAuth();
 
     const API_GOOGLE_LOGIN_URL = 'http://localhost:8080/oauth2/authorization/google';
@@ -61,14 +59,17 @@ export default function Login() {
         window.location.href = API_GOOGLE_LOGIN_URL;
     }
 
-    // if (isLoading) {
-    //     return <p>Loading...</p>
-    // }
-
-    // if (authLoading) {
-    //     return <p>Loading...</p>;
-    // }
-
+    if (authLoading) {
+        return (
+            <Container className="my-5">
+                <div className="text-center">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </Container>
+        )
+    }
 
     return (
         <div className="login-page">

@@ -1,5 +1,3 @@
-"use client"
-
 import { Container, Row, Col, Button, Card } from "react-bootstrap"
 import { Syringe, LinkIcon, CheckCircle, Eye, MapPin, Clock, Users, Video, User, BookOpen, ShieldX } from "lucide-react"
 import "./HomeExplore.css"

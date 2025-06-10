@@ -1,5 +1,3 @@
-"use client"
-
 import { Container, Row, Col, Button, Card } from "react-bootstrap"
 import {
     Heart,
