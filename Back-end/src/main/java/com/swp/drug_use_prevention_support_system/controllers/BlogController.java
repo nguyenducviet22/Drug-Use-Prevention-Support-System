@@ -88,7 +88,7 @@ public class BlogController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PostMapping("/import")
+    @PostMapping(value = "/import", consumes = "multipart/form-data")
     public ResponseEntity<String> importUserDetails(@RequestParam("file") MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("File is empty!");
