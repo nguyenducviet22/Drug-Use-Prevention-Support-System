@@ -98,4 +98,12 @@ public class UserService {
         user.setStatus(UserStatus.INACTIVE);
         userRepository.save(user);
     }
+
+    public boolean changePassword(String newPassword) {
+        String loginUsername= getLoginUsername();
+        User user = getUserEntity(loginUsername);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return true;
+    }
 }
