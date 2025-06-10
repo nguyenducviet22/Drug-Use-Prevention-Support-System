@@ -1,11 +1,12 @@
 package com.swp.drug_use_prevention_support_system.domain.entities;
 
-import com.swp.drug_use_prevention_support_system.domain.enums.RiskLevel;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,16 +22,12 @@ public class Assessment {
     @Column(name = "assessment_id")
     UUID assessmentID;
     String img;
-    @Enumerated(EnumType.STRING)
-    RiskLevel riskLevel;
-    Integer score;
     String assessmentType;
-    String suggestedAction;
+    String linkTest;
     LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username", nullable = false)
-    User user;
+    @OneToMany(mappedBy = "assessment")
+    List<AssessmentResult> assessmentResults = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

@@ -46,7 +46,7 @@ public class User {
     List<Qualification> qualifications = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
-    List<Assessment> assessments = new ArrayList<>();
+    List<AssessmentResult> assessmentResults = new ArrayList<>();
 
     @OneToMany(mappedBy = "member")
     List<Appointment> memberAppointments = new ArrayList<>();

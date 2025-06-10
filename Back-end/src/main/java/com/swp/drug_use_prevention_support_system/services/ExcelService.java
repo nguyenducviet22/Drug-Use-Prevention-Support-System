@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,8 @@ public class ExcelService {
     private final UserDetailsRepository userDetailsRepository;
     private final QualificationRepository qualificationRepository;
     private final AssessmentRepository assessmentRepository;
+    private final AssessmentService assessmentService;
+    private final AssessmentResultRepository assessmentResultRepository;
     private final CourseRepository courseRepository;
     private final BlogRepository blogRepository;
     private final EventRepository eventRepository;
@@ -234,27 +238,57 @@ public class ExcelService {
 
             try {
                 String img = getCellValue(row.getCell(0));
-                RiskLevel riskLevel = RiskLevel.valueOf(getCellValue(row.getCell(1)).toUpperCase());
-                Integer score = Integer.valueOf(getCellValue(row.getCell(2)));
-                String type = getCellValue(row.getCell(3));
-                String suggestedAction = getCellValue(row.getCell(4));
-                String username = getCellValue(row.getCell(5));
-                User user = userService.getUserEntity(username);
+                String type = getCellValue(row.getCell(1));
+                String link = getCellValue(row.getCell(2));
 
                 Assessment assessment = Assessment.builder()
                         .img(img)
-                        .riskLevel(riskLevel)
-                        .score(score)
                         .assessmentType(type)
-                        .suggestedAction(suggestedAction)
-                        .user(user)
+                        .linkTest(link)
                         .build();
                 assessments.add(assessment);
             } catch (Exception e) {
-                throw new RuntimeException("Error Excel import Courses at line " + (i + 1) + ": " + e.getMessage(), e);
+                throw new RuntimeException("Error Excel import Assessments at line " + (i + 1) + ": " + e.getMessage(), e);
             }
         }
         assessmentRepository.saveAll(assessments);
+        workbook.close();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void importAssessmentResultsFromExcel(InputStream inputStream) throws IOException {
+        Workbook workbook = new XSSFWorkbook(inputStream);
+        Sheet sheet = workbook.getSheet("AssessmentResults");
+        List<AssessmentResult> results = new ArrayList<>();
+
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null || isRowEmpty(row)) continue;
+
+            try {
+                Integer score = Integer.valueOf(getCellValue(row.getCell(0)));
+                RiskLevel level = RiskLevel.valueOf(getCellValue(row.getCell(1)));
+                String action = getCellValue(row.getCell(2));
+                LocalDateTime completed = row.getCell(3).getLocalDateTimeCellValue();
+                String username = getCellValue(row.getCell(4));
+                User user = userService.getUserEntity(username);
+                String type = getCellValue(row.getCell(5));
+                Assessment assessment = assessmentService.getAssessmentByType(type);
+
+                AssessmentResult result = AssessmentResult.builder()
+                        .score(score)
+                        .riskLevel(level)
+                        .suggestedAction(action)
+                        .completedTime(completed)
+                        .user(user)
+                        .assessment(assessment)
+                        .build();
+                results.add(result);
+            } catch (Exception e) {
+                throw new RuntimeException("Error Excel import Assessment Results at line " + (i + 1) + ": " + e.getMessage(), e);
+            }
+        }
+        assessmentResultRepository.saveAll(results);
         workbook.close();
     }
 

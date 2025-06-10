@@ -44,16 +44,6 @@ public class AssessmentController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/my-list/{username}")
-    public ResponseEntity<ApiResponse<List<AssessmentResponse>>> getMyAssessments(@PathVariable String username) {
-        List<AssessmentResponse> responses = assessmentService.getUserAssessments(username);
-        ApiResponse<List<AssessmentResponse>> apiResponse = ApiResponse.<List<AssessmentResponse>>builder()
-                .data(responses)
-                .status(HttpStatus.OK.value())
-                .build();
-        return ResponseEntity.ok(apiResponse);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<AssessmentResponse>> getAssessment(@PathVariable UUID id) {
         AssessmentResponse response = assessmentService.getAssessment(id);
