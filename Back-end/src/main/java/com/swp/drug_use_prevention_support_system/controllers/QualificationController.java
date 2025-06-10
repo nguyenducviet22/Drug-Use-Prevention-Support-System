@@ -4,13 +4,16 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateQua
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateQualificationRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.QualificationResponse;
+import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import com.swp.drug_use_prevention_support_system.services.QualificationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +23,7 @@ import java.util.UUID;
 public class QualificationController {
 
     private final QualificationService qualificationService;
+    private final ExcelService excelService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<QualificationResponse>> createQualification(@Valid @RequestBody CreateQualificationRequest request) {
@@ -80,5 +84,14 @@ public class QualificationController {
                 .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponse);
+    }
+
+    @PostMapping(value = "/import", consumes = "multipart/form-data")
+    public ResponseEntity<String> importUserDetails(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("File is empty!");
+        }
+        excelService.importQualificationsFromExcel(file.getInputStream());
+        return ResponseEntity.ok("Excel file data saved Qualifications into DB");
     }
 }

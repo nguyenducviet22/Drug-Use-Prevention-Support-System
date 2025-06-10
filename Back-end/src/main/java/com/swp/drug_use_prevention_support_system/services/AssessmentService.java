@@ -3,7 +3,6 @@ package com.swp.drug_use_prevention_support_system.services;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateAssessmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AssessmentResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.Assessment;
-import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.mappers.AssessmentMapper;
 import com.swp.drug_use_prevention_support_system.repositories.AssessmentRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,18 +20,14 @@ public class AssessmentService {
 
     private final AssessmentRepository assessmentRepository;
     private final AssessmentMapper assessmentMapper;
-    private final UserService userService;
 
+    @PreAuthorize("hasRole('STAFF')")
     public AssessmentResponse createAssessment(CreateAssessmentRequest request) {
         Assessment newAssessment = assessmentMapper.toEntity(request);
-        String loginUsername = userService.getLoginUsername();
-        User loginUser = userService.getUserEntity(loginUsername);
-        newAssessment.setUser(loginUser);
         assessmentRepository.save(newAssessment);
         return assessmentMapper.toDto(newAssessment);
     }
 
-    @PreAuthorize("hasRole('STAFF')")
     public List<AssessmentResponse> getAllAssessments() {
         List<Assessment> assessments = assessmentRepository.findAll();
         return assessments.stream()
@@ -40,14 +35,11 @@ public class AssessmentService {
                 .toList();
     }
 
-    public List<AssessmentResponse> getUserAssessments(String username) {
-        List<Assessment> assessments = assessmentRepository.findByUserUsername(username);
-        return assessments.stream()
-                .map(assessment -> assessmentMapper.toDto(assessment))
-                .toList();
+    public Assessment getAssessmentByType(String type) {
+        return assessmentRepository.findByAssessmentType(type)
+                .orElseThrow(() -> new EntityNotFoundException("Assessment dose not exist with type: " + type));
     }
 
-    @PostAuthorize("returnObject.user.username == authentication.name || hasAnyRole('CONSULTANT', 'STAFF')")
     public AssessmentResponse getAssessment(UUID assessmentID) {
         Assessment assessment = assessmentRepository.findById(assessmentID)
                 .orElseThrow(() -> new EntityNotFoundException("Assessment dose not exist with ID: " + assessmentID));

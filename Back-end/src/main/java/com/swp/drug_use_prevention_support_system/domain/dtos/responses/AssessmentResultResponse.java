@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.RiskLevel;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -11,11 +12,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AssessmentResponse {
+public class AssessmentResultResponse {
 
-    UUID assessmentID;
-    String img;
-    String assessmentType;
-    String linkTest;
-    LocalDateTime createdAt;
+    UUID assessmentResultID;
+    RiskLevel riskLevel;
+    Integer score;
+    String suggestedAction;
+    LocalDateTime completedTime;
+    UserResponse user;
 }

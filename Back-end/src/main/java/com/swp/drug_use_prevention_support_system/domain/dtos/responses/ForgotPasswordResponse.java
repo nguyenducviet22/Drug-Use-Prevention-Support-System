@@ -4,18 +4,15 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AssessmentResponse {
+public class ForgotPasswordResponse {
 
-    UUID assessmentID;
-    String img;
-    String assessmentType;
-    String linkTest;
-    LocalDateTime createdAt;
+    String email;
+    String otp;
+    LocalDateTime expiryTime;
 }

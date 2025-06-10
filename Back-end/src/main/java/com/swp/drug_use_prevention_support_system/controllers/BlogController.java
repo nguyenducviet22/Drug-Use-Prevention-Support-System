@@ -6,12 +6,15 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiRespo
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.BlogResponse;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
 import com.swp.drug_use_prevention_support_system.services.BlogService;
+import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +24,7 @@ import java.util.UUID;
 public class BlogController {
 
     private final BlogService blogService;
+    private final ExcelService excelService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<BlogResponse>> createBlog(@Valid @RequestBody CreateBlogRequest request) {
@@ -82,5 +86,14 @@ public class BlogController {
                 .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponse);
+    }
+
+    @PostMapping(value = "/import", consumes = "multipart/form-data")
+    public ResponseEntity<String> importUserDetails(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("File is empty!");
+        }
+        excelService.importBlogsFromExcel(file.getInputStream());
+        return ResponseEntity.ok("Excel file data saved Blogs into DB");
     }
 }

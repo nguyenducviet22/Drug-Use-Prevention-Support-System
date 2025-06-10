@@ -6,7 +6,6 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.responses.Enrollme
 import com.swp.drug_use_prevention_support_system.domain.entities.Course;
 import com.swp.drug_use_prevention_support_system.domain.entities.Enrollment;
 import com.swp.drug_use_prevention_support_system.domain.entities.User;
-import com.swp.drug_use_prevention_support_system.domain.entities.UserCourseId;
 import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
 import com.swp.drug_use_prevention_support_system.mappers.EnrollmentMapper;
 import com.swp.drug_use_prevention_support_system.repositories.EnrollmentRepository;
@@ -66,19 +65,19 @@ public class EnrollmentService {
                 .toList();
     }
 
-    public Enrollment getEnrollmentEntity(UserCourseId enrollmentId) {
+    public Enrollment getEnrollmentEntity(UUID enrollmentId) {
         return enrollmentRepository.findById(enrollmentId)
                 .orElseThrow(() -> new EntityNotFoundException("Enrollment does not exist with ID: " + enrollmentId));
     }
 
     @PreAuthorize("hasRole('MEMBER')")
-    public EnrollmentResponse getEnrollment(UserCourseId enrollmentId) {
+    public EnrollmentResponse getEnrollment(UUID enrollmentId) {
         Enrollment enrollment = getEnrollmentEntity(enrollmentId);
         return enrollmentMapper.toDto(enrollment);
     }
 
     @PreAuthorize("hasRole('STAFF')")
-    public EnrollmentResponse updateEnrollment(UserCourseId enrollmentId, UpdateEnrollmentRequest request) {
+    public EnrollmentResponse updateEnrollment(UUID enrollmentId, UpdateEnrollmentRequest request) {
         Enrollment enrollment = getEnrollmentEntity(enrollmentId);
         enrollment.setStatus(request.getStatus());
         enrollmentRepository.save(enrollment);
@@ -86,7 +85,7 @@ public class EnrollmentService {
     }
 
     @PostAuthorize("returnObject.username == authentication.name")
-    public EnrollmentResponse deleteEnrollment(UserCourseId enrollmentId) {
+    public EnrollmentResponse deleteEnrollment(UUID enrollmentId) {
         Enrollment enrollment = getEnrollmentEntity(enrollmentId);
         enrollment.setStatus(EnrollmentStatus.UNENROLLED);
         enrollmentRepository.save(enrollment);

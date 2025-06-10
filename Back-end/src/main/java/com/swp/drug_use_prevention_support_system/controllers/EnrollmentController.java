@@ -4,7 +4,7 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateEnr
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateEnrollmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EnrollmentResponse;
-import com.swp.drug_use_prevention_support_system.domain.entities.UserCourseId;
+import com.swp.drug_use_prevention_support_system.domain.entities.Enrollment;
 import com.swp.drug_use_prevention_support_system.services.EnrollmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +63,7 @@ public class EnrollmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<EnrollmentResponse>> getEnrollment(@PathVariable UserCourseId id) {
+    public ResponseEntity<ApiResponse<EnrollmentResponse>> getEnrollment(@PathVariable UUID id) {
         EnrollmentResponse response = enrollmentService.getEnrollment(id);
         ApiResponse<EnrollmentResponse> apiResponse = ApiResponse.<EnrollmentResponse>builder()
                 .status(HttpStatus.OK.value())
@@ -73,7 +73,7 @@ public class EnrollmentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<EnrollmentResponse>> updateEnrollment(@PathVariable UserCourseId id,
+    public ResponseEntity<ApiResponse<EnrollmentResponse>> updateEnrollment(@PathVariable UUID id,
                                                                             @RequestBody UpdateEnrollmentRequest request) {
         EnrollmentResponse response = enrollmentService.updateEnrollment(id, request);
         ApiResponse<EnrollmentResponse> apiResponse = ApiResponse.<EnrollmentResponse>builder()
@@ -84,7 +84,7 @@ public class EnrollmentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<EnrollmentResponse>> deleteEnrollment(@PathVariable UserCourseId id) {
+    public ResponseEntity<ApiResponse<EnrollmentResponse>> deleteEnrollment(@PathVariable UUID id) {
         EnrollmentResponse response = enrollmentService.deleteEnrollment(id);
         ApiResponse<EnrollmentResponse> apiResponse = ApiResponse.<EnrollmentResponse>builder()
                 .status(HttpStatus.OK.value())

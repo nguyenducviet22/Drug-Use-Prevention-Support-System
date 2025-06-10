@@ -1,11 +1,37 @@
-version: '4'
+version: '3.9'
+
 services:
   mysql:
     image: mysql:8.4.5
     container_name: swp-mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: drug_use_prevention_support_system
     ports:
       - "3306:3306"
     volumes:
       - ./mysql:/var/lib/mysql
+    networks:
+      - swp-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: drug-use-prevention-support-system
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/drug_use_prevention_support_system
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8080:8080"
+    volumes:
+      - .m2:/root/.m2
+    networks:
+      - swp-network
+
+networks:
+  swp-network:
+    driver: bridge

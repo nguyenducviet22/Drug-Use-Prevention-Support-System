@@ -5,12 +5,15 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateCou
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CourseResponse;
 import com.swp.drug_use_prevention_support_system.services.CourseService;
+import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +23,7 @@ import java.util.UUID;
 public class CourseController {
 
     private final CourseService courseService;
+    private final ExcelService excelService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<CourseResponse>> createCourse(@Valid @RequestBody CreateCourseRequest request) {
@@ -70,5 +74,14 @@ public class CourseController {
                 .data(response)
                 .build();
         return ResponseEntity.ok(apiResponse);
+    }
+
+    @PostMapping(value = "/import", consumes = "multipart/form-data")
+    public ResponseEntity<String> importUserDetails(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("File is empty!");
+        }
+        excelService.importCoursesFromExcel(file.getInputStream());
+        return ResponseEntity.ok("Excel file data saved Courses into DB");
     }
 }
