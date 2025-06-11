@@ -5,6 +5,8 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateBlo
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.BlogResponse;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
+import com.swp.drug_use_prevention_support_system.domain.enums.BlogType;
+import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
 import com.swp.drug_use_prevention_support_system.services.BlogService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import jakarta.validation.Valid;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -95,5 +98,29 @@ public class BlogController {
         }
         excelService.importBlogsFromExcel(file.getInputStream());
         return ResponseEntity.ok("Excel file data saved Blogs into DB");
+    }
+
+    @GetMapping("/type")
+    public ResponseEntity<ApiResponse<List<String>>> getAllBlogTypes() {
+        List<String> types = Arrays.stream(BlogType.values())
+                .map(Enum::name)
+                .toList();
+        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+                .status(HttpStatus.OK.value())
+                .data(types)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<ApiResponse<List<String>>> getAllBlogStatuses() {
+        List<String> statuses = Arrays.stream(BlogStatus.values())
+                .map(Enum::name)
+                .toList();
+        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+                .status(HttpStatus.OK.value())
+                .data(statuses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 }

@@ -29,6 +29,9 @@ public class CreateBlogRequest {
     @NotBlank(message = "Description is required")
     String description;
 
+    @NotBlank(message = "Content is required")
+    String content;
+
     @NotNull(message = "Blog type is required")
     BlogType blogType;
 

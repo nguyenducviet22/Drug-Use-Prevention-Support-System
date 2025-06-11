@@ -1,8 +1,11 @@
 package com.swp.drug_use_prevention_support_system.controllers;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateAssessmentRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateAssessmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AssessmentResponse;
+import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
+import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.services.AssessmentService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import jakarta.validation.Valid;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,6 +58,24 @@ public class AssessmentController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<AssessmentResponse>> updateAssessment(@PathVariable UUID id,
+                                                                            @RequestBody UpdateAssessmentRequest request) {
+        AssessmentResponse response = assessmentService.updateAssessment(id, request);
+        ApiResponse<AssessmentResponse> apiResponse = ApiResponse.<AssessmentResponse>builder()
+                .data(response)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PatchMapping("/{id}/{status}")
+    public ResponseEntity<ApiResponse<Void>> updateAssessmentStatus(@PathVariable UUID id,
+                                                              @PathVariable CourseStatus status) {
+        assessmentService.updateAssessmentStatus(id, status);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping(value = "/import", consumes = "multipart/form-data")
     public ResponseEntity<String> importUserDetails(@RequestParam("file") MultipartFile file) throws IOException {
         if (file.isEmpty()) {
@@ -61,5 +83,17 @@ public class AssessmentController {
         }
         excelService.importAssessmentsFromExcel(file.getInputStream());
         return ResponseEntity.ok("Excel file data saved Assessments into DB");
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<ApiResponse<List<String>>> getAllAssessmentStatuses() {
+        List<String> statuses = Arrays.stream(CourseStatus.values())
+                .map(Enum::name)
+                .toList();
+        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+                .status(HttpStatus.OK.value())
+                .data(statuses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 }

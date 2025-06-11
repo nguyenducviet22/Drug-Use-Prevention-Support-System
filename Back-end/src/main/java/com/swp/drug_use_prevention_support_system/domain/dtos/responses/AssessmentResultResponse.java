@@ -20,4 +20,5 @@ public class AssessmentResultResponse {
     String suggestedAction;
     LocalDateTime completedTime;
     UserResponse user;
+    AssessmentResponse assessment;
 }

@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,6 +169,8 @@ public class ExcelService {
                 BlogStatus status = BlogStatus.valueOf(getCellValue(row.getCell(5)).toUpperCase());
                 String memberUsername = getCellValue(row.getCell(6));
                 User member = userService.getUserEntity(memberUsername);
+                String content = getCellValue(row.getCell(7));
+                Integer time = Integer.valueOf(getCellValue(row.getCell(8)));
 
                 Blog blog = Blog.builder()
                         .blogName(name)
@@ -179,6 +180,8 @@ public class ExcelService {
                         .blogType(type)
                         .blogStatus(status)
                         .member(member)
+                        .content(content)
+                        .readingTime(time)
                         .build();
                 blogs.add(blog);
             } catch (Exception e) {
@@ -240,11 +243,17 @@ public class ExcelService {
                 String img = getCellValue(row.getCell(0));
                 String type = getCellValue(row.getCell(1));
                 String link = getCellValue(row.getCell(2));
+                String description = getCellValue(row.getCell(3));
+                String details = getCellValue(row.getCell(4));
+                CourseStatus status = CourseStatus.valueOf(getCellValue(row.getCell(5)));
 
                 Assessment assessment = Assessment.builder()
                         .img(img)
                         .assessmentType(type)
                         .linkTest(link)
+                        .description(description)
+                        .details(details)
+                        .status(status)
                         .build();
                 assessments.add(assessment);
             } catch (Exception e) {
@@ -273,7 +282,7 @@ public class ExcelService {
                 String username = getCellValue(row.getCell(4));
                 User user = userService.getUserEntity(username);
                 String type = getCellValue(row.getCell(5));
-                Assessment assessment = assessmentService.getAssessmentByType(type);
+                Assessment assessment = assessmentService.getAssessmentEntity(type);
 
                 AssessmentResult result = AssessmentResult.builder()
                         .score(score)

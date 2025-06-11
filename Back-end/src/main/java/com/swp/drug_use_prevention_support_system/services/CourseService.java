@@ -61,9 +61,9 @@ public class CourseService {
     }
 
     @PreAuthorize("hasRole('STAFF')")
-    public CourseResponse deleteCourse(UUID courseId) {
+    public CourseResponse updateCourseStatus(UUID courseId, CourseStatus status) {
         Course course = getCourseEntity(courseId);
-        course.setStatus(CourseStatus.UNAVAILABLE);
+        course.setStatus(status);
         courseRepository.save(course);
         return courseMapper.toDto(course);
     }

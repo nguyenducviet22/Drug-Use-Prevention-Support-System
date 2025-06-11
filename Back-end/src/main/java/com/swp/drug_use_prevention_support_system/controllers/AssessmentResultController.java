@@ -1,13 +1,10 @@
 package com.swp.drug_use_prevention_support_system.controllers;
 
-import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateAssessmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
-import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AssessmentResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AssessmentResultResponse;
+import com.swp.drug_use_prevention_support_system.domain.enums.RiskLevel;
 import com.swp.drug_use_prevention_support_system.services.AssessmentResultService;
-import com.swp.drug_use_prevention_support_system.services.AssessmentService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -63,5 +61,17 @@ public class AssessmentResultController {
         }
         excelService.importAssessmentResultsFromExcel(file.getInputStream());
         return ResponseEntity.ok("Excel file data saved Assessment Results into DB");
+    }
+
+    @GetMapping("/risk-level")
+    public ResponseEntity<ApiResponse<List<String>>> getAllAssessmentRiskLevel() {
+        List<String> levels = Arrays.stream(RiskLevel.values())
+                .map(Enum::name)
+                .toList();
+        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+                .status(HttpStatus.OK.value())
+                .data(levels)
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 }

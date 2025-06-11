@@ -3,5 +3,9 @@ CREATE TABLE assessment (
     img VARCHAR(255),
     assessment_type VARCHAR(255) NOT NULL,
     link_test VARCHAR(255) NOT NULL,
-    created_at DATETIME NOT NULL
+    description VARCHAR(255) NOT NULL,
+    details VARCHAR(255) NOT NULL,
+    status ENUM('AVAILABLE', 'UNAVAILABLE') NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL
 );

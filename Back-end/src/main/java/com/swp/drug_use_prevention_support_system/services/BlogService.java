@@ -25,6 +25,8 @@ public class BlogService {
     private final BlogMapper blogMapper;
     private final UserService userService;
 
+    private static final int WORDS_PER_MINUTE = 200;
+
     @PreAuthorize("hasAnyRole('MEMBER', 'CONSULTANT', 'STAFF')")
     public BlogResponse createBlog(CreateBlogRequest request) {
         Blog newBlog = blogMapper.toEntity(request);
@@ -34,6 +36,7 @@ public class BlogService {
         String loginUsername = userService.getLoginUsername();
         User loginUser = userService.getUserEntity(loginUsername);
         newBlog.setMember(loginUser);
+        newBlog.setReadingTime(calculateReadingTime(request.getContent()));
         blogRepository.save(newBlog);
         return blogMapper.toDto(newBlog);
     }
@@ -80,4 +83,12 @@ public class BlogService {
         blogRepository.save(blog);
         return blogMapper.toDto(blog);
     }
+
+    private Integer calculateReadingTime(String content){
+        if (content == null || content.isEmpty()) return 0;
+        int wordCount = content.trim().split("\\s+").length;
+        return (int) Math.ceil((double) wordCount/WORDS_PER_MINUTE);
+    }
+
+
 }
