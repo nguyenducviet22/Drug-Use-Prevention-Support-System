@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -17,5 +18,9 @@ public class AssessmentResponse {
     String img;
     String assessmentType;
     String linkTest;
+    String description;
+    String details;
+    CourseStatus status;
     LocalDateTime createdAt;
+    LocalDateTime updatedAt;
 }

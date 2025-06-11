@@ -1,7 +1,6 @@
 package com.swp.drug_use_prevention_support_system.services;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateEnrollmentRequest;
-import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateEnrollmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EnrollmentResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.Course;
 import com.swp.drug_use_prevention_support_system.domain.entities.Enrollment;
@@ -76,18 +75,10 @@ public class EnrollmentService {
         return enrollmentMapper.toDto(enrollment);
     }
 
-    @PreAuthorize("hasRole('STAFF')")
-    public EnrollmentResponse updateEnrollment(UUID enrollmentId, UpdateEnrollmentRequest request) {
-        Enrollment enrollment = getEnrollmentEntity(enrollmentId);
-        enrollment.setStatus(request.getStatus());
-        enrollmentRepository.save(enrollment);
-        return enrollmentMapper.toDto(enrollment);
-    }
-
     @PostAuthorize("returnObject.username == authentication.name")
-    public EnrollmentResponse deleteEnrollment(UUID enrollmentId) {
+    public EnrollmentResponse updateEnrollmentStatus(UUID enrollmentId, EnrollmentStatus status) {
         Enrollment enrollment = getEnrollmentEntity(enrollmentId);
-        enrollment.setStatus(EnrollmentStatus.UNENROLLED);
+        enrollment.setStatus(status);
         enrollmentRepository.save(enrollment);
         return enrollmentMapper.toDto(enrollment);
     }

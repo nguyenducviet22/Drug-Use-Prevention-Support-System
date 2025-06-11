@@ -25,6 +25,8 @@ public class Blog {
     Integer rate;
     String img;
     String description;
+    String content;
+    Integer readingTime;
     @Enumerated(EnumType.STRING)
     BlogType blogType;
     @Enumerated(EnumType.STRING)

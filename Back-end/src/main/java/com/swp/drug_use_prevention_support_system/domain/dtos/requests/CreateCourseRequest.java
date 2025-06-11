@@ -31,7 +31,4 @@ public class CreateCourseRequest {
 
     @NotNull(message = "Age group is required")
     AgeGroup ageGroup;
-
-    @NotNull(message = "Status is required")
-    CourseStatus status;
 }

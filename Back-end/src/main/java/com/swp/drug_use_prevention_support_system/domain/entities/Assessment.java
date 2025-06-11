@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.entities;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -24,13 +25,25 @@ public class Assessment {
     String img;
     String assessmentType;
     String linkTest;
+    String description;
+    String details;
+    @Enumerated(EnumType.STRING)
+    CourseStatus status;
     LocalDateTime createdAt;
+    LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "assessment")
     List<AssessmentResult> assessmentResults = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
 }

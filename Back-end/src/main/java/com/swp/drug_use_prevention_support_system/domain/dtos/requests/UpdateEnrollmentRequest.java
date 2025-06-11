@@ -24,7 +24,4 @@ public class UpdateEnrollmentRequest {
 
     @FutureOrPresent(message = "End date must be today or in the future")
     LocalDateTime endDate;
-
-    @NotNull(message = "Status must not be null")
-    EnrollmentStatus status;
 }

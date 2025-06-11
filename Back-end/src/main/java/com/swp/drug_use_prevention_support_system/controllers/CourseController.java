@@ -4,6 +4,9 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateCou
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateCourseRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CourseResponse;
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
+import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
+import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.services.CourseService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import jakarta.validation.Valid;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -66,9 +70,10 @@ public class CourseController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<CourseResponse>> deleteCourse(@PathVariable UUID id) {
-        CourseResponse response = courseService.deleteCourse(id);
+    @PatchMapping("/{id}/{status}")
+    public ResponseEntity<ApiResponse<CourseResponse>> deleteCourse(@PathVariable UUID id,
+                                                                    @PathVariable CourseStatus status) {
+        CourseResponse response = courseService.updateCourseStatus(id, status);
         ApiResponse<CourseResponse> apiResponse = ApiResponse.<CourseResponse>builder()
                 .status(HttpStatus.OK.value())
                 .data(response)
@@ -83,5 +88,29 @@ public class CourseController {
         }
         excelService.importCoursesFromExcel(file.getInputStream());
         return ResponseEntity.ok("Excel file data saved Courses into DB");
+    }
+
+    @GetMapping("/age-group")
+    public ResponseEntity<ApiResponse<List<String>>> getAllCourseAgeGroups() {
+        List<String> groups = Arrays.stream(AgeGroup.values())
+                .map(Enum::name)
+                .toList();
+        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+                .status(HttpStatus.OK.value())
+                .data(groups)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<ApiResponse<List<String>>> getAllCourseStatuses() {
+        List<String> statuses = Arrays.stream(CourseStatus.values())
+                .map(Enum::name)
+                .toList();
+        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+                .status(HttpStatus.OK.value())
+                .data(statuses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 }

@@ -20,6 +20,8 @@ public class BlogResponse {
     Integer rate;
     String img;
     String description;
+    String content;
+    Integer readingTime;
     BlogType blogType;
     BlogStatus blogStatus;
     LocalDateTime createdAt;
