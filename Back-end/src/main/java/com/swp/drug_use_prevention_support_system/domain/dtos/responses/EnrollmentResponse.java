@@ -4,7 +4,7 @@ import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 public class EnrollmentResponse {
 
     EnrollmentStatus status;
-    LocalDateTime startDate;
-    LocalDateTime endDate;
+    LocalDate startDate;
+    LocalDate endDate;
     CourseResponse course;
     UserResponse member;
 }

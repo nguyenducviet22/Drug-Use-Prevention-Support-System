@@ -4,11 +4,17 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateCou
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateCourseRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CourseResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.Course;
+import com.swp.drug_use_prevention_support_system.domain.entities.User;
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
+import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
 import com.swp.drug_use_prevention_support_system.mappers.CourseMapper;
 import com.swp.drug_use_prevention_support_system.repositories.CourseRepository;
+import com.swp.drug_use_prevention_support_system.repositories.EnrollmentRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +27,7 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
+    private final EnrollmentRepository enrollmentRepository;
 
     @PreAuthorize("hasRole('STAFF')")
     public CourseResponse createCourse(CreateCourseRequest request) {
@@ -66,5 +73,27 @@ public class CourseService {
         course.setStatus(status);
         courseRepository.save(course);
         return courseMapper.toDto(course);
+    }
+
+    public List<CourseResponse> getCoursesByAgeGroup(AgeGroup ageGroup) {
+        List<Course> courses = courseRepository.findCoursesByAgeGroup(ageGroup);
+        return courses.stream()
+                .map(course -> courseMapper.toDto(course))
+                .toList();
+    }
+
+    public List<CourseResponse> getTop3MostEnrolledCourses() {
+        Pageable top3 = PageRequest.of(0, 3);
+        List<Course> courses = enrollmentRepository.findTop3MostEnrolledCourses(top3);
+        return courses.stream()
+                .map(course -> courseMapper.toDto(course))
+                .toList();
+    }
+
+    public List<CourseResponse> getCoursesByStatus(EnrollmentStatus status, String username) {
+        List<Course> courses = enrollmentRepository.findEnrolledCoursesByStatusAndMember(status, username);
+        return courses.stream()
+                .map(course -> courseMapper.toDto(course))
+                .toList();
     }
 }

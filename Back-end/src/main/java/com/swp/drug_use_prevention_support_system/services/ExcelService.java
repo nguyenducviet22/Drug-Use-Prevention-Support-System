@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +29,10 @@ public class ExcelService {
     private final AssessmentService assessmentService;
     private final AssessmentResultRepository assessmentResultRepository;
     private final CourseRepository courseRepository;
+    private final CourseService courseService;
     private final BlogRepository blogRepository;
     private final EventRepository eventRepository;
+    private final EnrollmentRepository enrollmentRepository;
 
     @PreAuthorize("hasRole('ADMIN')")
     public void importUsersFromExcel(InputStream inputStream) throws IOException {
@@ -53,6 +56,7 @@ public class ExcelService {
                 Role role = Role.valueOf(getCellValue(row.getCell(8)).toUpperCase());
                 String address = getCellValue(row.getCell(9));
                 UserStatus status = UserStatus.valueOf(getCellValue(row.getCell(10)).toUpperCase());
+                AgeGroup group = AgeGroup.valueOf(getCellValue(row.getCell(11)));
 
                 User user = User.builder()
                         .username(username)
@@ -66,10 +70,11 @@ public class ExcelService {
                         .address(address)
                         .role(role)
                         .status(status)
+                        .ageGroup(group)
                         .build();
                 users.add(user);
             } catch (Exception e) {
-                throw new RuntimeException("Error Excel import Users at line" + (i + 1) + ": " + e.getMessage(), e);
+                throw new RuntimeException("Error Excel import Users at line " + (i + 1) + ": " + e.getMessage(), e);
             }
         }
         userRepository.saveAll(users);
@@ -171,6 +176,7 @@ public class ExcelService {
                 User member = userService.getUserEntity(memberUsername);
                 String content = getCellValue(row.getCell(7));
                 Integer time = Integer.valueOf(getCellValue(row.getCell(8)));
+                AgeGroup group = AgeGroup.valueOf(getCellValue(row.getCell(9)));
 
                 Blog blog = Blog.builder()
                         .blogName(name)
@@ -182,6 +188,7 @@ public class ExcelService {
                         .member(member)
                         .content(content)
                         .readingTime(time)
+                        .ageGroup(group)
                         .build();
                 blogs.add(blog);
             } catch (Exception e) {
@@ -226,6 +233,41 @@ public class ExcelService {
             }
         }
         courseRepository.saveAll(courses);
+        workbook.close();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void importEnrollmentsFromExcel(InputStream inputStream) throws IOException {
+        Workbook workbook = new XSSFWorkbook(inputStream);
+        Sheet sheet = workbook.getSheet("Enrollments");
+        List<Enrollment> enrollments = new ArrayList<>();
+
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null || isRowEmpty(row)) continue;
+
+            try {
+                String memberUsername = getCellValue(row.getCell(0));
+                User member = userService.getUserEntity(memberUsername);
+                UUID courseID = UUID.fromString(getCellValue(row.getCell(1)));
+                Course course = courseService.getCourseEntity(courseID);
+                LocalDate startDate = LocalDate.parse(getCellValue(row.getCell(2)));
+                LocalDate endDate = LocalDate.parse(getCellValue(row.getCell(3)));
+                EnrollmentStatus status = EnrollmentStatus.valueOf(getCellValue(row.getCell(4)).toUpperCase());
+
+                Enrollment enrollment = Enrollment.builder()
+                        .member(member)
+                        .course(course)
+                        .startDate(startDate)
+                        .endDate(endDate)
+                        .status(status)
+                        .build();
+                enrollments.add(enrollment);
+            } catch (Exception e) {
+                throw new RuntimeException("Error Excel import Enrollments at line " + (i + 1) + ": " + e.getMessage(), e);
+            }
+        }
+        enrollmentRepository.saveAll(enrollments);
         workbook.close();
     }
 

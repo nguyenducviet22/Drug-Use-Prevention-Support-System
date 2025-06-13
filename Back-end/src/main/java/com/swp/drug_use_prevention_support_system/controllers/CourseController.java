@@ -4,9 +4,10 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateCou
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateCourseRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CourseResponse;
+import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
-import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
+import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
 import com.swp.drug_use_prevention_support_system.services.CourseService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import jakarta.validation.Valid;
@@ -82,7 +83,7 @@ public class CourseController {
     }
 
     @PostMapping(value = "/import", consumes = "multipart/form-data")
-    public ResponseEntity<String> importUserDetails(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<String> importCourses(@RequestParam("file") MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("File is empty!");
         }
@@ -110,6 +111,37 @@ public class CourseController {
         ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
                 .status(HttpStatus.OK.value())
                 .data(statuses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/age-group/{ageGroup}")
+    public ResponseEntity<ApiResponse<List<CourseResponse>>> getAllCourses(@PathVariable AgeGroup ageGroup) {
+        List<CourseResponse> responses = courseService.getCoursesByAgeGroup(ageGroup);
+        ApiResponse<List<CourseResponse>> apiResponse = ApiResponse.<List<CourseResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(responses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/top-3-most-enrolled-courses")
+    public ResponseEntity<ApiResponse<List<CourseResponse>>> getTop3MostEnrolledCourses() {
+        List<CourseResponse> responses = courseService.getTop3MostEnrolledCourses();
+        ApiResponse<List<CourseResponse>> apiResponse = ApiResponse.<List<CourseResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(responses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/{status}/{username}")
+    public ResponseEntity<ApiResponse<List<CourseResponse>>> getCoursesByStatus(@PathVariable EnrollmentStatus status,
+                                                                                @PathVariable String username) {
+        List<CourseResponse> responses = courseService.getCoursesByStatus(status, username);
+        ApiResponse<List<CourseResponse>> apiResponse = ApiResponse.<List<CourseResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(responses)
                 .build();
         return ResponseEntity.ok(apiResponse);
     }

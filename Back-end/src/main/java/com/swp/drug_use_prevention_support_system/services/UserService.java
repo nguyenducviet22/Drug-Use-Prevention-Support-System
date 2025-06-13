@@ -4,6 +4,7 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateUse
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateUserRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.UserResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.User;
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.Role;
 import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
 import com.swp.drug_use_prevention_support_system.mappers.UserMapper;
@@ -16,6 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 @Service
@@ -82,7 +85,9 @@ public class UserService {
         User user = getUserEntity(username);
         user.setEmail(request.getEmail());
         user.setFullName(request.getFullName());
-        user.setDob(request.getDob());
+        LocalDate dob = request.getDob();
+        user.setDob(dob);
+        user.setAgeGroup(classifyAgeGroup(dob));
         user.setGender(request.getGender());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setJob(request.getJob());
@@ -100,10 +105,22 @@ public class UserService {
     }
 
     public boolean changePassword(String newPassword) {
-        String loginUsername= getLoginUsername();
+        String loginUsername = getLoginUsername();
         User user = getUserEntity(loginUsername);
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         return true;
+    }
+
+    private AgeGroup classifyAgeGroup(LocalDate dob) {
+        LocalDate now = LocalDate.now();
+        int age = Period.between(dob, now).getYears();
+        if (age <= 17) {
+            return AgeGroup.ADOLESCENT;
+        } else if (age >= 18 && age <= 59) {
+            return AgeGroup.ADULT;
+        } else {
+            return AgeGroup.SENIOR;
+        }
     }
 }

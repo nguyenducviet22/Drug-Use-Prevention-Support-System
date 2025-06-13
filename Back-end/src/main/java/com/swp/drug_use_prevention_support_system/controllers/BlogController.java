@@ -4,9 +4,9 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateBlo
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateBlogRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.BlogResponse;
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogType;
-import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
 import com.swp.drug_use_prevention_support_system.services.BlogService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import jakarta.validation.Valid;
@@ -122,5 +122,35 @@ public class BlogController {
                 .data(statuses)
                 .build();
         return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/top-2-newest-blogs")
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> get2NewestBlogs() {
+        List<BlogResponse> responses = blogService.getTop2NewestBlogs();
+        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
+
+    @GetMapping("/draft/{username}")
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> getDraftBlogs(@PathVariable String username) {
+        List<BlogResponse> responses = blogService.getMemberDraftBlogs(username);
+        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
+
+    @GetMapping("/age-group/{ageGroup}")
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> getDraftBlogs(@PathVariable AgeGroup ageGroup) {
+        List<BlogResponse> responses = blogService.getBlogsByAgeGroup(ageGroup);
+        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
     }
 }
