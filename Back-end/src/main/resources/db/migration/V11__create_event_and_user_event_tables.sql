@@ -9,7 +9,10 @@ CREATE TABLE event (
     start_date DATE,
     end_date DATE,
     created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL
+    updated_at DATETIME NOT NULL,
+    age_group ENUM('ADOLESCENT', 'ADULT', 'SENIOR') NOT NULL,
+    created_by VARCHAR(100),
+    FOREIGN KEY (created_by) REFERENCES users(username)
 );
 
 CREATE TABLE user_event (

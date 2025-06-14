@@ -9,5 +9,4 @@ public class DrugUsePreventionSupportSystemApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DrugUsePreventionSupportSystemApplication.class, args);
 	}
-
 }

@@ -1,6 +1,7 @@
 package com.swp.drug_use_prevention_support_system.domain.entities;
 
 import com.swp.drug_use_prevention_support_system.domain.enums.EventStatus;
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -33,6 +34,8 @@ public class Event {
     EventStatus status;
     LocalDate startDate;
     LocalDate endDate;
+    @Enumerated(EnumType.STRING)
+    AgeGroup ageGroup;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 
@@ -41,6 +44,10 @@ public class Event {
 
     @OneToMany(mappedBy = "event")
     List<Survey> surveys = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false, updatable = false)
+    User createdBy;
 
     @PrePersist
     protected void onCreate() {
