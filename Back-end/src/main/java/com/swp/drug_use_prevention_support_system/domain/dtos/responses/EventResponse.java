@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.EventStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -22,6 +23,7 @@ public class EventResponse {
     String description;
     String img;
     EventStatus status;
+    AgeGroup ageGroup;
     LocalDate startDate;
     LocalDate endDate;
     LocalDateTime createdAt;

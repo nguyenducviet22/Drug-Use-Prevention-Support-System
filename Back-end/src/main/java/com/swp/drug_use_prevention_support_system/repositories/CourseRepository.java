@@ -11,5 +11,5 @@ import java.util.UUID;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, UUID> {
 
-    List<Course> findCoursesByAgeGroup(AgeGroup ageGroup);
+    List<Course> findByAgeGroupOrderByCreatedAtDesc(AgeGroup ageGroup);
 }

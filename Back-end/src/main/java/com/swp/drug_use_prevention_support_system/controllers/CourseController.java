@@ -4,12 +4,13 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateCou
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateCourseRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CourseResponse;
-import com.swp.drug_use_prevention_support_system.domain.entities.User;
+import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ModuleResponse;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
 import com.swp.drug_use_prevention_support_system.services.CourseService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
+import com.swp.drug_use_prevention_support_system.services.ModuleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ public class CourseController {
 
     private final CourseService courseService;
     private final ExcelService excelService;
+    private final ModuleService moduleService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<CourseResponse>> createCourse(@Valid @RequestBody CreateCourseRequest request) {
@@ -125,9 +127,10 @@ public class CourseController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/top-3-most-enrolled-courses")
-    public ResponseEntity<ApiResponse<List<CourseResponse>>> getTop3MostEnrolledCourses() {
-        List<CourseResponse> responses = courseService.getTop3MostEnrolledCourses();
+    @GetMapping("/{status}/{username}")
+    public ResponseEntity<ApiResponse<List<CourseResponse>>> getCoursesByStatus(@PathVariable EnrollmentStatus status,
+                                                                                @PathVariable String username) {
+        List<CourseResponse> responses = courseService.getCoursesForMemberByStatus(status, username);
         ApiResponse<List<CourseResponse>> apiResponse = ApiResponse.<List<CourseResponse>>builder()
                 .status(HttpStatus.OK.value())
                 .data(responses)
@@ -135,11 +138,10 @@ public class CourseController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/{status}/{username}")
-    public ResponseEntity<ApiResponse<List<CourseResponse>>> getCoursesByStatus(@PathVariable EnrollmentStatus status,
-                                                                                @PathVariable String username) {
-        List<CourseResponse> responses = courseService.getCoursesByStatus(status, username);
-        ApiResponse<List<CourseResponse>> apiResponse = ApiResponse.<List<CourseResponse>>builder()
+    @GetMapping("/{id}/modules")
+    public ResponseEntity<ApiResponse<List<ModuleResponse>>> getModulesForCourse(@PathVariable UUID id) {
+        List<ModuleResponse> responses = moduleService.getAllModulesForCourse(id);
+        ApiResponse<List<ModuleResponse>> apiResponse = ApiResponse.<List<ModuleResponse>>builder()
                 .status(HttpStatus.OK.value())
                 .data(responses)
                 .build();

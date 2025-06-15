@@ -86,13 +86,6 @@ public class BlogService {
         return blogMapper.toDto(blog);
     }
 
-    public List<BlogResponse> getTop2NewestBlogs() {
-        List<Blog> blogs = blogRepository.findTop2ByOrderByCreatedAtDesc();
-        return blogs.stream()
-                .map(blog -> blogMapper.toDto(blog))
-                .toList();
-    }
-
     public List<BlogResponse> getMemberDraftBlogs(String username) {
         List<Blog> blogs = blogRepository.findByMemberUsernameAndBlogStatus(username, BlogStatus.DRAFT);
         return blogs.stream()
@@ -101,7 +94,7 @@ public class BlogService {
     }
 
     public List<BlogResponse> getBlogsByAgeGroup(AgeGroup ageGroup) {
-        List<Blog> blogs = blogRepository.findBlogByAgeGroup(ageGroup);
+        List<Blog> blogs = blogRepository.findByAgeGroupOrderByCreatedAtDesc(ageGroup);
         return blogs.stream()
                 .map(blog -> blogMapper.toDto(blog))
                 .toList();

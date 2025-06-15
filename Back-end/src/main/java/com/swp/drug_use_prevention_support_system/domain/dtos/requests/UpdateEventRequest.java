@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.requests;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.EventStatus;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -29,6 +30,9 @@ public class UpdateEventRequest {
 
     @NotNull(message = "Status is required")
     EventStatus status;
+
+    @NotNull(message = "Age group is required")
+    AgeGroup ageGroup;
 
     @NotNull(message = "Start date is required")
     @FutureOrPresent(message = "Start date must be today or in the future")

@@ -2,6 +2,9 @@ package com.swp.drug_use_prevention_support_system.services;
 
 import com.swp.drug_use_prevention_support_system.domain.entities.*;
 import com.swp.drug_use_prevention_support_system.domain.enums.*;
+import com.swp.drug_use_prevention_support_system.domain.model.Lesson;
+import com.swp.drug_use_prevention_support_system.domain.model.LessonContent;
+import com.swp.drug_use_prevention_support_system.domain.model.Module;
 import com.swp.drug_use_prevention_support_system.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
@@ -33,6 +36,8 @@ public class ExcelService {
     private final BlogRepository blogRepository;
     private final EventRepository eventRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final ModuleRepository moduleRepository;
+    private final LessonRepository lessonRepository;
 
     @PreAuthorize("hasRole('ADMIN')")
     public void importUsersFromExcel(InputStream inputStream) throws IOException {
@@ -233,6 +238,90 @@ public class ExcelService {
             }
         }
         courseRepository.saveAll(courses);
+        workbook.close();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void importModulesFromExcel(InputStream inputStream) throws IOException {
+        Workbook workbook = new XSSFWorkbook(inputStream);
+        Sheet sheet = workbook.getSheet("Modules");
+        List<Module> modules = new ArrayList<>();
+
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null || isRowEmpty(row)) continue;
+
+            try {
+                String moduleID = getCellValue(row.getCell(0));
+                String name = getCellValue(row.getCell(1));
+                UUID courseID = UUID.fromString(getCellValue(row.getCell(2)));
+
+                Module module = Module.builder()
+                        .moduleID(moduleID)
+                        .moduleName(name)
+                        .courseID(courseID)
+                        .build();
+                modules.add(module);
+            } catch (Exception e) {
+                throw new RuntimeException("Error Excel import Modules at line " + (i + 1) + ": " + e.getMessage(), e);
+            }
+        }
+        moduleRepository.saveAll(modules);
+        workbook.close();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void importLessonsFromExcel(InputStream inputStream) throws IOException {
+        Workbook workbook = new XSSFWorkbook(inputStream);
+        Sheet sheet = workbook.getSheet("Lessons");
+        List<Lesson> lessons = new ArrayList<>();
+
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null || isRowEmpty(row)) continue;
+
+            try {
+                String moduleID = getCellValue(row.getCell(0));
+                String name = getCellValue(row.getCell(1));
+                String title = getCellValue(row.getCell(2));
+                int duration = Integer.parseInt(getCellValue(row.getCell(3)));
+                AgeGroup grp = AgeGroup.valueOf(getCellValue(row.getCell(4)));
+                String level = getCellValue(row.getCell(5));
+                String objtives = getCellValue(row.getCell(6));
+                List<String> objtivesList = new ArrayList<>();
+                objtivesList.add(objtives);
+                String sectionTitle = getCellValue(row.getCell(7));
+                String sectionCate = getCellValue(row.getCell(8));
+                String sectionText = getCellValue(row.getCell(9));
+                String sectionSrc = getCellValue(row.getCell(10));
+                List<String> cateList = new ArrayList<>();
+                cateList.add(sectionCate);
+                List<String> srcList = new ArrayList<>();
+                srcList.add(sectionSrc);
+                LessonContent lessonContent = new LessonContent();
+                lessonContent.setSectionTitle(sectionTitle);
+                lessonContent.setSectionCategories(cateList);
+                lessonContent.setSectionText(sectionText);
+                lessonContent.setSectionResources(srcList);
+                List<LessonContent> lessonContents = new ArrayList<>();
+                lessonContents.add(lessonContent);
+
+                Lesson lesson = Lesson.builder()
+                        .moduleID(moduleID)
+                        .lessonName(name)
+                        .lessonTitle(title)
+                        .lessonDuration(duration)
+                        .lessonAgeGroup(grp)
+                        .lessonLevel(level)
+                        .lessonObjectives(objtivesList)
+                        .lessonContent(lessonContents)
+                        .build();
+                lessons.add(lesson);
+            } catch (Exception e) {
+                throw new RuntimeException("Error Excel import Lessons at line " + (i + 1) + ": " + e.getMessage(), e);
+            }
+        }
+        lessonRepository.saveAll(lessons);
         workbook.close();
     }
 

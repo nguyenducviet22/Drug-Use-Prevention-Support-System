@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.entities;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.EventStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,6 +32,8 @@ public class Event {
     String img;
     @Enumerated(EnumType.STRING)
     EventStatus status;
+    @Enumerated(EnumType.STRING)
+    AgeGroup ageGroup;
     LocalDate startDate;
     LocalDate endDate;
     LocalDateTime createdAt;

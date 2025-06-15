@@ -124,16 +124,6 @@ public class BlogController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/top-2-newest-blogs")
-    public ResponseEntity<ApiResponse<List<BlogResponse>>> get2NewestBlogs() {
-        List<BlogResponse> responses = blogService.getTop2NewestBlogs();
-        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
-                .data(responses)
-                .status(HttpStatus.OK.value())
-                .build();
-        return ResponseEntity.ok(apiResponses);
-    }
-
     @GetMapping("/draft/{username}")
     public ResponseEntity<ApiResponse<List<BlogResponse>>> getDraftBlogs(@PathVariable String username) {
         List<BlogResponse> responses = blogService.getMemberDraftBlogs(username);
@@ -145,7 +135,7 @@ public class BlogController {
     }
 
     @GetMapping("/age-group/{ageGroup}")
-    public ResponseEntity<ApiResponse<List<BlogResponse>>> getDraftBlogs(@PathVariable AgeGroup ageGroup) {
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> getBlogsByAgeGroup(@PathVariable AgeGroup ageGroup) {
         List<BlogResponse> responses = blogService.getBlogsByAgeGroup(ageGroup);
         ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
                 .data(responses)

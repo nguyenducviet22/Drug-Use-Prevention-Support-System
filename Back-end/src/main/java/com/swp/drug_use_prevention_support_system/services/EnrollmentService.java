@@ -37,7 +37,7 @@ public class EnrollmentService {
         Course course = courseService.getCourseEntity(courseID);
         enrollment.setCourse(course);
 
-        enrollment.setStatus(EnrollmentStatus.ENROLLED);
+        enrollment.setStatus(EnrollmentStatus.COMPLETED);
         enrollmentRepository.save(enrollment);
         return enrollmentMapper.toDto(enrollment);
     }

@@ -13,9 +13,7 @@ import java.util.UUID;
 public interface BlogRepository extends JpaRepository<Blog, UUID> {
     List<Blog> findByMemberUsername(String loginUsername);
 
-    List<Blog> findTop2ByOrderByCreatedAtDesc();
-
     List<Blog> findByMemberUsernameAndBlogStatus(String username, BlogStatus blogStatus);
 
-    List<Blog> findBlogByAgeGroup(AgeGroup ageGroup);
+    List<Blog> findByAgeGroupOrderByCreatedAtDesc(AgeGroup ageGroup);
 }
