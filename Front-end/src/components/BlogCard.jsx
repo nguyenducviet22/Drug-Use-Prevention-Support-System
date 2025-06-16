@@ -1,14 +1,14 @@
-"use client"
 import { Card, Button } from "react-bootstrap"
-import { Calendar, User } from "lucide-react"
+import { Calendar, Clock, User } from "lucide-react"
 import "./BlogCard.css"
 
-const BlogCard = ({ blog, onReadClick }) => {
+const BlogCard = ({ blog, status, onReadClick }) => {
+
   return (
     <Card
       className="blog-card mb-4"
       style={{
-        backgroundImage: `url('https://deln1jxmpfoj4.cloudfront.net/_1200x600_crop_center-center_none/iStock-1454035097.jpg')`,
+        backgroundImage: `url(${blog.img})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -19,6 +19,10 @@ const BlogCard = ({ blog, onReadClick }) => {
           <div className="d-flex align-items-center mb-3">
             <span className="category-badge">{blog.blogType}</span>
             <div className="ms-auto d-flex align-items-center">
+              <span className="meta-info">
+                <Clock size={16} className="meta-icon" />
+                {blog.readingTime} mins
+              </span>
               <span className="meta-info">
                 <Calendar size={16} className="meta-icon" />
                 {blog.createdAt}
@@ -34,9 +38,11 @@ const BlogCard = ({ blog, onReadClick }) => {
 
           <p className="blog-excerpt mb-4">{blog.description}</p>
 
-          <Button variant="primary" className="read-button" onClick={() => onReadClick(blog.blogID)}>
-            Read
-          </Button>
+          {status !== 'draft' && (
+            <Button variant="primary" className="read-button" onClick={() => onReadClick(blog.blogID)}>
+              Read
+            </Button>
+          )}
         </div>
       </div>
     </Card>

@@ -9,7 +9,6 @@ import FamilyInformation from "../components/FamilyInformation"
 import Reports from "../components/Reports"
 
 const MyProfile = () => {
-  const { user } = useAuth()
   const [activeSection, setActiveSection] = useState("account-overview")
 
   const navigationItems = [

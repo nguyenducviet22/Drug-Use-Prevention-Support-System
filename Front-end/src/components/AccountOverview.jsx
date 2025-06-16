@@ -6,6 +6,7 @@ import "./AccountOverview.css"
 
 const AccountOverview = () => {
   const { user } = useAuth();
+  console.log(user);
   const [showPassword, setShowPassword] = useState(false);
 
   const userData = {
@@ -16,6 +17,7 @@ const AccountOverview = () => {
 
     password: "************",
   }
+  console.log(userData);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)

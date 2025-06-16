@@ -2,23 +2,21 @@ import { Button, Card } from "react-bootstrap"
 import { Clock, User, Calendar } from "lucide-react"
 import "./CourseCard.css"
 
-const CourseCard = ({ course }) => {
-    const getCategoryColor = (category) => {
+const CourseCard = ({ course, status, onEnrollClick, onDetailsClick }) => {
+    const getAgeGroupColor = (ageGroup) => {
         const colors = {
-            Student: "category-student",
-            Recovery: "category-recovery",
-            Community: "category-community",
-            Wellness: "category-wellness",
-            Family: "category-family",
+            ADOLESCENT: "ageGroup-adolescent",
+            ADULT: "ageGroup-adult",
+            SENIOR: "ageGroup-senior",
         }
-        return colors[category] || "category-default"
+        return colors[ageGroup] || "ageGroup-default"
     }
 
     return (
         <Card
             className="course-card mb-4"
             style={{
-                backgroundImage: `url('https://www.njspotlightnews.org/wp-content/uploads/sites/123/2018/07/assets1807112022-600x400.jpg')`,
+                backgroundImage: `url(${course.img})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
@@ -28,10 +26,10 @@ const CourseCard = ({ course }) => {
                 <div className="course-card-content">
                     {/* Top Section */}
                     <div className="course-header">
-                        <span className={`category-tag ${getCategoryColor(course.ageGroup)}`}>{course.ageGroup}</span>
+                        <span className={`ageGroup-tag ${getAgeGroupColor(course.ageGroup)}`}>{course.ageGroup}</span>
                         <div className="course-meta-info">
                             <Clock size={16} className="meta-icon" />
-                            <span className="meta-text">{course.duration}</span>
+                            <span className="meta-text">{course.duration} hours</span>
                         </div>
                     </div>
 
@@ -54,12 +52,17 @@ const CourseCard = ({ course }) => {
                     </div>
 
                     {/* Action Buttons */}
-                    <div className="course-actions">
-                        <Button className="enroll-button">Enroll</Button>
-                        <Button variant="outline-secondary" className="details-button">
-                            Details
-                        </Button>
-                    </div>
+                    {status !== 'Learning' && (
+                        <div className="course-actions">
+                            <Button className="enroll-button"
+                                onClick={() => onEnrollClick(course.courseID)}>
+                                Enroll</Button>
+                            <Button variant="outline-secondary" className="details-button"
+                                onClick={() => onDetailsClick(course.courseID)}>
+                                Details
+                            </Button>
+                        </div>
+                    )}
                 </div>
             </div>
         </Card>

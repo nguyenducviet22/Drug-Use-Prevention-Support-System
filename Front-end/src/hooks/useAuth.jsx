@@ -43,7 +43,7 @@ export const useAuth = () => {
 
     const fetchUser = useCallback(async () => {
         try {
-            const res = await API.get(`/api/user/myInfo`);
+            const res = await API.get("/api/user/my-info");
             setUser(res.data.data);
         } catch (err) {
             console.error("Auth error:", err);
@@ -61,6 +61,10 @@ export const useAuth = () => {
             setAuthLoading(false);
         }
     }, [fetchUser]);
+
+    // useEffect(() => {
+    //     console.log("User state changed:", user);
+    // }, [user]);
 
     return {
         user,

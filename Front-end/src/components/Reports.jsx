@@ -1,38 +1,41 @@
-"use client"
-
-import { useState } from "react"
-import { Row, Col, Card, Button, Badge, ProgressBar } from "react-bootstrap"
+import { useEffect, useState } from "react"
+import { Row, Col, Card, Button, Badge, ProgressBar, Container } from "react-bootstrap"
 import { BookOpen, GraduationCap, ClipboardCheck, Calendar, Award, TrendingUp, Download, Eye } from "lucide-react"
 import "./Reports.css"
+import useFetch from "../hooks/useFetch"
+import { useAuth } from "../hooks/useAuth"
+import { useNavigate } from "react-router-dom"
 
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("finished-activities")
+  const { user, loading: authLoading } = useAuth()
+  const navigate = useNavigate()
 
   // Mock data for finished activities
+  const [blogs, setBlogs] = useState([])
+  const [courses, setCourses] = useState([])
+  const [assessmentResults, setAssessmentResults] = useState([])
+  const username = user?.username;
+  const { loading: loadingBlogs, error: blogsError, get: getBlogs } = useFetch(`http://localhost:8080/api/blog/my-list/${username}`)
+  // const { loading: coursesLoading, error: coursesError, get: getCourses } = useFetch(`http://localhost:8080/api/course/my-list/${user?.username}`)
+  const { loading: loadingAssessmentResults, error: assessmentResultsError, get: getAssessmentResults } = useFetch(`http://localhost:8080/api/assessment-result/my-list/${username}`)
+
+  useEffect(() => {
+    getBlogs()
+      .then(setBlogs)
+      .catch(() => { });
+
+    // getCourses()
+    //   .then(setCourses)
+    //   .catch(() => { });
+
+    getAssessmentResults()
+      .then(setAssessmentResults)
+      .catch(() => { });
+  }, [getBlogs, getAssessmentResults])
+
   const finishedActivities = {
-    blogs: [
-      {
-        id: 1,
-        title: "5 Warning Signs of Drug Addiction",
-        completedDate: "2024-12-15",
-        readingTime: "8 minutes",
-        category: "Prevention",
-      },
-      {
-        id: 2,
-        title: "Success Story: Overcoming Addiction",
-        completedDate: "2024-12-10",
-        readingTime: "12 minutes",
-        category: "Recovery",
-      },
-      {
-        id: 3,
-        title: "How to recognize peer pressure",
-        completedDate: "2024-12-05",
-        readingTime: "6 minutes",
-        category: "Education",
-      },
-    ],
+    blogs,
     courses: [
       {
         id: 1,
@@ -51,30 +54,13 @@ const Reports = () => {
         certificate: true,
       },
     ],
-    assessments: [
-      {
-        id: 1,
-        title: "CRAFFT Screening Test",
-        completedDate: "2024-12-22",
-        score: 6,
-        riskLevel: "High Risk",
-        recommendations: ["Schedule counseling", "Family support", "Regular monitoring"],
-      },
-      {
-        id: 2,
-        title: "Mental Health Assessment",
-        completedDate: "2024-12-18",
-        score: 12,
-        riskLevel: "Moderate Risk",
-        recommendations: ["Stress management", "Regular exercise", "Counseling sessions"],
-      },
-    ],
+    assessmentResults
   }
 
   const stats = {
     totalBlogs: finishedActivities.blogs.length,
     totalCourses: finishedActivities.courses.length,
-    totalAssessments: finishedActivities.assessments.length,
+    totalAssessmentResults: finishedActivities.assessmentResults.length,
     averageCourseScore: Math.round(
       finishedActivities.courses.reduce((sum, course) => sum + course.score, 0) / finishedActivities.courses.length,
     ),
@@ -96,8 +82,25 @@ const Reports = () => {
   }
 
   const handleViewDetails = (type, id) => {
-    console.log(`View details for ${type}:`, id)
-    // Implement view details functionality
+    if (type === "blog") {
+      navigate(`/blogs/${id}`);
+    } else if (type === "course") {
+      navigate(`/courses/${id}`);
+    } else if (type === "assessment") {
+      navigate(`/assessment-result/${id}`);
+    }
+  }
+
+  if (authLoading || loadingBlogs || loadingAssessmentResults) {
+    return (
+      <Container className="my-5">
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </Container>
+    )
   }
 
   return (
@@ -131,7 +134,7 @@ const Reports = () => {
               <Col md={3} className="mb-3">
                 <div className="stat-card text-center p-3">
                   <ClipboardCheck size={32} className="text-warning mb-2" />
-                  <h4 className="mb-1">{stats.totalAssessments}</h4>
+                  <h4 className="mb-1">{stats.totalAssessmentResults}</h4>
                   <small className="text-muted">Assessments Taken</small>
                 </div>
               </Col>
@@ -156,31 +159,31 @@ const Reports = () => {
             <div className="activity-section mb-4">
               <h6 className="activity-title mb-3">Blogs</h6>
               {finishedActivities.blogs.length === 0 ? (
-                <p className="text-muted">No blogs completed yet.</p>
+                <p className="text-muted">No blogs written yet.</p>
               ) : (
                 <div className="activity-list">
                   {finishedActivities.blogs.map((blog) => (
                     <div
-                      key={blog.id}
+                      key={blog.blogID}
                       className="activity-item d-flex justify-content-between align-items-center p-3 mb-2"
                     >
                       <div className="activity-info">
-                        <h6 className="mb-1">{blog.title}</h6>
+                        <h6 className="mb-1">{blog.blogName}</h6>
                         <div className="activity-meta">
                           <small className="text-muted me-3">
                             <Calendar size={14} className="me-1" />
-                            {new Date(blog.completedDate).toLocaleDateString()}
+                            {new Date(blog.updatedAt).toLocaleDateString()}
                           </small>
                           <small className="text-muted me-3">
                             <BookOpen size={14} className="me-1" />
-                            {blog.readingTime}
+                            {blog.readingTime} mins
                           </small>
                           <Badge bg="secondary" className="category-badge">
-                            {blog.category}
+                            {blog.blogType}
                           </Badge>
                         </div>
                       </div>
-                      <Button variant="outline-primary" size="sm" onClick={() => handleViewDetails("blog", blog.id)}>
+                      <Button variant="outline-primary" size="sm" onClick={() => handleViewDetails("blog", blog.blogID)}>
                         <Eye size={14} />
                       </Button>
                     </div>
@@ -244,43 +247,32 @@ const Reports = () => {
             {/* Assessment Section */}
             <div className="activity-section">
               <h6 className="activity-title mb-3">Assessment</h6>
-              {finishedActivities.assessments.length === 0 ? (
+              {finishedActivities.assessmentResults.length === 0 ? (
                 <p className="text-muted">No assessments completed yet.</p>
               ) : (
                 <div className="activity-list">
-                  {finishedActivities.assessments.map((assessment) => (
-                    <div key={assessment.id} className="activity-item p-3 mb-2">
+                  {finishedActivities.assessmentResults.map((result) => (
+                    <div key={result.assessmentResultID} className="activity-item p-3 mb-2">
                       <div className="d-flex justify-content-between align-items-start mb-2">
                         <div className="activity-info">
-                          <h6 className="mb-1">{assessment.title}</h6>
+                          <h6 className="mb-1">{result.assessment?.assessmentType}</h6>
                           <div className="activity-meta">
                             <small className="text-muted me-3">
                               <Calendar size={14} className="me-1" />
-                              {new Date(assessment.completedDate).toLocaleDateString()}
+                              {new Date(result.completedTime).toLocaleDateString()}
                             </small>
-                            <small className="text-muted me-3">Score: {assessment.score}</small>
-                            <Badge bg={getRiskLevelColor(assessment.riskLevel)} className="risk-badge">
-                              {assessment.riskLevel}
+                            <small className="text-muted me-3">Score: {result.score}</small>
+                            <Badge bg={getRiskLevelColor(result.riskLevel)} className="risk-badge">
+                              {result.riskLevel}
                             </Badge>
                           </div>
                         </div>
                         <Button
-                          variant="outline-primary"
-                          size="sm"
-                          onClick={() => handleViewDetails("assessment", assessment.id)}
+                          variant="outline-primary" size="sm"
+                          onClick={() => handleViewDetails("assessment", result.assessmentResultID)}
                         >
                           <Eye size={14} />
                         </Button>
-                      </div>
-                      <div className="recommendations">
-                        <small className="text-muted fw-bold">Recommendations:</small>
-                        <ul className="recommendation-list mt-1">
-                          {assessment.recommendations.map((rec, index) => (
-                            <li key={index} className="recommendation-item">
-                              <small>{rec}</small>
-                            </li>
-                          ))}
-                        </ul>
                       </div>
                     </div>
                   ))}

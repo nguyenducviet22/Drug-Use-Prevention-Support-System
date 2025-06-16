@@ -1,19 +1,16 @@
 import { Container, Row, Col, Button, Card } from "react-bootstrap"
-import {
-    Heart,
-    Clipboard,
-    Calendar,
-    BookOpen,
-    BarChart3,
-    Star,
-    Users,
-    AlertTriangle,
-    CalendarIcon,
-    User,
-} from "lucide-react"
+import { Heart, Clipboard, Calendar, BookOpen, AlertTriangle, CalendarIcon, User } from "lucide-react"
 import "./HomeMe.css"
+import useFetch from "../hooks/useFetch"
+import { useAuth } from "../hooks/useAuth"
+import { useEffect, useState } from "react"
+import CourseCard from "./CourseCard"
+import BlogCard from "./BlogCard"
 
 const HomeMe = () => {
+    const { user, authLoading } = useAuth();
+    console.log(user);
+
     const healthData = {
         mentalHealth: "Moderate Anxiety",
         physicalHealth: "Stable",
@@ -47,11 +44,42 @@ const HomeMe = () => {
         status: "In Progress",
     }
 
-    const recommendedCourse = {
-        title: "Effective Communication skills",
-        description: 'Learn to say "no" confidently and politely',
-        rating: 4.7,
-        students: 881,
+    const [recommendedCourses, setRecommendedCourses] = useState([])
+    const [learningCourses, setLearningCourses] = useState([])
+    const [draftBlogs, setDraftBlogs] = useState([])
+
+    const { loading: loadingRecommendedCourses,
+        error: errorRecommendedCourses,
+        get: getRecommendedCourses } = useFetch(user?.ageGroup ? `http://localhost:8080/api/course/age-group/${user.ageGroup}` : null)
+
+    const { loading: loadingLearningCourses,
+        error: errorLearningCourses,
+        get: getLearningCourses } = useFetch(user?.username ? `http://localhost:8080/api/course/LEARNING/${user.username}` : null)
+        
+    const { loading: loadingDraftBlogs,
+        error: errorDraftBlogs,
+        get: getDraftBlogs } = useFetch(user?.username ? `http://localhost:8080/api/blog/draft/${user.username}` : null)
+
+    useEffect(() => {
+        getRecommendedCourses().then(setRecommendedCourses).catch(() => { })
+        getLearningCourses().then(setLearningCourses).catch(() => { })
+        getDraftBlogs().then(setDraftBlogs).catch(() => { })
+    }, [getRecommendedCourses, getLearningCourses])
+
+    const handleDraftContinue = (blogId) => {
+        navigate(`/blogs/draft/${blogId}`)
+    }
+
+    if (!user || authLoading || loadingRecommendedCourses || loadingLearningCourses || loadingDraftBlogs) {
+        return (
+            <Container className="my-5">
+                <div className="text-center">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </Container>
+        )
     }
 
     return (
@@ -184,85 +212,59 @@ const HomeMe = () => {
                                 <h5 className="mb-0 fw-bold">Recommended Course</h5>
                             </div>
                             <Card.Body className="p-4">
-                                <h6 className="fw-bold text-primary mb-2">{recommendedCourse.title}</h6>
-                                <p className="text-muted mb-3">{recommendedCourse.description}</p>
-                                <div className="d-flex align-items-center justify-content-between mb-3">
-                                    <div className="d-flex align-items-center">
-                                        <Star size={16} className="text-warning me-1" fill="currentColor" />
-                                        <span className="fw-semibold me-2">{recommendedCourse.rating}</span>
-                                        <Users size={16} className="text-muted me-1" />
-                                        <span className="text-muted">{recommendedCourse.students}</span>
-                                    </div>
-                                </div>
-                                <Button variant="primary" className="w-100">
-                                    Enroll
-                                </Button>
+                                {recommendedCourses.length > 0 ? (
+                                    <CourseCard course={recommendedCourses[0]} />
+                                ) : (
+                                    <div className="text-center text-muted">No recommended courses available at this time.</div>
+                                )}
                             </Card.Body>
                         </Card>
                     </Col>
                 </Row>
 
-                {/* Assessment Card */}
-                <Row>
-                    <Col lg={12} className="mb-4">
-                        <Card className="border-0 shadow-sm assessment-card">
-                            <div className="card-header-custom bg-warning text-dark d-flex align-items-center">
-                                <BarChart3 size={24} className="me-2" />
-                                <h5 className="mb-0 fw-bold">Assessment</h5>
-                            </div>
-                            <Card.Body className="p-4 text-center">
-                                <p className="text-muted mb-4 fst-italic">
-                                    Take the assessment to better understand your condition and get tailored advice.
-                                </p>
-                                <Button variant="primary" size="lg" className="px-5">
-                                    Take
-                                </Button>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                </Row>
-
-                {/* Current Activities Section */}
+                {/* Ongoing Activities Section */}
                 <Row>
                     <Col lg={12}>
-                        <h3 className="fw-bold text-dark mb-4">Current Activities</h3>
+                        <h3 className="fw-bold text-dark mb-4">Ongoing Activities</h3>
                     </Col>
                 </Row>
 
                 <Row>
-                    {/* Current Course Card */}
+                    {/* Learning Course Card */}
                     <Col lg={6} className="mb-4">
-                        <Card className="h-100 border-0 shadow-sm current-course-card">
+                        <Card className="h-100 border-0 shadow-sm learning-course-card">
                             <div className="card-header-custom bg-info text-white d-flex align-items-center">
                                 <BookOpen size={24} className="me-2" />
-                                <h5 className="mb-0 fw-bold">Current Course</h5>
+                                <h5 className="mb-0 fw-bold">Learning Course</h5>
                             </div>
                             <Card.Body className="p-4">
-                                <div className="mb-3">
-                                    <span className="badge bg-primary mb-3">Learning</span>
-                                    <h6 className="fw-bold text-dark mb-3">School Drug Prevention</h6>
-
-                                    <div className="progress-section mb-3">
-                                        <div className="d-flex justify-content-between mb-2">
-                                            <span className="text-muted small">Progress</span>
-                                            <span className="fw-semibold text-primary">95%</span>
+                                {learningCourses.length > 0 ? (
+                                    <>
+                                        <CourseCard course={learningCourses[0]} status={'Learning'} />
+                                        <div className="progress-section mb-3">
+                                            <div className="d-flex justify-content-between mb-2">
+                                                <span className="text-muted small">Progress</span>
+                                                <span className="fw-semibold text-primary">95%</span>
+                                            </div>
+                                            <div className="progress progress-custom" style={{ height: "8px" }}>
+                                                <div
+                                                    className="progress-bar bg-primary"
+                                                    style={{ width: "95%" }}
+                                                    role="progressbar"
+                                                    aria-valuenow={95}
+                                                    aria-valuemin={0}
+                                                    aria-valuemax={100}
+                                                ></div>
+                                            </div>
                                         </div>
-                                        <div className="progress progress-custom" style={{ height: "8px" }}>
-                                            <div
-                                                className="progress-bar bg-primary"
-                                                style={{ width: "95%" }}
-                                                role="progressbar"
-                                                aria-valuenow={95}
-                                                aria-valuemin={0}
-                                                aria-valuemax={100}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                        <Button variant="primary" className="w-100">
+                                            Continue
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <div className="text-center text-muted">No learning courses found.</div>
+                                )}
 
-                                <Button variant="primary" className="w-100">
-                                    Continue
-                                </Button>
                             </Card.Body>
                         </Card>
                     </Col>
@@ -275,16 +277,16 @@ const HomeMe = () => {
                                 <h5 className="mb-0 fw-bold">In-progress Blog</h5>
                             </div>
                             <Card.Body className="p-4">
-                                <div className="blog-content mb-4">
-                                    <h6 className="fw-bold text-dark mb-3 fst-italic">"How to recognize peer pressure"</h6>
-                                    <p className="text-muted mb-0 small">
-                                        <em>by David Nguyen</em>
-                                    </p>
-                                </div>
-
-                                <Button variant="primary" className="w-100">
-                                    Continue
-                                </Button>
+                                {draftBlogs.length === 0 ? (
+                                    <div className="text-center text-muted">No draft blogs found.</div>
+                                ) : (
+                                    <>
+                                        <BlogCard blog={draftBlogs[0]} status={'draft'} />
+                                        <Button variant="primary" className="w-100">
+                                            Continue
+                                        </Button>
+                                    </>
+                                )}
                             </Card.Body>
                         </Card>
                     </Col>

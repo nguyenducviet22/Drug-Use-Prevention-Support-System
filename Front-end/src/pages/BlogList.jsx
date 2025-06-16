@@ -5,58 +5,37 @@ import "./BlogList.css"
 import Pagination from "../components/Pagination"
 import useFetch from "../hooks/useFetch"
 import SearchFilter from "../components/SearchFilter"
+import { useNavigate } from "react-router-dom"
+import LoadingSpinner from "../components/LoadingSpinner"
+import ErrorMessage from "../components/ErrorMessage"
+import NotFound from "./NotFound"
 
-const BlogListB = () => {
+const BlogList = () => {
 
   const [blogs, setBlogs] = useState([])
+  const [types, setTypes] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedObject, setSelectedObject] = useState("")
-  const [selectedTopic, setSelectedTopic] = useState("")
-  const [selectedDuration, setSelectedDuration] = useState("")
+  const [selectedType, setSelectedType] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(3) // Show 3 blog posts per page
+  const navigate = useNavigate()
 
-  const { data, error, loading, get } = useFetch("http://localhost:8080/api/blog");
+  const { error: errorBlogs, loading: loadingBlogs, get: getBlogs } = useFetch("http://localhost:8080/api/blog");
+  const { error: errorBlogTypes, loading: loadingBlogTypes, get: getBlogTypes } = useFetch("http://localhost:8080/api/blog/type");
+  const popularTags = ["#antidrug", "#daily", "#knowledge", "#success", "#friends"]
 
   useEffect(() => {
-    get();
-  }, [get]);
-
-  useEffect(() => {
-    if (data) {
-      setBlogs(data);
-    }
-  }, [data]);
+    getBlogs().then(setBlogs).catch(() => { });
+    getBlogTypes().then(setTypes).catch(() => { });
+  }, [getBlogs, getBlogTypes]);
 
   // Filter options
-  const objectOptions = [
-    { value: "Student", label: "Student" },
-    { value: "Everyone", label: "Everyone" },
-    { value: "Post-Addiction", label: "Post-Addiction" },
-    { value: "Community", label: "Community" },
-    { value: "Wellness", label: "Wellness" },
-    { value: "Family", label: "Family" },
-  ]
-
-  const topicOptions = [
-    { value: "Student", label: "Student" },
-    { value: "Everyone", label: "Everyone" },
-    { value: "Post-Addiction", label: "Post-Addiction" },
-    { value: "Community", label: "Community" },
-    { value: "Wellness", label: "Wellness" },
-    { value: "Family", label: "Family" },
-  ]
-
-  const durationOptions = [
-    { value: "2", label: "2-3 hours" },
-    { value: "4", label: "4-6 hours" },
-    { value: "8", label: "8-12 hours" },
-    { value: "14", label: "14+ hours" },
-  ]
-
-  const categories = ["Recovery", "Family", "Education", "Expert"]
-  const popularTags = ["#antidrug", "#daily", "#knowledge", "#success", "#friends"]
-  const topics = ["all", "recovery", "family", "education", "expert", "prevention", "support"]
+  const typeOptions = types.map(type => ({
+    value: type,
+    label: type
+  }));
+  console.log(typeOptions);
+  console.log(blogs);
 
   const handleSearch = (filters) => {
     setCurrentPage(1) // Reset to first page when searching
@@ -68,12 +47,10 @@ const BlogListB = () => {
     return blogs.filter((blog) => {
       return (
         blog.blogName && blog.blogName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (selectedObject === "" || blog.ageGroup === selectedObject) &&
-        (selectedTopic === "" || blog.ageGroup === selectedTopic) &&
-        (selectedDuration === "" || blog.duration.includes(selectedDuration))
+        (selectedType === "" || blog.blogType === selectedType)
       )
     })
-  }, [blogs, searchTerm, selectedObject, selectedTopic, selectedDuration])
+  }, [blogs, searchTerm, selectedType])
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredBlogs.length / itemsPerPage)
@@ -91,14 +68,8 @@ const BlogListB = () => {
   const handleFilterChange = (filterType, value) => {
     setCurrentPage(1)
     switch (filterType) {
-      case "object":
-        setSelectedObject(value)
-        break
-      case "topic":
-        setSelectedTopic(value)
-        break
-      case "duration":
-        setSelectedDuration(value)
+      case "type":
+        setSelectedType(value)
         break
       default:
         break
@@ -106,27 +77,29 @@ const BlogListB = () => {
   }
 
   const handleReadMore = (blogId) => {
-    // Navigate to individual blog post
-    console.log(`Navigate to blog ${blogId}`)
+    navigate(`/blogs/${blogId}`)
   }
 
   const clearAllFilters = () => {
     setSearchTerm("")
-    setSelectedObject("")
-    setSelectedTopic("")
-    setSelectedDuration("")
+    setSelectedType("")
     setCurrentPage(1)
   }
 
-  if (loading) {
+  <Container className="py-5">
+    <LoadingSpinner loading={loadingBlogs || loadingBlogTypes} />
+    <ErrorMessage error={errorBlogs || errorBlogTypes} />
+  </Container>
+
+  if (blogs.length === 0) {
     return (
-      <Container className="my-5">
-        <div className="text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      </Container>
+      <NotFound
+        code="📚"
+        title="No Blogs Found"
+        message="We are realy sorry for this inconvinience."
+        backLink="/"
+        backText="Back Home"
+      />
     )
   }
 
@@ -153,17 +126,11 @@ const BlogListB = () => {
             {/* Search Filter Section */}
             <SearchFilter
               searchTerm={searchTerm}
-              selectedObject={selectedObject}
-              selectedTopic={selectedTopic}
-              selectedDuration={selectedDuration}
+              selectedType={selectedType}
               onSearchChange={setSearchTerm}
-              onObjectChange={(value) => handleFilterChange("object", value)}
-              onTopicChange={(value) => handleFilterChange("topic", value)}
-              onDurationChange={(value) => handleFilterChange("duration", value)}
+              onTypeChange={(value) => handleFilterChange("type", value)}
               onSearch={handleSearch}
-              objectOptions={objectOptions}
-              topicOptions={topicOptions}
-              durationOptions={durationOptions}
+              typeOptions={typeOptions}
               placeholder="Search blogs..."
             />
 
@@ -207,12 +174,12 @@ const BlogListB = () => {
             <div className="blog-sidebar">
               {/* Categories */}
               <div className="sidebar-section mb-4">
-                <h5 className="sidebar-title">Category</h5>
+                <h5 className="sidebar-title">Common Types</h5>
                 <div className="sidebar-content">
-                  <div className="category-buttons">
-                    {categories.map((category) => (
-                      <button key={category} className="category-button" onClick={() => handleCategoryFilter(category)}>
-                        {category}
+                  <div className="type-buttons">
+                    {types.map((type) => (
+                      <button key={type} className="type-button" onClick={() => handleCategoryFilter(type)}>
+                        {type}
                       </button>
                     ))}
                   </div>
@@ -221,7 +188,7 @@ const BlogListB = () => {
 
               {/* Current Blogs */}
               <div className="sidebar-section mb-4">
-                <h5 className="sidebar-title">Current Blogs</h5>
+                <h5 className="sidebar-title">Popular Blogs</h5>
                 <div className="sidebar-content">
                   {blogs.slice(0, 3).map((blog) => (
                     <div key={blog.blogID} className="sidebar-blog-item">
@@ -245,7 +212,7 @@ const BlogListB = () => {
 
               {/* Popular Tags */}
               <div className="sidebar-section">
-                <h5 className="sidebar-title">Popular Tags</h5>
+                <h5 className="sidebar-title">Favorite Tags</h5>
                 <div className="sidebar-content">
                   <div className="popular-tags">
                     {popularTags.map((tag) => (
@@ -264,4 +231,4 @@ const BlogListB = () => {
   )
 }
 
-export default BlogListB
+export default BlogList

@@ -5,53 +5,41 @@ import Pagination from "../components/Pagination"
 import "./CourseList.css"
 import useFetch from "../hooks/useFetch"
 import SearchFilter from "../components/SearchFilter"
+import { useNavigate } from "react-router-dom"
+import LoadingSpinner from "../components/LoadingSpinner"
+import ErrorMessage from "../components/ErrorMessage"
+import NotFound from "./NotFound"
 
 const CourseList = () => {
 
   const [courses, setCourses] = useState([])
+  const [ageGroups, setAgeGroups] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedObject, setSelectedObject] = useState("")
-  const [selectedTopic, setSelectedTopic] = useState("")
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState("")
   const [selectedDuration, setSelectedDuration] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 6 // Show 6 courses per page (2 rows of 3)
+  const navigate = useNavigate()
 
-  const { data, error, loading, get } = useFetch("http://localhost:8080/api/course");
-
-  useEffect(() => {
-    get();
-  }, [get]);
+  const { error: errorCourses, loading: loadingCourses, get: getcourses } = useFetch("http://localhost:8080/api/course");
+  const { error: errorAgeGroup, loading: loadingAgeGroups, get: getAgeGroups } = useFetch("http://localhost:8080/api/course/age-group");
 
   useEffect(() => {
-    if (data) {
-      setCourses(data);
-    }
-  }, [data]);
+    getcourses().then(setCourses).catch(() => { });
+    getAgeGroups().then(setAgeGroups).catch(() => { });
+  }, [getcourses, getAgeGroups]);
 
   // Filter options
-  const objectOptions = [
-    { value: "Student", label: "Student" },
-    { value: "Everyone", label: "Everyone" },
-    { value: "Post-Addiction", label: "Post-Addiction" },
-    { value: "Community", label: "Community" },
-    { value: "Wellness", label: "Wellness" },
-    { value: "Family", label: "Family" },
-  ]
-
-  const topicOptions = [
-    { value: "Student", label: "Student" },
-    { value: "Everyone", label: "Everyone" },
-    { value: "Post-Addiction", label: "Post-Addiction" },
-    { value: "Community", label: "Community" },
-    { value: "Wellness", label: "Wellness" },
-    { value: "Family", label: "Family" },
-  ]
+  const ageGroupOptions = ageGroups.map(ageGroup => ({
+    value: ageGroup,
+    label: ageGroup
+  }))
 
   const durationOptions = [
-    { value: "2", label: "2-3 hours" },
-    { value: "4", label: "4-6 hours" },
-    { value: "8", label: "8-12 hours" },
-    { value: "14", label: "14+ hours" },
+    { value: 3, label: "Less than 3 hours" },
+    { value: 5, label: "Less than 6 hours" },
+    { value: 9, label: "Less than 9 hours" },
+    { value: 10, label: "9+ hours" },
   ]
 
   const handleSearch = (filters) => {
@@ -62,14 +50,27 @@ const CourseList = () => {
   // Filter courses based on search criteria
   const filteredCourses = useMemo(() => {
     return courses.filter((course) => {
-      return (
-        course.courseName && course.courseName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (selectedObject === "" || course.ageGroup === selectedObject) &&
-        (selectedTopic === "" || course.ageGroup === selectedTopic) &&
-        (selectedDuration === "" || course.duration.includes(selectedDuration))
-      )
+      const matchesName = course.courseName && course.courseName.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesAgeGroup = selectedAgeGroup === "" || course.ageGroup === selectedAgeGroup;
+      const duration = course.duration;
+      let matchesDuration = true;
+      if (selectedDuration !== "") {
+        const selected = Number(selectedDuration);
+        if (selected === 3) {
+          matchesDuration = duration <= 3;
+        } else if (selected === 5) {
+          matchesDuration = duration <= 6;
+        } else if (selected === 9) {
+          matchesDuration = duration <= 9;
+        } else if (selected === 10) {
+          matchesDuration = duration > 9;
+        } else {
+          matchesDuration = true;
+        }
+      }
+      return matchesName && matchesAgeGroup && matchesDuration;
     })
-  }, [courses, searchTerm, selectedObject, selectedTopic, selectedDuration])
+  }, [courses, searchTerm, selectedAgeGroup, selectedDuration])
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage)
@@ -87,11 +88,8 @@ const CourseList = () => {
   const handleFilterChange = (filterType, value) => {
     setCurrentPage(1)
     switch (filterType) {
-      case "object":
-        setSelectedObject(value)
-        break
-      case "topic":
-        setSelectedTopic(value)
+      case "ageGroup":
+        setSelectedAgeGroup(value)
         break
       case "duration":
         setSelectedDuration(value)
@@ -103,21 +101,33 @@ const CourseList = () => {
 
   const clearAllFilters = () => {
     setSearchTerm("")
-    setSelectedObject("")
-    setSelectedTopic("")
+    setSelectedAgeGroup("")
     setSelectedDuration("")
     setCurrentPage(1)
   }
 
-  if (loading) {
+  const handleEnroll = (courseId) => {
+    navigate(`/courses/lesson/${courseId}`)
+  }
+
+  const handleDetails = (courseId) => {
+    navigate(`/courses/${courseId}`)
+  }
+
+  <Container className="py-5">
+    <LoadingSpinner loading={loadingCourses || loadingAgeGroups} />
+    <ErrorMessage error={errorCourses || errorAgeGroup} />
+  </Container>
+
+  if (courses.length === 0) {
     return (
-      <Container className="my-5">
-        <div className="text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      </Container>
+      <NotFound
+        code="📘"
+        title="No Courses Found"
+        message="We are realy sorry for this inconvinience."
+        backLink="/"
+        backText="Back Home"
+      />
     )
   }
 
@@ -133,16 +143,13 @@ const CourseList = () => {
         {/* Search Filter Section */}
         <SearchFilter
           searchTerm={searchTerm}
-          selectedObject={selectedObject}
-          selectedTopic={selectedTopic}
+          selectedAgeGroup={selectedAgeGroup}
           selectedDuration={selectedDuration}
           onSearchChange={setSearchTerm}
-          onObjectChange={(value) => handleFilterChange("object", value)}
-          onTopicChange={(value) => handleFilterChange("topic", value)}
+          onAgeGroupChange={(value) => handleFilterChange("ageGroup", value)}
           onDurationChange={(value) => handleFilterChange("duration", value)}
           onSearch={handleSearch}
-          objectOptions={objectOptions}
-          topicOptions={topicOptions}
+          ageGroupOptions={ageGroupOptions}
           durationOptions={durationOptions}
           placeholder="Search courses..."
         />
@@ -165,7 +172,10 @@ const CourseList = () => {
             <Row>
               {currentCourses.map((course) => (
                 <Col md={6} lg={4} key={course.courseID} className="mb-4">
-                  <CourseCard course={course} />
+                  <CourseCard key={course.courseID}
+                    course={course}
+                    onEnrollClick={handleEnroll}
+                    onDetailsClick={handleDetails} />
                 </Col>
               ))}
             </Row>
