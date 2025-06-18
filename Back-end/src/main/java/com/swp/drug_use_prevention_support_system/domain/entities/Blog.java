@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.entities;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogType;
 import jakarta.persistence.*;
@@ -31,6 +32,8 @@ public class Blog {
     BlogType blogType;
     @Enumerated(EnumType.STRING)
     BlogStatus blogStatus;
+    @Enumerated(EnumType.STRING)
+    AgeGroup ageGroup;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 

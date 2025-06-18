@@ -6,6 +6,7 @@ CREATE TABLE event (
     description TEXT,
     img VARCHAR(255),
     status ENUM('NOT_STARTED', 'ONGOING', 'EXPIRED', 'CANCELLED') NOT NULL,
+    age_group ENUM('ADOLESCENT', 'ADULT', 'SENIOR', 'EVERYONE') NOT NULL,
     start_date DATE,
     end_date DATE,
     created_at DATETIME NOT NULL,

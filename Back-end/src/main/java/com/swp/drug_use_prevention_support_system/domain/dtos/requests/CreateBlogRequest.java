@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.requests;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogType;
 import jakarta.validation.constraints.Min;
@@ -37,4 +38,7 @@ public class CreateBlogRequest {
 
     @NotNull(message = "Blog status is required")
     BlogStatus blogStatus;
+
+    @NotNull(message = "Age group is required")
+    AgeGroup ageGroup;
 }

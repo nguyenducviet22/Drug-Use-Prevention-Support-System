@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogType;
 import lombok.*;
@@ -24,6 +25,7 @@ public class BlogResponse {
     Integer readingTime;
     BlogType blogType;
     BlogStatus blogStatus;
+    AgeGroup ageGroup;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     UserResponse member;

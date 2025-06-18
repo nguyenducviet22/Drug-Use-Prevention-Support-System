@@ -5,6 +5,7 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateBlo
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.BlogResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.Blog;
 import com.swp.drug_use_prevention_support_system.domain.entities.User;
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
 import com.swp.drug_use_prevention_support_system.mappers.BlogMapper;
 import com.swp.drug_use_prevention_support_system.repositories.BlogRepository;
@@ -69,6 +70,7 @@ public class BlogService {
         blog.setImg(request.getImg());
         blog.setDescription(request.getDescription());
         blog.setBlogType(request.getBlogType());
+        blog.setAgeGroup(request.getAgeGroup());
         if (!blog.getBlogStatus().equals(BlogStatus.DRAFT)) {
             blog.setBlogStatus(BlogStatus.PENDING);
         }
@@ -84,11 +86,23 @@ public class BlogService {
         return blogMapper.toDto(blog);
     }
 
+    public List<BlogResponse> getMemberDraftBlogs(String username) {
+        List<Blog> blogs = blogRepository.findByMemberUsernameAndBlogStatus(username, BlogStatus.DRAFT);
+        return blogs.stream()
+                .map(blog -> blogMapper.toDto(blog))
+                .toList();
+    }
+
+    public List<BlogResponse> getBlogsByAgeGroup(AgeGroup ageGroup) {
+        List<Blog> blogs = blogRepository.findByAgeGroupOrderByCreatedAtDesc(ageGroup);
+        return blogs.stream()
+                .map(blog -> blogMapper.toDto(blog))
+                .toList();
+    }
+
     private Integer calculateReadingTime(String content){
         if (content == null || content.isEmpty()) return 0;
         int wordCount = content.trim().split("\\s+").length;
         return (int) Math.ceil((double) wordCount/WORDS_PER_MINUTE);
     }
-
-
 }

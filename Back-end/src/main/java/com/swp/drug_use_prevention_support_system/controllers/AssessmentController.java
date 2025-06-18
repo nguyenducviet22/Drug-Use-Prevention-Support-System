@@ -4,7 +4,6 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateAss
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateAssessmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AssessmentResponse;
-import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.services.AssessmentService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
