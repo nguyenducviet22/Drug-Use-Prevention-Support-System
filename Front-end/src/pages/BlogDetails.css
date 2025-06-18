@@ -1,0 +1,160 @@
+.blog-details-container {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    color: #6c757d;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.back-button:hover {
+    color: #495057;
+}
+
+.blog-header {
+    margin-bottom: 3rem;
+}
+
+.blog-detail-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.blog-author {
+    font-style: italic;
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.blog-meta {
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.category-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.meta-info {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.meta-icon {
+    margin-right: 0.25rem;
+}
+
+.featured-image-container {
+    text-align: center;
+    margin: 3rem 0;
+}
+
+.featured-image {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.blog-content {
+    background: white;
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.content-section {
+    margin-bottom: 2.5rem;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 0.5rem;
+}
+
+.section-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #495057;
+    margin-bottom: 1.5rem;
+    text-align: justify;
+}
+
+.section-text:last-child {
+    margin-bottom: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .blog-detail-title {
+        font-size: 2rem;
+    }
+
+    .blog-content {
+        padding: 2rem 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .section-text {
+        font-size: 1rem;
+    }
+
+    .blog-meta {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .blog-detail-title {
+        font-size: 1.75rem;
+    }
+
+    .blog-content {
+        padding: 1.5rem 1rem;
+    }
+}
+
+/* Hashtags */
+.hashtags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.hashtag {
+    color: #3498db;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.hashtag:hover {
+    text-decoration: underline;
+}
+

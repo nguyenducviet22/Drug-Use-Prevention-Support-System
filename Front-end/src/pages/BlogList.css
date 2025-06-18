@@ -67,14 +67,14 @@
   color: #2c5aa0;
 }
 
-/* Category Buttons */
-.category-buttons {
+/* Type Buttons */
+.type-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
 }
 
-.category-button {
+.type-button {
   background-color: transparent;
   border: 1px solid #2c5aa0;
   color: #2c5aa0;
@@ -86,7 +86,7 @@
   cursor: pointer;
 }
 
-.category-button:hover {
+.type-button:hover {
   background-color: #2c5aa0;
   color: white;
 }

@@ -7,7 +7,7 @@
   height: 100%;
   overflow: hidden;
   position: relative;
-  min-height: 450px;
+  min-height: 520px;
 }
 
 .course-card:hover {
@@ -39,7 +39,7 @@
   margin-bottom: 1rem;
 }
 
-.category-tag {
+.ageGroup-tag {
   display: inline-block;
   padding: 0.5rem 1rem;
   border-radius: 9999px;
@@ -49,35 +49,27 @@
   text-transform: capitalize;
 }
 
-.category-student {
+.ageGroup-adolescent {
   background: linear-gradient(135deg, #93c5fd, #60a5fa);
 }
 
-.category-recovery {
+.ageGroup-adult {
   background: linear-gradient(135deg, #1e3a8a, #3b82f6);
 }
 
-.category-community {
+.ageGroup-senior {
   background: linear-gradient(135deg, #059669, #10b981);
 }
 
-.category-wellness {
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
-}
-
-.category-family {
-  background: linear-gradient(135deg, #dc2626, #ef4444);
-}
-
-.category-default {
+.ageGroup-default {
   background: linear-gradient(135deg, #6b7280, #9ca3af);
 }
 
-.category-everyone {
+.ageGroup-everyone {
   background: linear-gradient(135deg, #93c5fd, #60a5fa);
 }
 
-.category-post-addiction {
+.ageGroup-post-addiction {
   background: linear-gradient(135deg, #f3e8ff, #e879f9);
 }
 

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,4 +18,7 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
 
     @Query("SELECT e FROM Event e WHERE e.createdBy.username = :username")
     List<Event> findEventsByCreatedByUsername(@Param("username") String username);
+
+    List<Event> findByStartDateAfter(LocalDate date);
+
 }

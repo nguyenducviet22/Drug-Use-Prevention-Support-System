@@ -21,13 +21,18 @@
 .event-image-section {
   flex: 0 0 35%;
   position: relative;
+  margin: auto;
 }
 
 .event-image {
-  width: 100%;
+  width: 95%;
   height: 100%;
   object-fit: cover;
   display: block;
+  margin-left: 12px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
 }
 
 /* Content Section */

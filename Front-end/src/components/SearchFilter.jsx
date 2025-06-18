@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Row, Col, Form, Button } from "react-bootstrap"
 import { Search } from "lucide-react"
@@ -7,17 +5,20 @@ import "./SearchFilter.css"
 
 const SearchFilter = ({
   searchTerm = "",
-  selectedObject = "",
+  selectedAgeGroup = "",
   selectedTopic = "",
   selectedDuration = "",
+  selectedType = "",
   onSearchChange,
-  onObjectChange,
+  onAgeGroupChange,
   onTopicChange,
   onDurationChange,
+  onTypeChange,
   onSearch,
-  objectOptions = [],
+  ageGroupOptions = [],
   topicOptions = [],
   durationOptions = [],
+  typeOptions = [],
   placeholder = "Search",
   className = "",
 }) => {
@@ -28,9 +29,10 @@ const SearchFilter = ({
     if (onSearch) {
       onSearch({
         searchTerm: localSearchTerm,
-        selectedObject,
+        selectedAgeGroup,
         selectedTopic,
         selectedDuration,
+        selectedType,
       })
     }
   }
@@ -65,13 +67,13 @@ const SearchFilter = ({
         <Row className="mb-4">
           <Col md={4} className="mb-3 mb-md-0">
             <Form.Select
-              value={selectedObject}
-              onChange={(e) => onObjectChange && onObjectChange(e.target.value)}
+              value={selectedAgeGroup}
+              onChange={(e) => onAgeGroupChange && onAgeGroupChange(e.target.value)}
               size="lg"
               className="filter-select"
             >
-              <option value="">Choose object</option>
-              {objectOptions.map((option) => (
+              <option value="">Choose Age Group</option>
+              {ageGroupOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -79,7 +81,7 @@ const SearchFilter = ({
             </Form.Select>
           </Col>
 
-          <Col md={4} className="mb-3 mb-md-0">
+          {/* <Col md={4} className="mb-3 mb-md-0">
             <Form.Select
               value={selectedTopic}
               onChange={(e) => onTopicChange && onTopicChange(e.target.value)}
@@ -88,6 +90,22 @@ const SearchFilter = ({
             >
               <option value="">Choose Topic</option>
               {topicOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Form.Select>
+          </Col> */}
+
+          <Col md={4} className="mb-3 mb-md-0">
+            <Form.Select
+              value={selectedType}
+              onChange={(e) => onTypeChange && onTypeChange(e.target.value)}
+              size="lg"
+              className="filter-select"
+            >
+              <option value="">Choose Type</option>
+              {typeOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -112,11 +130,11 @@ const SearchFilter = ({
           </Col>
         </Row>
 
-        <div className="text-center">
+        {/* <div className="text-center">
           <Button type="submit" variant="primary" size="lg" className="px-5 search-button">
-            Search
+            Filter
           </Button>
-        </div>
+        </div> */}
       </Form>
     </div>
   )

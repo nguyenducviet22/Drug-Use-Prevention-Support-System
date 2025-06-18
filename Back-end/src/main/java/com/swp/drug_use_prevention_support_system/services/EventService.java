@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,6 +41,13 @@ public class EventService {
                 .map(event -> eventMapper.toDto(event))
                 .toList();
     }
+
+    public List<EventResponse> getUpcomingEvents() {
+        List<Event> events = eventRepository.findByStartDateAfter(LocalDate.now());
+        return events.stream().map(eventMapper::toDto).toList();
+    }
+
+
 
     public EventResponse getEvent(UUID eventID) {
         Event event = eventRepository.findById(eventID)

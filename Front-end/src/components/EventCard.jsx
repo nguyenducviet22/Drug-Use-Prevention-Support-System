@@ -1,14 +1,22 @@
-import { Button } from "react-bootstrap"
-import { Calendar, Clock, MapPin } from "lucide-react"
-import "./EventCard.css"
+import { Button } from "react-bootstrap";
+import { Calendar, Clock, MapPin } from "lucide-react";
+import "./EventCard.css";
 
 const EventCard = ({ event, onJoinEvent, onViewDetails }) => {
   return (
     <div className="event-card">
-      <div className={`event-card-inner ${event.imagePosition === "right" ? "reverse" : ""}`}>
+      <div
+        className={`event-card-inner ${
+          event.imagePosition === "right" ? "reverse" : ""
+        }`}
+      >
         {/* Image Section */}
         <div className="event-image-section">
-          <img src={event.image || "/placeholder.svg"} alt={event.eventName} className="event-image" />
+          <img
+            src={event.img || "/placeholder.svg"}
+            alt={event.eventName}
+            className="event-image"
+          />
         </div>
 
         {/* Content Section */}
@@ -22,7 +30,7 @@ const EventCard = ({ event, onJoinEvent, onViewDetails }) => {
             </div>
             <div className="event-meta-item">
               <Clock size={16} className="event-icon" />
-              <span className="event-meta-text">{event.time}</span>
+              <span className="event-meta-text">{event.duration} mins</span>
             </div>
             <div className="event-meta-item">
               <MapPin size={16} className="event-icon" />
@@ -33,17 +41,23 @@ const EventCard = ({ event, onJoinEvent, onViewDetails }) => {
           <p className="event-description">{event.description}</p>
 
           <div className="event-actions">
-            <Button className="btn-join-now" onClick={() => onJoinEvent(event.id)}>
+            <Button
+              className="btn-join-now"
+              onClick={() => onJoinEvent(event.eventID)}
+            >
               Join Now
             </Button>
-            <Button className="btn-details" onClick={() => onViewDetails(event.id)}>
+            <Button
+              className="btn-details"
+              onClick={() => onViewDetails(event.eventID)}
+            >
               Details
             </Button>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EventCard
+export default EventCard;
