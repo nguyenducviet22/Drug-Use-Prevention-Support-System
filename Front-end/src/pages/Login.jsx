@@ -4,6 +4,7 @@ import { Link } from "react-router-dom"
 import "./Login.css"
 import { useAuth } from "../hooks/useAuth"
 import BackButton from "../components/BackButton"
+import { toast } from "react-toastify"
 
 export default function Login() {
 
@@ -48,7 +49,7 @@ export default function Login() {
     const handleRegisterSubmit = async (e) => {
         e.preventDefault()
         if (registerData.password !== registerData.confirmPassword) {
-            alert("Passwords do not match!")
+            toast.error("Passwords do not match!")
             return
         }
         await register(registerData.username, registerData.password, registerData.confirmPassword);

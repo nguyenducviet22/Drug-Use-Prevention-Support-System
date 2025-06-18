@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import API from "../api";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const useAuth = () => {
     const [user, setUser] = useState(null);
@@ -14,8 +15,10 @@ export const useAuth = () => {
         try {
             const response = await API.post("/auth/login", { username, password });
             localStorage.setItem("token", response.data.token);
-            await fetchUser();
-            navigate("/");
+            const loginAccount = await fetchUser();
+            const { role } = loginAccount
+            if (role === "MEMBER") navigate("/");
+            toast.success("Login successfully")
         } catch (error) {
             if (error.response) {
                 setError(error.response.data.message || "Login failed.");
@@ -25,18 +28,29 @@ export const useAuth = () => {
                 setError("Unexpected error occurred.");
             }
             console.error("Error during login:", error);
+            toast.error(error.response.data.message)
         } finally {
             setAuthLoading(false);
         }
     };
 
     const register = async (username, password, confirm) => {
-        await API.post("api/user", { username, password, confirm });
-        await login(username, password);
+
+        try {
+            await API.post("api/user", { username, password, confirm });
+            await login(username, password);
+        } catch (error) {
+            if (error.response) {
+                setError(error.response.data.message || "Login failed.");
+            }
+            console.error("Error during register:", error);
+            toast.error(error.response.data.message)
+        }
     };
 
     const logout = () => {
         localStorage.clear();
+        toast.success("Logout successfully")
         navigate("/");
         setUser(null);
     };
@@ -45,9 +59,11 @@ export const useAuth = () => {
         try {
             const res = await API.get("/api/user/my-info");
             setUser(res.data.data);
+            return res.data.data;
         } catch (err) {
             console.error("Auth error:", err);
             logout();
+            return null;
         } finally {
             setAuthLoading(false);
         }
