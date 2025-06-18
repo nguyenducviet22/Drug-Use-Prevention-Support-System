@@ -1,30 +1,24 @@
-"use client"
-
 import { Container, Row, Col, Button, Card } from "react-bootstrap"
-import { Syringe, LinkIcon, CheckCircle, Eye, MapPin, Clock, Users, Video, User, BookOpen, ShieldX } from "lucide-react"
+import { MapPin, Clock, Video, User } from "lucide-react"
 import "./HomeExplore.css"
+import useFetch from "../hooks/useFetch"
+import { useEffect, useState } from "react"
+import BlogCard from "./BlogCard"
+import CourseCard from "./CourseCard"
+import { useNavigate } from "react-router-dom"
+
+const getRandomItems = (array, count) => {
+  const shuffled = [...array].sort(() => 0.5 - Math.random())
+  return shuffled.slice(0, count)
+}
 
 const HomeExplore = () => {
-  const blogPosts = [
-    {
-      id: 1,
-      title: "5 Warning Signs of Drug Addiction",
-      description: "Early detection for timely intervention",
-      author: "Ainsworth Hulters",
-      timeAgo: "1 days ago",
-      views: 122,
-      icon: <Syringe size={32} />,
-    },
-    {
-      id: 2,
-      title: "Success Story: Overcoming Addiction",
-      description: "Early detection for timely intervention",
-      author: "Henrick Sawyer",
-      timeAgo: "5 hours ago",
-      views: 43,
-      icon: <CheckCircle size={32} />,
-    },
-  ]
+  const navigate = useNavigate()
+  const [randomBlogs, setRandomBlogs] = useState([])
+  const [randomCourses, setRandomCourses] = useState([])
+
+  const [everyoneBlogs, setEveryoneBlogs] = useState([])
+  const { loading: loadingEveryoneBlogs, get: getEveryoneBlogs } = useFetch("http://localhost:8080/api/blog/age-group/EVERYONE")
 
   const events = [
     {
@@ -55,26 +49,48 @@ const HomeExplore = () => {
     },
   ]
 
-  const popularCourses = [
-    {
-      id: 1,
-      title: "Awareness of synthetic drugs",
-      description: "Learn about common drugs and their effects",
-      icon: <BookOpen size={32} />,
-    },
-    {
-      id: 2,
-      title: "Prevention skills in the university environment",
-      description: "Learn to protect yourself in a new environment",
-      icon: <ShieldX size={32} />,
-    },
-    {
-      id: 3,
-      title: "A Guide to Talking to Your Kids About Drugs",
-      description: "Sensitive and effective approach to children",
-      icon: <Users size={32} />,
-    },
-  ]
+  const [everyoneCourses, setEveryoneCourses] = useState([])
+  const { loading: loadingEveryoneCourses, get: getEveryoneCourses } = useFetch("http://localhost:8080/api/course/age-group/EVERYONE")
+
+  useEffect(() => {
+    getEveryoneBlogs().then(setEveryoneBlogs).catch(() => { })
+    getEveryoneCourses().then(setEveryoneCourses).catch(() => { })
+  }, [getEveryoneBlogs, getEveryoneCourses])
+  console.log(everyoneBlogs);
+  console.log(everyoneCourses);
+
+  useEffect(() => {
+    getEveryoneBlogs()
+      .then((data) => {
+        setEveryoneBlogs(data)
+        setRandomBlogs(getRandomItems(data, 2))
+      })
+      .catch(() => { })
+
+    getEveryoneCourses()
+      .then((data) => {
+        setEveryoneCourses(data)
+        setRandomCourses(getRandomItems(data, 3))
+      })
+      .catch(() => { })
+  }, [getEveryoneBlogs, getEveryoneCourses])
+
+
+  const handleReadMore = (blogId) => {
+    navigate(`/blogs/${blogId}`)
+  }
+
+  if (loadingEveryoneBlogs || loadingEveryoneCourses) {
+    return (
+      <Container className="my-5">
+        <div className="text-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </Container>
+    )
+  }
 
   return (
     <div className="home-explore">
@@ -83,34 +99,9 @@ const HomeExplore = () => {
         <div className="bg-light rounded-4 p-4">
           <h3 className="fw-bold text-dark mb-4">New Blogs</h3>
           <Row>
-            {blogPosts.map((post) => (
-              <Col md={6} key={post.id} className="mb-4">
-                <Card className="h-100 border-0 shadow-sm blog-card">
-                  <div className="blog-icon-section bg-primary bg-opacity-25 p-4 text-center">
-                    <div className="text-dark">
-                      {post.icon}
-                      <LinkIcon size={24} className="ms-2" />
-                    </div>
-                  </div>
-                  <Card.Body>
-                    <Card.Title className="fw-bold text-dark mb-2">{post.title}</Card.Title>
-                    <Card.Text className="text-muted mb-3">{post.description}</Card.Text>
-                    <div className="d-flex justify-content-between align-items-center mb-3">
-                      <small className="text-muted">
-                        by {post.author} • {post.timeAgo}
-                      </small>
-                    </div>
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="d-flex align-items-center text-muted">
-                        <Eye size={16} className="me-1" />
-                        <small>{post.views}</small>
-                      </div>
-                      <Button variant="primary" size="sm">
-                        Read now
-                      </Button>
-                    </div>
-                  </Card.Body>
-                </Card>
+            {randomBlogs.map((blog) => (
+              <Col md={6} key={blog.blogID} className="mb-4">
+                <BlogCard blog={blog} onReadClick={handleReadMore} />
               </Col>
             ))}
           </Row>
@@ -208,20 +199,9 @@ const HomeExplore = () => {
         <div className="bg-light rounded-4 p-4">
           <h3 className="fw-bold text-dark mb-4">Popular Courses</h3>
           <Row>
-            {popularCourses.map((course) => (
-              <Col md={4} key={course.id} className="mb-4">
-                <Card className="h-100 border-0 shadow-sm course-card">
-                  <div className="course-icon-section bg-primary bg-opacity-25 p-4 text-center">
-                    <div className="text-dark">{course.icon}</div>
-                  </div>
-                  <Card.Body className="p-4 text-center">
-                    <Card.Title className="fw-bold text-dark mb-3 fs-6">{course.title}</Card.Title>
-                    <Card.Text className="text-muted mb-4 fst-italic">{course.description}</Card.Text>
-                    <Button variant="primary" className="px-4">
-                      Register
-                    </Button>
-                  </Card.Body>
-                </Card>
+            {randomCourses.map((course) => (
+              <Col md={4} key={course.courseID} className="mb-4">
+                <CourseCard course={course} />
               </Col>
             ))}
           </Row>

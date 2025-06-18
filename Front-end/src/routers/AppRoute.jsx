@@ -6,8 +6,17 @@ import AppLayout from '../layouts/AppLayout'
 import Home from '../pages/Home'
 import Login from '../pages/Login'
 import OAuth2RedirectHandler from '../components/OAuth2RedirectHandler'
-import MyInfo from '../pages/MyInfo'
 import NotFound from '../pages/NotFound'
+import MyProfile from '../pages/MyProfile'
+import BlogList from '../pages/BlogList'
+import CourseList from '../pages/CourseList'
+import EventList from '../pages/EventList'
+import AssessmentList from '../pages/AssessmentList'
+import BlogDetails from '../pages/BlogDetails'
+import AssessmentResult from '../pages/AssessmentResult'
+import EventDetails from '../pages/EventDetails'
+import CourseDetails from '../pages/CourseDetails'
+import CourseLesson from '../pages/CourseLesson'
 
 export default function AppRoute() {
     return (
@@ -15,10 +24,19 @@ export default function AppRoute() {
             <Route element={<AppLayout />}>
                 <Route path='/' element={<Home />} />
                 <Route path="/oauth2/success" element={<OAuth2RedirectHandler />} />
-                <Route path="/user/:username" element={<MyInfo />} />
+                <Route path="/blogs" element={<BlogList />} />
+                <Route path="/blogs/:id" element={<BlogDetails />} />
+                <Route path="/events" element={<EventList />} />
+                <Route path="/events/:id" element={<EventDetails />} />
+                <Route path="/courses" element={<CourseList />} />
+                <Route path="/courses/:id" element={<CourseDetails />} />
+                <Route path="/courses/lesson/:id" element={<CourseLesson />} />
+                <Route path="/assessment" element={<AssessmentList />} />
+                <Route path="/assessment-result/:id" element={<AssessmentResult />} />
                 <Route path='*' element={<NotFound />} />
             </Route>
             <Route path='/login' element={<Login />} />
+            <Route path="/profile" element={<MyProfile />} />
         </Routes>
     )
 }

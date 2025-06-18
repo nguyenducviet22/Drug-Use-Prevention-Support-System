@@ -1,14 +1,13 @@
 import { useState } from "react"
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap"
 import { Link } from "react-router-dom"
-import { ArrowLeft } from "lucide-react"
-import useLogin from '../hooks/useLogin';
 import "./Login.css"
 import { useAuth } from "../hooks/useAuth"
+import BackButton from "../components/BackButton"
+import { toast } from "react-toastify"
 
 export default function Login() {
 
-    // const { login } = useLogin();
     const { login, register, authLoading, error } = useAuth();
 
     const API_GOOGLE_LOGIN_URL = 'http://localhost:8080/oauth2/authorization/google';
@@ -50,7 +49,7 @@ export default function Login() {
     const handleRegisterSubmit = async (e) => {
         e.preventDefault()
         if (registerData.password !== registerData.confirmPassword) {
-            alert("Passwords do not match!")
+            toast.error("Passwords do not match!")
             return
         }
         await register(registerData.username, registerData.password, registerData.confirmPassword);
@@ -61,14 +60,17 @@ export default function Login() {
         window.location.href = API_GOOGLE_LOGIN_URL;
     }
 
-    // if (isLoading) {
-    //     return <p>Loading...</p>
-    // }
-
-    // if (authLoading) {
-    //     return <p>Loading...</p>;
-    // }
-
+    if (authLoading) {
+        return (
+            <Container className="my-5">
+                <div className="text-center">
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </Container>
+        )
+    }
 
     return (
         <div className="login-page">
@@ -94,13 +96,7 @@ export default function Login() {
                                 {/* Right Side - Login/Register Form */}
                                 <Col md={6} className="login-form-section d-flex align-items-center">
                                     <div className="w-100 p-5">
-                                        {/* Back Button */}
-                                        <div className="mb-3">
-                                            <Link to="/" className="back-link text-muted text-decoration-none d-flex align-items-center">
-                                                <ArrowLeft size={16} className="me-2" />
-                                                Back
-                                            </Link>
-                                        </div>
+                                        <BackButton label="Back" />
 
                                         {/* Tab Buttons */}
                                         <div className="login-tabs mb-4">

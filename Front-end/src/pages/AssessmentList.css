@@ -1,0 +1,70 @@
+.assessment-list-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.assessment-steps {
+  margin-bottom: 2rem;
+}
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  background-color: #dee2e6;
+  position: relative;
+}
+
+.step-circle.active {
+  background-color: #0d6efd;
+}
+
+.step-line {
+  width: 60px;
+  height: 2px;
+  background-color: #dee2e6;
+  margin: 0 10px;
+}
+
+.benefit-card {
+  transition: transform 0.2s ease-in-out;
+  border-radius: 12px;
+}
+
+.benefit-card:hover {
+  transform: translateY(-3px);
+}
+
+.benefit-icon {
+  background-color: #f8f9fa;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.why-assessment-section {
+  margin-top: 4rem;
+  padding-top: 3rem;
+  border-top: 1px solid #dee2e6;
+}
+
+@media (max-width: 768px) {
+  .step-line {
+    width: 40px;
+  }
+
+  .step-circle {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
+  }
+}
