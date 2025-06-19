@@ -25,10 +25,22 @@ public class Progress {
     UUID lessonID;
     @Enumerated(EnumType.STRING)
     ProgressStatus status;
+    LocalDateTime startedAt;
     LocalDateTime completedAt;
-    LocalDateTime lastAccessedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enrollment_id")
     Enrollment enrollment;
+
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        this.startedAt = now;
+        this.completedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.completedAt = LocalDateTime.now();
+    }
 }

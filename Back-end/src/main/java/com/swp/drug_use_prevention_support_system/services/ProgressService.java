@@ -33,8 +33,6 @@ public class ProgressService {
         Progress progress = progressMapper.toEntity(request);
         progress.setLessonID(request.getLessonID());
         progress.setStatus(ProgressStatus.NOT_STARTED);
-        progress.setCompletedAt(null);
-        progress.setLastAccessedAt(LocalDateTime.now());
         Enrollment enrollment = enrollmentService.getEnrollmentEntity(request.getEnrollmentID());
         progress.setEnrollment(enrollment);
 
@@ -64,8 +62,6 @@ public class ProgressService {
     public ProgressResponse completeLessonProgress(UUID progressID) {
         Progress existingProgress = getProgressEntity(progressID);
         existingProgress.setStatus(ProgressStatus.COMPLETED);
-        existingProgress.setCompletedAt(LocalDateTime.now());
-        existingProgress.setLastAccessedAt(LocalDateTime.now());
         progressRepository.save(existingProgress);
         return progressMapper.toDto(existingProgress);
     }

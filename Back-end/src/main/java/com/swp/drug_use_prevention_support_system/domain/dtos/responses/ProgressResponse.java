@@ -18,6 +18,5 @@ public class ProgressResponse {
     UUID lessonID;
     ProgressStatus status;
     LocalDateTime completedAt;
-    LocalDateTime lastAccessedAt;
     EnrollmentResponse enrollment;
 }
