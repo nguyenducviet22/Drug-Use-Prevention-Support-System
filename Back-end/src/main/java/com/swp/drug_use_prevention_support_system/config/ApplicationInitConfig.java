@@ -33,7 +33,6 @@ public class ApplicationInitConfig {
                         .password(passwordEncoder.encode("StrongPassword!"))
                         .role(Role.ADMIN)
                         .status(UserStatus.ACTIVE)
-                        .ageGroup(AgeGroup.ADULT)
                         .build();
                 userRepository.save(user);
                 log.warn("Admin account - Username: admin and Password: StrongPassword!");

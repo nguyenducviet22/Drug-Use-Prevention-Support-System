@@ -2,9 +2,8 @@ package com.swp.drug_use_prevention_support_system.services;
 
 import com.swp.drug_use_prevention_support_system.domain.entities.*;
 import com.swp.drug_use_prevention_support_system.domain.enums.*;
-import com.swp.drug_use_prevention_support_system.domain.model.Lesson;
-import com.swp.drug_use_prevention_support_system.domain.model.LessonContent;
-import com.swp.drug_use_prevention_support_system.domain.model.Module;
+import com.swp.drug_use_prevention_support_system.domain.entities.Lesson;
+import com.swp.drug_use_prevention_support_system.domain.entities.Module;
 import com.swp.drug_use_prevention_support_system.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
@@ -37,6 +36,7 @@ public class ExcelService {
     private final EventRepository eventRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final ModuleRepository moduleRepository;
+    private final ModuleService moduleService;
     private final LessonRepository lessonRepository;
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -252,14 +252,15 @@ public class ExcelService {
             if (row == null || isRowEmpty(row)) continue;
 
             try {
-                String moduleID = getCellValue(row.getCell(0));
+                UUID moduleID = UUID.fromString(getCellValue(row.getCell(0)));
                 String name = getCellValue(row.getCell(1));
                 UUID courseID = UUID.fromString(getCellValue(row.getCell(2)));
+                Course course = courseService.getCourseEntity(courseID);
 
                 Module module = Module.builder()
                         .moduleID(moduleID)
                         .moduleName(name)
-                        .courseID(courseID)
+                        .course(course)
                         .build();
                 modules.add(module);
             } catch (Exception e) {
@@ -281,40 +282,23 @@ public class ExcelService {
             if (row == null || isRowEmpty(row)) continue;
 
             try {
-                String moduleID = getCellValue(row.getCell(0));
+                UUID id = UUID.fromString(getCellValue(row.getCell(0)));
                 String name = getCellValue(row.getCell(1));
-                String title = getCellValue(row.getCell(2));
-                int duration = Integer.parseInt(getCellValue(row.getCell(3)));
-                AgeGroup grp = AgeGroup.valueOf(getCellValue(row.getCell(4)));
-                String level = getCellValue(row.getCell(5));
-                String objtives = getCellValue(row.getCell(6));
-                List<String> objtivesList = new ArrayList<>();
-                objtivesList.add(objtives);
-                String sectionTitle = getCellValue(row.getCell(7));
-                String sectionCate = getCellValue(row.getCell(8));
-                String sectionText = getCellValue(row.getCell(9));
-                String sectionSrc = getCellValue(row.getCell(10));
-                List<String> cateList = new ArrayList<>();
-                cateList.add(sectionCate);
-                List<String> srcList = new ArrayList<>();
-                srcList.add(sectionSrc);
-                LessonContent lessonContent = new LessonContent();
-                lessonContent.setSectionTitle(sectionTitle);
-                lessonContent.setSectionCategories(cateList);
-                lessonContent.setSectionText(sectionText);
-                lessonContent.setSectionResources(srcList);
-                List<LessonContent> lessonContents = new ArrayList<>();
-                lessonContents.add(lessonContent);
+                int duration = Integer.parseInt(getCellValue(row.getCell(2)));
+                String objective = getCellValue(row.getCell(3));
+                String content = getCellValue(row.getCell(4));
+                String resrc = getCellValue(row.getCell(5));
+                UUID moduleID = UUID.fromString(getCellValue(row.getCell(6)));
+                Module module = moduleService.getModelEntity(moduleID);
 
                 Lesson lesson = Lesson.builder()
-                        .moduleID(moduleID)
+                        .lessonID(id)
                         .lessonName(name)
-                        .lessonTitle(title)
-                        .lessonDuration(duration)
-                        .lessonAgeGroup(grp)
-                        .lessonLevel(level)
-                        .lessonObjectives(objtivesList)
-                        .lessonContent(lessonContents)
+                        .duration(duration)
+                        .objective(objective)
+                        .content(content)
+                        .resource(resrc)
+                        .module(module)
                         .build();
                 lessons.add(lesson);
             } catch (Exception e) {
@@ -497,6 +481,4 @@ public class ExcelService {
         }
         return true;
     }
-
-
 }

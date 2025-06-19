@@ -1,11 +1,16 @@
 package com.swp.drug_use_prevention_support_system.repositories;
 
-import com.swp.drug_use_prevention_support_system.domain.model.Lesson;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import com.swp.drug_use_prevention_support_system.domain.entities.Lesson;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface LessonRepository extends MongoRepository<Lesson, String> {
+public interface LessonRepository extends JpaRepository<Lesson, UUID> {
 
-    List<Lesson> findAllByModuleID(String moduleID);
+    List<Lesson> findByModuleModuleID(UUID moduleID);
+
+    @Query("SELECT COUNT(l) FROM Lesson l JOIN l.module m JOIN m.course c WHERE c.id = :courseID")
+    int countLessonsByCourseId(UUID courseID);
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class EnrollmentResponse {
 
+    UUID enrollmentID;
     EnrollmentStatus status;
     LocalDate startDate;
     LocalDate endDate;
