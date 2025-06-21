@@ -4,12 +4,14 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateCou
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateCourseRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CourseResponse;
+import com.swp.drug_use_prevention_support_system.domain.dtos.responses.LessonResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ModuleResponse;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
 import com.swp.drug_use_prevention_support_system.services.CourseService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
+import com.swp.drug_use_prevention_support_system.services.LessonService;
 import com.swp.drug_use_prevention_support_system.services.ModuleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,7 @@ public class CourseController {
     private final CourseService courseService;
     private final ExcelService excelService;
     private final ModuleService moduleService;
+    private final LessonService lessonService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<CourseResponse>> createCourse(@Valid @RequestBody CreateCourseRequest request) {

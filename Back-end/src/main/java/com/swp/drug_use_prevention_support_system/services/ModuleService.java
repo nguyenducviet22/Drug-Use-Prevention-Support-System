@@ -2,7 +2,7 @@ package com.swp.drug_use_prevention_support_system.services;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateModuleRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ModuleResponse;
-import com.swp.drug_use_prevention_support_system.domain.model.Module;
+import com.swp.drug_use_prevention_support_system.domain.entities.Module;
 import com.swp.drug_use_prevention_support_system.mappers.ModuleMapper;
 import com.swp.drug_use_prevention_support_system.repositories.ModuleRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,15 +26,19 @@ public class ModuleService {
     }
 
     public List<ModuleResponse> getAllModulesForCourse(UUID courseID) {
-        List<Module> modules = moduleRepository.findByCourseID(courseID);
+        List<Module> modules = moduleRepository.findByCourseCourseID(courseID);
         return modules.stream()
                 .map(module -> moduleMapper.toDto(module))
                 .toList();
     }
 
-    public ModuleResponse getModel(String moduleID) {
-        Module module = moduleRepository.findById(moduleID)
+    public Module getModelEntity(UUID moduleID) {
+        return moduleRepository.findById(moduleID)
                 .orElseThrow(() -> new EntityNotFoundException("Module does not exist with ID:" + moduleID));
+    }
+
+    public ModuleResponse getModel(UUID moduleID) {
+        Module module = getModelEntity(moduleID);
         return moduleMapper.toDto(module);
     }
 }

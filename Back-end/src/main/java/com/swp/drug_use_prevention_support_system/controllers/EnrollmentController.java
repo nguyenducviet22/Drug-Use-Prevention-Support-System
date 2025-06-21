@@ -36,7 +36,7 @@ public class EnrollmentController {
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<ApiResponse<List<EnrollmentResponse>>> getAllEnrollments() {
         List<EnrollmentResponse> responses = enrollmentService.getAllEnrollments();
         ApiResponse<List<EnrollmentResponse>> apiResponse = ApiResponse.<List<EnrollmentResponse>>builder()
@@ -76,9 +76,20 @@ public class EnrollmentController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PatchMapping("/{id}/{status}")
-    public ResponseEntity<ApiResponse<EnrollmentResponse>> deleteEnrollment(@PathVariable UUID id,
-                                                                            @PathVariable EnrollmentStatus status) {
+    @GetMapping
+    public ResponseEntity<ApiResponse<EnrollmentResponse>> getEnrollment(@RequestParam UUID courseID,
+                                                                         @RequestParam String username) {
+        EnrollmentResponse response = enrollmentService.getEnrollmentByUsernameAndCourseID(courseID, username);
+        ApiResponse<EnrollmentResponse> apiResponse = ApiResponse.<EnrollmentResponse>builder()
+                .status(HttpStatus.OK.value())
+                .data(response)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PutMapping("/{id}/{status}")
+    public ResponseEntity<ApiResponse<EnrollmentResponse>> updateEnrollmentStatus(@PathVariable UUID id,
+                                                                                  @PathVariable EnrollmentStatus status) {
         EnrollmentResponse response = enrollmentService.updateEnrollmentStatus(id, status);
         ApiResponse<EnrollmentResponse> apiResponse = ApiResponse.<EnrollmentResponse>builder()
                 .status(HttpStatus.OK.value())

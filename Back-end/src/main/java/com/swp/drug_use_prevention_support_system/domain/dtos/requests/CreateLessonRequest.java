@@ -1,8 +1,5 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.requests;
 
-import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
-import com.swp.drug_use_prevention_support_system.domain.model.LessonContent;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -20,29 +16,25 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateLessonRequest {
 
-    @NotBlank(message = "Module ID is required")
-    String moduleID;
+    @NotBlank(message = "Lesson ID is required")
+    UUID lessonID;
 
-    @NotBlank
+    @NotBlank(message = "Lesson name ID is required")
     @Size(max = 255)
     String lessonName;
 
-    @NotBlank
-    @Size(max = 255)
-    String lessonTitle;
-
     @Min(value = 1, message = "Lesson duration must be at least 1 minute")
-    int lessonDuration;
+    int duration;
 
-    @NotBlank
-    AgeGroup lessonAgeGroup;
+    @NotEmpty(message = "Objective is required")
+    String objective;
 
-    @NotBlank
-    String lessonLevel;
+    @NotEmpty(message = "Content is required")
+    String content;
 
-    @NotEmpty
-    List<@NotBlank String> lessonObjectives;
+    @NotEmpty(message = "Resource is required")
+    String resource;
 
-    @NotEmpty
-    List<@Valid LessonContent> lessonContent;
+    @NotBlank(message = "Module ID is required")
+    UUID moduleID;
 }

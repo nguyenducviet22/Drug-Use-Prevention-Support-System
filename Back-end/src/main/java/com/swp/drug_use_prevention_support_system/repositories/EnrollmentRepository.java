@@ -20,4 +20,5 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, UUID> {
     List<Course> findEnrolledCoursesByStatusAndMember(@Param("status") EnrollmentStatus status,
                                                       @Param("username") String username);
 
+    Enrollment findByMemberUsernameAndCourseCourseID(String username, UUID courseID);
 }

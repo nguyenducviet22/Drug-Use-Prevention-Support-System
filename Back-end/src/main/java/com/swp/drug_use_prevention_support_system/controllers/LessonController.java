@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/lesson")
@@ -35,8 +36,8 @@ public class LessonController {
     }
 
     @GetMapping("/module/{moduleID}")
-    public ResponseEntity<ApiResponse<List<LessonResponse>>> getAllLessonByModuleID(@PathVariable String moduleID) {
-        List<LessonResponse> responses = lessonService.getAllLessonsByModuleID(moduleID);
+    public ResponseEntity<ApiResponse<List<LessonResponse>>> getAllLessonByModuleID(@PathVariable UUID moduleID) {
+        List<LessonResponse> responses = lessonService.getLessonsByModuleID(moduleID);
         ApiResponse<List<LessonResponse>> apiResponse = ApiResponse.<List<LessonResponse>>builder()
                 .data(responses)
                 .status(HttpStatus.OK.value())
@@ -45,7 +46,7 @@ public class LessonController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<LessonResponse>> getLesson(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<LessonResponse>> getLesson(@PathVariable UUID id) {
         LessonResponse response = lessonService.getLesson(id);
         ApiResponse<LessonResponse> apiResponse = ApiResponse.<LessonResponse>builder()
                 .data(response)
@@ -55,7 +56,7 @@ public class LessonController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<LessonResponse>> updateLesson(@PathVariable String id,
+    public ResponseEntity<ApiResponse<LessonResponse>> updateLesson(@PathVariable UUID id,
                                                                     @Valid @RequestBody UpdateLessonRequest request) {
         LessonResponse response = lessonService.updateLesson(id, request);
         ApiResponse<LessonResponse> apiResponse = ApiResponse.<LessonResponse>builder()

@@ -11,8 +11,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateEnrollmentRequest {
+public class CreateProgressRequest {
 
-    @NotNull(message = "Course ID must not be null")
-    UUID courseID;
+    @NotNull(message = "Enrollment ID must not be null")
+    UUID enrollmentID;
+
+    @NotNull(message = "Lesson ID must not be null")
+    UUID lessonID;
 }

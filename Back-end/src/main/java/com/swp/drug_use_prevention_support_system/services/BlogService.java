@@ -66,7 +66,6 @@ public class BlogService {
     public BlogResponse updateBlog(UUID blogID, UpdateBlogRequest request) {
         Blog blog = blogMapper.toEntity(getBlog(blogID));
         blog.setBlogName(request.getBlogName());
-        blog.setRate(request.getRate());
         blog.setImg(request.getImg());
         blog.setDescription(request.getDescription());
         blog.setBlogType(request.getBlogType());
