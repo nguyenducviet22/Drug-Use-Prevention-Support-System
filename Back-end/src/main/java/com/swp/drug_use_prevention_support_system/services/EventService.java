@@ -29,8 +29,8 @@ public class EventService {
     public EventResponse createEvent(CreateEventRequest eventRequest) {
         Event newEvent = eventMapper.toEntity(eventRequest);
         String loginUsername = userService.getLoginUsername();
-        User manager = userService.getUserEntity(loginUsername);
-        newEvent.setCreatedBy(manager);
+        User staff = userService.getUserEntity(loginUsername);
+        newEvent.setCreatedByStaff(staff);
         eventRepository.save(newEvent);
         return eventMapper.toDto(newEvent);
     }
@@ -55,16 +55,16 @@ public class EventService {
         return eventMapper.toDto(event);
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER')")
-    public List<EventResponse> getEventsByManager() {
+    @PreAuthorize("hasAnyRole('STAFF')")
+    public List<EventResponse> getEventsByStaff() {
         String loginUsername = userService.getLoginUsername();
         User loginUser = userService.getUserEntity(loginUsername);
         List<Event> events = eventRepository.findEventsCreatedBy(loginUser);
         return events.stream().map(eventMapper::toDto).toList();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    public List<EventResponse> getEventsByManager(String username) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    public List<EventResponse> getEventsByStaff(String username) {
         List<Event> events = eventRepository.findEventsByCreatedByUsername(username);
         return events.stream().map(eventMapper::toDto).toList();
     }

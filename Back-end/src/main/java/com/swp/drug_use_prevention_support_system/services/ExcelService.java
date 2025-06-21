@@ -313,16 +313,18 @@ public class ExcelService {
 
             try {
                 String name = getCellValue(row.getCell(0));
-                Integer duration = Integer.valueOf(getCellValue(row.getCell(1)));
-                Integer quantity = Integer.valueOf(getCellValue(row.getCell(2)));
-                String description = getCellValue(row.getCell(3));
-                String img = getCellValue(row.getCell(4));
-                EventStatus status = EventStatus.valueOf(getCellValue(row.getCell(5)).toUpperCase());
-                LocalDate startDate = LocalDate.parse(getCellValue(row.getCell(6)));
-                LocalDate endDate = LocalDate.parse(getCellValue(row.getCell(7)));
+                String subTitle = getCellValue(row.getCell(1));
+                Integer duration = Integer.valueOf(getCellValue(row.getCell(2)));
+                Integer quantity = Integer.valueOf(getCellValue(row.getCell(3)));
+                String description = getCellValue(row.getCell(4));
+                String img = getCellValue(row.getCell(5));
+                EventStatus status = EventStatus.valueOf(getCellValue(row.getCell(6)).toUpperCase());
+                LocalDateTime startDate = LocalDateTime.parse(getCellValue(row.getCell(7)));
+                LocalDateTime endDate = LocalDateTime.parse(getCellValue(row.getCell(8)));
 
                 Event event = Event.builder()
                         .eventName(name)
+                        .subTitle(subTitle)
                         .duration(duration)
                         .quantity(quantity)
                         .description(description)
@@ -346,7 +348,7 @@ public class ExcelService {
             case STRING -> cell.getStringCellValue().trim();
             case NUMERIC -> {
                 if (DateUtil.isCellDateFormatted(cell)) {
-                    yield cell.getLocalDateTimeCellValue().toLocalDate().toString();
+                    yield cell.getLocalDateTimeCellValue().toString();
                 } else {
                     yield String.valueOf((long) cell.getNumericCellValue());
                 }

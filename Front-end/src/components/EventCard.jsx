@@ -1,5 +1,7 @@
 import { Button } from "react-bootstrap";
 import { Calendar, Clock, MapPin } from "lucide-react";
+import { formatDateTime } from '../utils/dateUtils';
+
 import "./EventCard.css";
 
 const EventCard = ({ event, onJoinEvent, onViewDetails }) => {
@@ -26,7 +28,7 @@ const EventCard = ({ event, onJoinEvent, onViewDetails }) => {
           <div className="event-meta">
             <div className="event-meta-item">
               <Calendar size={16} className="event-icon" />
-              <span className="event-meta-text">{event.startDate}</span>
+              <span className="event-meta-text">{formatDateTime(event.startDate)}</span>
             </div>
             <div className="event-meta-item">
               <Clock size={16} className="event-icon" />

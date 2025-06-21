@@ -65,7 +65,7 @@ public class EventController {
 
     @GetMapping("/manager-events")
     public ResponseEntity<ApiResponse<List<EventResponse>>> getManagerEvents() {
-        List<EventResponse> response = eventService.getEventsByManager();
+        List<EventResponse> response = eventService.getEventsByStaff();
         ApiResponse<List<EventResponse>> apiResponse = ApiResponse.<List<EventResponse>>builder()
                 .data(response)
                 .status(HttpStatus.OK.value())
@@ -75,7 +75,7 @@ public class EventController {
 
     @GetMapping("/manager/{username}")
     public ResponseEntity<ApiResponse<List<EventResponse>>> getEventsByManager(@PathVariable String username) {
-        List<EventResponse> eventResponses = eventService.getEventsByManager(username);
+        List<EventResponse> eventResponses = eventService.getEventsByStaff(username);
         ApiResponse<List<EventResponse>> apiResponse = ApiResponse.<List<EventResponse>>builder()
                 .data(eventResponses)
                 .status(HttpStatus.OK.value())

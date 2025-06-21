@@ -13,10 +13,10 @@ import java.util.UUID;
 
 @Repository
 public interface EventRepository extends JpaRepository<Event, UUID> {
-    @Query("SELECT e FROM Event e WHERE e.createdBy = :createdBy")
+    @Query("SELECT e FROM Event e WHERE e.createdByStaff = :createdBy")
     List<Event> findEventsCreatedBy(@Param("createdBy") User createdBy);
 
-    @Query("SELECT e FROM Event e WHERE e.createdBy.username = :username")
+    @Query("SELECT e FROM Event e WHERE e.createdByStaff.username = :username")
     List<Event> findEventsByCreatedByUsername(@Param("username") String username);
 
     List<Event> findByStartDateAfter(LocalDate date);

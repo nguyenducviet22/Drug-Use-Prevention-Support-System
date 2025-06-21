@@ -26,18 +26,22 @@ public class Event {
     @Column(name = "event_id")
     UUID eventID;
     String eventName;
+    String subTitle;
     Integer duration;
     Integer quantity;
     String description;
     String img;
     @Enumerated(EnumType.STRING)
     EventStatus status;
-    LocalDate startDate;
-    LocalDate endDate;
+    LocalDateTime startDate;
+    LocalDateTime endDate;
     @Enumerated(EnumType.STRING)
     AgeGroup ageGroup;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
+    String location;
+    Double fee;
+    String details;
 
     @ManyToMany(mappedBy = "events")
     List<User> members = new ArrayList<>();
@@ -46,8 +50,8 @@ public class Event {
     List<Survey> surveys = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "created_by", nullable = false, updatable = false)
-    User createdBy;
+    @JoinColumn(name = "created_by_staff", nullable = false, updatable = false)
+    User createdByStaff;
 
     @PrePersist
     protected void onCreate() {

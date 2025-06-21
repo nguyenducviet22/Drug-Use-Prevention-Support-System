@@ -6,7 +6,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -17,6 +17,8 @@ public class UpdateEventRequest {
 
     @NotBlank(message = "Event name must not be blank")
     String eventName;
+
+    String subTitle;
 
     @Positive(message = "Duration must be a positive number")
     Integer duration;
@@ -33,12 +35,22 @@ public class UpdateEventRequest {
 
     @NotNull(message = "Start date is required")
     @FutureOrPresent(message = "Start date must be today or in the future")
-    LocalDate startDate;
+    LocalDateTime startDate;
 
     @NotNull(message = "End date is required")
     @FutureOrPresent(message = "End date must be today or in the future")
-    LocalDate endDate;
+    LocalDateTime endDate;
 
     @NotNull(message = "Age group is required")
     AgeGroup ageGroup;
+
+    @NotNull(message = "Location is required")
+    String location;
+
+    @PositiveOrZero(message = "Fee cannot be negative")
+    @NotNull(message = "Fee is required")
+    Double fee;
+
+    @NotNull(message = "Event Details is required")
+    String details;
 }

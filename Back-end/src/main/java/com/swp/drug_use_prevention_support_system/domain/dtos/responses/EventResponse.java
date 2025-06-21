@@ -5,7 +5,6 @@ import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -18,15 +17,19 @@ public class EventResponse {
 
     UUID eventID;
     String eventName;
+    String subTitle;
     Integer duration;
     Integer quantity;
     String description;
     String img;
     EventStatus status;
-    LocalDate startDate;
-    LocalDate endDate;
+    LocalDateTime startDate;
+    LocalDateTime endDate;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     AgeGroup ageGroup;
-    UserResponse createdBy;
+    UserResponse createdByStaff;
+    String location;
+    Double fee;
+    String details;
 }

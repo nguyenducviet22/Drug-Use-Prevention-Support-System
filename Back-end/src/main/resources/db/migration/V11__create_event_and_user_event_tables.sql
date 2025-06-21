@@ -1,19 +1,24 @@
 CREATE TABLE event (
     event_id BINARY(16) NOT NULL PRIMARY KEY,
     event_name VARCHAR(255) NOT NULL,
+    sub_title VARCHAR(255),
     duration INT,
     quantity INT,
     description TEXT,
     img VARCHAR(255),
     status ENUM('NOT_STARTED', 'ONGOING', 'EXPIRED', 'CANCELLED') NOT NULL,
-    start_date DATE,
-    end_date DATE,
+    start_date DATETIME,
+    end_date DATETIME,
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL,
     age_group ENUM('ADOLESCENT', 'ADULT', 'SENIOR') NOT NULL,
-    created_by VARCHAR(100),
-    FOREIGN KEY (created_by) REFERENCES users(username)
+    created_by_staff VARCHAR(100),
+    location VARCHAR(255),
+    fee DOUBLE,
+    details TEXT,
+    FOREIGN KEY (created_by_staff) REFERENCES users(username)
 );
+
 
 CREATE TABLE user_event (
     event_id BINARY(16) NOT NULL,
