@@ -18,12 +18,14 @@ const CourseDetails = () => {
   const username = user?.username
   const [course, setCourse] = useState(null)
   const [enrollment, setEnrollment] = useState(null)
+  const [completionProgress, setCompletionProgress] = useState(0)
   const [modules, setModules] = useState([])
   const [lessons, setLessons] = useState([])
   const { loading: loadingCourseDetails, error: errorCourseDetails, get: getCourseDetails } = useFetch()
   const { loading: loadingModules, error: errorModules, get: getModules } = useFetch()
   const { loading: loadingLessons, error: errorLessons, get: getLessons } = useFetch()
   const { loading: loadingEnrollment, error: errorEnrollment, get: getEnrollment } = useFetch()
+  const { loading: loadingCompletionProgress, error: errorCompletionProgress, get: getCompletionProgress } = useFetch()
   const { loading: loadingNewEnrollment, error: errorNewEnrollment, post: postEnrollment } = useFetch()
   const [moduleCount, setModuleCount] = useState(0)
   const [moduleDuration, setModuleDuration] = useState(0)
@@ -52,6 +54,10 @@ const CourseDetails = () => {
       setEnrollment(null);
     }
   }, [username, authLoading, courseID, getEnrollment]);
+
+  console.log("Enrollment:", enrollment);
+  const enrollmentID = enrollment?.enrollmentID
+  console.log(enrollmentID);
 
   useEffect(() => {
     const fetchAllCourseData = async () => {
@@ -86,6 +92,23 @@ const CourseDetails = () => {
   }, [courseID, getCourseDetails, getModules, getLessons]);
 
   useEffect(() => {
+    const fetchProgress = async () => {
+      if (enrollmentID && courseID) { // Only fetch if both are defined
+        try {
+          const completionProgressData = await getCompletionProgress(`http://localhost:8080/api/progress/course-completion?enrollmentID=${enrollmentID}&courseID=${courseID}`);
+          setCompletionProgress(completionProgressData);
+        } catch (err) {
+          console.error("Error fetching completion progress:", err);
+        }
+      } else if (enrollment === null && !loadingEnrollment && !authLoading) {
+        // If enrollment is explicitly null (user not enrolled), set progress to 0
+        setCompletionProgress(0);
+      }
+    };
+    fetchProgress();
+  }, [enrollmentID, courseID, getCompletionProgress, enrollment, loadingEnrollment, authLoading]); // Add enrollment as a dependency
+
+  useEffect(() => {
     if (course) {
       fetchEnrollmentStatus();
     }
@@ -95,6 +118,7 @@ const CourseDetails = () => {
   console.log("Lessons:", lessons);
   console.log("Enrollment:", enrollment);
   console.log("isCourseEnrolled (status):", enrollment?.status);
+  console.log("completionProgress:", completionProgress);
 
   const onEnrollClick = async (id) => {
     if (!username) {
@@ -179,15 +203,33 @@ const CourseDetails = () => {
             <p className="course-description">{course.description}</p>
 
             <div className="mt-4 mb-3">
+              {isCourseEnrolled && (
+                <div className="progress-section mb-3">
+                  <div className="d-flex justify-content-between mb-2">
+                    <span className="text-muted small">Progress</span>
+                    <span className="fw-semibold text-primary">
+                      {completionProgress?.completion ? completionProgress.completion.toFixed(2) : 0}%
+                    </span>
+                  </div>
+                  <div className="progress progress-custom" style={{ height: "8px" }}>
+                    <div
+                      className="progress-bar bg-primary"
+                      style={{ width: `${completionProgress?.completion ? completionProgress.completion : 0}%` }}
+                      role="progressbar"
+                      aria-valuenow={completionProgress?.completion ? completionProgress.completion : 0}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                    ></div>
+                  </div>
+                </div>
+              )}
               <Button
                 variant="primary"
                 size="lg"
                 className="enroll-button"
                 onClick={() => onEnrollClick(course.courseID)}
-                // Bạn có thể disable button khi đang loading
                 disabled={loadingNewEnrollment || loadingEnrollment}
               >
-                {/* Logic để hiển thị nội dung của Button */}
                 {loadingNewEnrollment || loadingEnrollment ? (
                   "Loading..."
                 ) : (

@@ -234,7 +234,7 @@ const CourseLesson = () => {
 
     try {
       // Fetch the specific progress for this lesson and enrollment
-      const progressResponse = await getProgress(`http://localhost:8080/api/progress?enrollmentId=${enrollmentID}&lessonId=${lessonID}`);
+      const progressResponse = await getProgress(`http://localhost:8080/api/progress?enrollmentID=${enrollmentID}&lessonID=${lessonID}`);
 
       if (progressResponse) {
         setCurrentLessonProgress(progressResponse);

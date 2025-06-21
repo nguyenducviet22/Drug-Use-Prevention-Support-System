@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
-import { Container, Row, Col, Button } from "react-bootstrap"
+import { Container, Row, Col, Button, Tab, Nav } from "react-bootstrap"
 import BlogCard from "../components/BlogCard"
 import "./BlogList.css"
 import Pagination from "../components/Pagination"
@@ -9,9 +9,12 @@ import { useNavigate } from "react-router-dom"
 import LoadingSpinner from "../components/LoadingSpinner"
 import ErrorMessage from "../components/ErrorMessage"
 import NotFound from "./NotFound"
+import { useAuth } from "../hooks/useAuth"
 
 const BlogList = () => {
 
+  const { user } = useAuth()
+  const [key, setKey] = useState('all')
   const [blogs, setBlogs] = useState([])
   const [types, setTypes] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -20,14 +23,33 @@ const BlogList = () => {
   const [itemsPerPage] = useState(3) // Show 3 blog posts per page
   const navigate = useNavigate()
 
-  const { error: errorBlogs, loading: loadingBlogs, get: getBlogs } = useFetch("http://localhost:8080/api/blog");
-  const { error: errorBlogTypes, loading: loadingBlogTypes, get: getBlogTypes } = useFetch("http://localhost:8080/api/blog/type");
+  const { error: errorBlogs, loading: loadingBlogs, get: getBlogs } = useFetch();
+  const { loading: loadingMyBlogs, error: errorMyBlogs, get: getMyBlogs } = useFetch();
+  const { error: errorBlogTypes, loading: loadingBlogTypes, get: getBlogTypes } = useFetch();
   const popularTags = ["#antidrug", "#daily", "#knowledge", "#success", "#friends"]
 
   useEffect(() => {
-    getBlogs().then(setBlogs).catch(() => { });
-    getBlogTypes().then(setTypes).catch(() => { });
-  }, [getBlogs, getBlogTypes]);
+    const fetchData = async () => {
+      try {
+        const blogsData = await getBlogs("http://localhost:8080/api/blog");
+        setBlogs(blogsData);
+
+        // Fetch my blogs if user is logged in
+        if (user && key === 'myBlogs') {
+          const myBlogsData = await getMyBlogs(`http://localhost:8080/api/blog/my-list/${user.username}`);
+          setBlogs(myBlogsData);
+        }
+
+        const typesData = await getBlogTypes("http://localhost:8080/api/blog/type");
+        setTypes(typesData);
+      } catch (err) {
+        console.error("Fetch error in BlogList:", err);
+        // Có thể set lỗi vào state để hiển thị ErrorMessage
+      }
+    };
+
+    fetchData();
+  }, [user, key, getBlogs, getBlogTypes, getMyBlogs]);
 
   // Filter options
   const typeOptions = types.map(type => ({
@@ -79,6 +101,10 @@ const BlogList = () => {
   const handleReadMore = (blogId) => {
     navigate(`/blogs/${blogId}`)
   }
+
+  const handleCreateBlogs = () => {
+    navigate('/blogs/create');
+  };
 
   const clearAllFilters = () => {
     setSearchTerm("")
@@ -139,6 +165,41 @@ const BlogList = () => {
               <div className="text-center mb-5">
                 <h2 className="fw-bold text-dark">Blogs</h2>
                 <div className="blogs-underline mx-auto"></div>
+                <Tab.Container id="blog-tabs" activeKey={key} onSelect={(k) => setKey(k)}>
+                  <Nav variant="pills" className="mb-3">
+                    {user && (
+                      <Row className="w-100 d-flex justify-content-around align-items-center m-0"> {/* w-100 để chiếm hết chiều rộng, m-0 để bỏ margin mặc định của Row */}
+                        <Col xs={12} md={3} className="mb-2 mb-md-0">
+                          <Nav.Item className="w-100"> {/* w-100 để Nav.Item chiếm hết Col */}
+                            <Nav.Link eventKey="all" className="w-100 rounded-pill shadow-sm custom-button">
+                              All Blogs
+                            </Nav.Link>
+                          </Nav.Item>
+                        </Col>
+                        <Col xs={12} md={3} className="mb-2 mb-md-0">
+                          <Nav.Item className="w-100">
+                            <Nav.Link eventKey="myBlogs" className="w-100 rounded-pill shadow-sm custom-button">
+                              My Blogs
+                            </Nav.Link>
+                          </Nav.Item>
+                        </Col>
+                        <Col xs={12} md={2} className="mb-2 mb-md-0">
+                          <Button variant="info" className="w-100 rounded-pill shadow-sm custom-button" onClick={handleCreateBlogs}>
+                            Create
+                          </Button>
+                        </Col>
+                      </Row>
+                    )}
+                  </Nav>
+                  <Tab.Content>
+                    <Tab.Pane eventKey="all">
+                      {loadingBlogs && <p>Loading Blogs...</p>}
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="myBlogs">
+                      {loadingMyBlogs && <p>Loading My Blogs...</p>}
+                    </Tab.Pane>
+                  </Tab.Content>
+                </Tab.Container>
                 {filteredBlogs.length > 0 && (
                   <p className="text-muted mt-3">
                     Showing {startIndex + 1}-{Math.min(endIndex, filteredBlogs.length)} of {filteredBlogs.length} events
