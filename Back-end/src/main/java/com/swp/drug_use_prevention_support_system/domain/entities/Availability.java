@@ -16,21 +16,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Appointment {
+public class Availability {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "appointment_id")
-    UUID appointmentID;
-    String notes;
+    @Column(name = "availability_id")
+    UUID availabilityID;
     @Enumerated(EnumType.STRING)
     AppointmentStatus status;
-    Instant appointmentDateTime;
+    Instant availabilityDateTime;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    User member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consultant_id", nullable = false)

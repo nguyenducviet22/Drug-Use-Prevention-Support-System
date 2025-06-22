@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -13,14 +14,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AppointmentResponse {
+public class AvailabilityResponse {
 
-    UUID appointmentID;
-    String notes;
+    UUID availabilityID;
     AppointmentStatus status;
-    Instant appointmentDateTime;
+    List<Instant> appointmentDateTime;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-    UserResponse member;
     UserResponse consultant;
 }

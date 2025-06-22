@@ -104,6 +104,11 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public List<UserResponse> getUsersByRole(Role role) {
+        List<User> users = userRepository.findByRole(role);
+        return users.stream().map(user -> userMapper.toDto(user)).toList();
+    }
+
     public boolean changePassword(String newPassword) {
         String loginUsername = getLoginUsername();
         User user = getUserEntity(loginUsername);

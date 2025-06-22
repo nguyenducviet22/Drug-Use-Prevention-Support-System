@@ -139,4 +139,14 @@ public class UserController {
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
+
+    @GetMapping("/consultants")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getConsultants() {
+        List<UserResponse> responses = userService.getUsersByRole(Role.CONSULTANT);
+        ApiResponse<List<UserResponse>> apiResponses = ApiResponse.<List<UserResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
 }

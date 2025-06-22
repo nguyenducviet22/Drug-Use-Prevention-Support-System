@@ -79,6 +79,9 @@ public class User {
     )
     List<Event> events = new ArrayList<>();
 
+    @OneToMany(mappedBy = "consultant")
+    List<Availability> consultantAvailabilities = new ArrayList<>();
+
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
