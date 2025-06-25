@@ -9,7 +9,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface LessonMapper {
 
-    Lesson toModel(CreateLessonRequest request);
-    Lesson toModel(UpdateLessonRequest request);
+    Lesson toEntity(CreateLessonRequest request);
+    Lesson toEntity(UpdateLessonRequest request);
     LessonResponse toDto(Lesson lesson);
 }

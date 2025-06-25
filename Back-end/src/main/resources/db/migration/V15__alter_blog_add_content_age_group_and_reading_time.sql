@@ -1,4 +1,0 @@
-ALTER TABLE blog
-ADD content TEXT NOT NULL,
-ADD age_group ENUM('ADOLESCENT', 'ADULT', 'SENIOR', 'EVERYONE') NOT NULL,
-ADD reading_time INT NOT NULL;

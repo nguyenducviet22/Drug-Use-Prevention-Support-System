@@ -1,9 +1,12 @@
 package com.swp.drug_use_prevention_support_system.controllers;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateLessonRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.DeleteLessonsRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.DeleteModulesRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateLessonRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.LessonResponse;
+import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ModuleResponse;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import com.swp.drug_use_prevention_support_system.services.LessonService;
 import jakarta.validation.Valid;
@@ -35,16 +38,6 @@ public class LessonController {
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
-    @GetMapping("/module/{moduleID}")
-    public ResponseEntity<ApiResponse<List<LessonResponse>>> getAllLessonByModuleID(@PathVariable UUID moduleID) {
-        List<LessonResponse> responses = lessonService.getLessonsByModuleID(moduleID);
-        ApiResponse<List<LessonResponse>> apiResponse = ApiResponse.<List<LessonResponse>>builder()
-                .data(responses)
-                .status(HttpStatus.OK.value())
-                .build();
-        return ResponseEntity.ok(apiResponse);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<LessonResponse>> getLesson(@PathVariable UUID id) {
         LessonResponse response = lessonService.getLesson(id);
@@ -62,6 +55,17 @@ public class LessonController {
         ApiResponse<LessonResponse> apiResponse = ApiResponse.<LessonResponse>builder()
                 .data(response)
                 .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PutMapping("/{moduleID}/unavailable")
+    public ResponseEntity<ApiResponse<List<LessonResponse>>> updateModulesStatus(@PathVariable UUID moduleID,
+                                                                                 @RequestBody DeleteLessonsRequest request) {
+        List<LessonResponse> responses = lessonService.updateLessonsStatus(moduleID, request);
+        ApiResponse<List<LessonResponse>> apiResponse = ApiResponse.<List<LessonResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(responses)
                 .build();
         return ResponseEntity.ok(apiResponse);
     }

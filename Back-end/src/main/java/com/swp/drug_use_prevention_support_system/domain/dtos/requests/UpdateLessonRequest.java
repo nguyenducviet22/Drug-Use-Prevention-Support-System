@@ -15,9 +15,6 @@ public class UpdateLessonRequest {
     @Size(max = 255)
     String lessonName;
 
-    @Min(value = 1, message = "Lesson duration must be at least 1 minute")
-    int duration;
-
     @NotEmpty(message = "Objective is required")
     String objective;
 

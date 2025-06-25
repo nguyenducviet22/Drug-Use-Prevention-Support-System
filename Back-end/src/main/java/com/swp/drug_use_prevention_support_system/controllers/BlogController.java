@@ -51,7 +51,7 @@ public class BlogController {
 
     @GetMapping("/my-list/{username}")
     public ResponseEntity<ApiResponse<List<BlogResponse>>> getMemberBlogs(@PathVariable String username) {
-        List<BlogResponse> responses = blogService.getMemberBlogs(username);
+        List<BlogResponse> responses = blogService.getMemberBlogsByStatus(username, BlogStatus.PUBLISHED);
         ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
                 .data(responses)
                 .status(HttpStatus.OK.value())
@@ -80,10 +80,9 @@ public class BlogController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<BlogResponse>> updateBlogStatus(@PathVariable UUID id,
-                                                                      @RequestParam BlogStatus status) {
-        BlogResponse response = blogService.updateBlogStatus(id, status);
+    @PutMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<BlogResponse>> updateBlogStatus(@PathVariable UUID id) {
+        BlogResponse response = blogService.updateBlogStatus(id, BlogStatus.UNAVAILABLE);
         ApiResponse<BlogResponse> apiResponse = ApiResponse.<BlogResponse>builder()
                 .data(response)
                 .status(HttpStatus.OK.value())
@@ -124,9 +123,19 @@ public class BlogController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/draft/{username}")
+    @GetMapping("/my-list/draft/{username}")
     public ResponseEntity<ApiResponse<List<BlogResponse>>> getDraftBlogs(@PathVariable String username) {
-        List<BlogResponse> responses = blogService.getMemberDraftBlogs(username);
+        List<BlogResponse> responses = blogService.getMemberBlogsByStatus(username, BlogStatus.DRAFT);
+        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
+
+    @GetMapping("/my-list/pending/{username}")
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> getPendingBlogs(@PathVariable String username) {
+        List<BlogResponse> responses = blogService.getMemberBlogsByStatus(username, BlogStatus.PENDING);
         ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
                 .data(responses)
                 .status(HttpStatus.OK.value())

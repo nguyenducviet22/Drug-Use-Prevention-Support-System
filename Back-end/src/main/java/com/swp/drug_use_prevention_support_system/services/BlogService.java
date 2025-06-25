@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,8 +50,8 @@ public class BlogService {
                 .toList();
     }
 
-    public List<BlogResponse> getMemberBlogs(String username) {
-        List<Blog> blogs = blogRepository.findByMemberUsername(username);
+    public List<BlogResponse> getMemberBlogsByStatus(String username, BlogStatus status) {
+        List<Blog> blogs = blogRepository.findByMemberUsernameAndBlogStatus(username, status);
         return blogs.stream()
                 .map(blog -> blogMapper.toDto(blog))
                 .toList();
@@ -68,6 +69,7 @@ public class BlogService {
         blog.setBlogName(request.getBlogName());
         blog.setImg(request.getImg());
         blog.setDescription(request.getDescription());
+        blog.setContent(request.getContent());
         blog.setBlogType(request.getBlogType());
         blog.setAgeGroup(request.getAgeGroup());
         if (!blog.getBlogStatus().equals(BlogStatus.DRAFT)) {
@@ -85,21 +87,17 @@ public class BlogService {
         return blogMapper.toDto(blog);
     }
 
-    public List<BlogResponse> getMemberDraftBlogs(String username) {
-        List<Blog> blogs = blogRepository.findByMemberUsernameAndBlogStatus(username, BlogStatus.DRAFT);
-        return blogs.stream()
-                .map(blog -> blogMapper.toDto(blog))
-                .toList();
-    }
-
     public List<BlogResponse> getBlogsByAgeGroup(AgeGroup ageGroup) {
         List<Blog> blogs = blogRepository.findByAgeGroupOrderByCreatedAtDesc(ageGroup);
-        return blogs.stream()
+        List<Blog> blogsForEveryone = blogRepository.findByAgeGroupOrderByCreatedAtDesc(AgeGroup.EVERYONE);
+        List<Blog> combinedBlogs = new ArrayList<>(blogs);
+        combinedBlogs.addAll(blogsForEveryone);
+        return combinedBlogs.stream()
                 .map(blog -> blogMapper.toDto(blog))
                 .toList();
     }
 
-    private Integer calculateReadingTime(String content){
+    public Integer calculateReadingTime(String content){
         if (content == null || content.isEmpty()) return 0;
         int wordCount = content.trim().split("\\s+").length;
         return (int) Math.ceil((double) wordCount/WORDS_PER_MINUTE);

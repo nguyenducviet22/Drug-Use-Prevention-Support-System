@@ -4,6 +4,8 @@ CREATE TABLE blog (
     rate INT,
     img VARCHAR(255),
     description TEXT  NOT NULL,
+    content TEXT NOT NULL,
+    reading_time INT NOT NULL,
     blog_type ENUM('PERSONAL', 'NICHE', 'NEWS', 'EDUCATIONAL', 'GENERAL') NOT NULL,
     blog_status ENUM('DRAFT', 'PUBLISHED', 'PENDING', 'UNAVAILABLE') NOT NULL,
     created_at DATETIME NOT NULL,

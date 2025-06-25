@@ -222,8 +222,10 @@ public class ExcelService {
                 String description = getCellValue(row.getCell(4));
                 AgeGroup ageGroup = AgeGroup.valueOf(getCellValue(row.getCell(5)).toUpperCase());
                 CourseStatus status = CourseStatus.valueOf(getCellValue(row.getCell(6)).toUpperCase());
+                UUID courseID = UUID.fromString(getCellValue(row.getCell(7)));
 
                 Course course = Course.builder()
+                        .courseID(courseID)
                         .courseName(name)
                         .quantity(quantity)
                         .duration(duration)
@@ -254,12 +256,14 @@ public class ExcelService {
             try {
                 UUID moduleID = UUID.fromString(getCellValue(row.getCell(0)));
                 String name = getCellValue(row.getCell(1));
-                UUID courseID = UUID.fromString(getCellValue(row.getCell(2)));
+                CourseStatus status = CourseStatus.valueOf(getCellValue(row.getCell(2)).toUpperCase());
+                UUID courseID = UUID.fromString(getCellValue(row.getCell(3)));
                 Course course = courseService.getCourseEntity(courseID);
 
                 Module module = Module.builder()
                         .moduleID(moduleID)
                         .moduleName(name)
+                        .status(status)
                         .course(course)
                         .build();
                 modules.add(module);
@@ -288,7 +292,8 @@ public class ExcelService {
                 String objective = getCellValue(row.getCell(3));
                 String content = getCellValue(row.getCell(4));
                 String resrc = getCellValue(row.getCell(5));
-                UUID moduleID = UUID.fromString(getCellValue(row.getCell(6)));
+                CourseStatus status = CourseStatus.valueOf(getCellValue(row.getCell(6)).toUpperCase());
+                UUID moduleID = UUID.fromString(getCellValue(row.getCell(7)));
                 Module module = moduleService.getModelEntity(moduleID);
 
                 Lesson lesson = Lesson.builder()
@@ -298,6 +303,7 @@ public class ExcelService {
                         .objective(objective)
                         .content(content)
                         .resource(resrc)
+                        .status(status)
                         .module(module)
                         .build();
                 lessons.add(lesson);

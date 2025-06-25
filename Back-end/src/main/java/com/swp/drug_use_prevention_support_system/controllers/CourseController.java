@@ -4,7 +4,6 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateCou
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateCourseRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CourseResponse;
-import com.swp.drug_use_prevention_support_system.domain.dtos.responses.LessonResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ModuleResponse;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;

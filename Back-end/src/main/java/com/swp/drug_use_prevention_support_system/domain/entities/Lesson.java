@@ -1,6 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.entities;
 
-import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
+import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -25,10 +25,24 @@ public class Lesson {
     String objective;
     String content;
     String resource;
+    @Enumerated(EnumType.STRING)
+    CourseStatus status;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "module_id", nullable = false)
     Module module;
+
+    @PrePersist
+    protected void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }

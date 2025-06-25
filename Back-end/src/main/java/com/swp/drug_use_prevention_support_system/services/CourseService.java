@@ -29,6 +29,8 @@ public class CourseService {
     @PreAuthorize("hasRole('STAFF')")
     public CourseResponse createCourse(CreateCourseRequest request) {
         Course course = courseMapper.toEntity(request);
+        course.setCourseID(UUID.randomUUID());
+        course.setStatus(CourseStatus.UNAVAILABLE);
         courseRepository.save(course);
         return courseMapper.toDto(course);
     }
@@ -59,7 +61,6 @@ public class CourseService {
         course.setImg(request.getImg());
         course.setDescription(request.getDescription());
         course.setAgeGroup(request.getAgeGroup());
-        course.setStatus(request.getStatus());
         courseRepository.save(course);
         return courseMapper.toDto(course);
     }
