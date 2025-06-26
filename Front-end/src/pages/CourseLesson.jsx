@@ -82,7 +82,7 @@ const CourseLesson = () => {
         setModules(moduleData);
 
         const lessonPromises = moduleData.map((mod) =>
-          getLessons(`http://localhost:8080/api/lesson/module/${mod.moduleID}`)
+          getLessons(`http://localhost:8080/api/module/${mod.moduleID}/lessons`)
         );
 
         const lessonsArray = await Promise.all(lessonPromises);
@@ -102,7 +102,6 @@ const CourseLesson = () => {
         // 2. Merge lessons with user progress
         const mergedLessonsMap = mergeLessonsWithProgress(moduleData, initialLessonsMap, userProgress);
         setLessonByModuleID(mergedLessonsMap);
-
 
         const allLessonsFlat = lessonsArray.flat()
         const totalDuration = allLessonsFlat.reduce((sum, lesson) => {

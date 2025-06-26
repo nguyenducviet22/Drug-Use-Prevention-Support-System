@@ -8,13 +8,13 @@ import SearchFilter from "../components/SearchFilter"
 import { useNavigate } from "react-router-dom"
 import LoadingSpinner from "../components/LoadingSpinner"
 import ErrorMessage from "../components/ErrorMessage"
-import NotFound from "./NotFound"
 import { useAuth } from "../hooks/useAuth"
+import { CirclePlus } from "lucide-react"
 
 const BlogList = () => {
-
   const { user } = useAuth()
-  const [key, setKey] = useState('all')
+  const [mainTabKey, setMainTabKey] = useState('all');
+  const [myBlogsSubTabKey, setMyBlogsSubTabKey] = useState('published');
   const [blogs, setBlogs] = useState([])
   const [types, setTypes] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -25,39 +25,46 @@ const BlogList = () => {
 
   const { error: errorBlogs, loading: loadingBlogs, get: getBlogs } = useFetch();
   const { loading: loadingMyBlogs, error: errorMyBlogs, get: getMyBlogs } = useFetch();
+  const { loading: loadingMyDrafts, error: errorMyDrafts, get: getMyDrafts } = useFetch();
+  const { loading: loadingMyPending, error: errorMyPending, get: getMyPending } = useFetch();
   const { error: errorBlogTypes, loading: loadingBlogTypes, get: getBlogTypes } = useFetch();
   const popularTags = ["#antidrug", "#daily", "#knowledge", "#success", "#friends"]
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const blogsData = await getBlogs("http://localhost:8080/api/blog");
-        setBlogs(blogsData);
-
-        // Fetch my blogs if user is logged in
-        if (user && key === 'myBlogs') {
-          const myBlogsData = await getMyBlogs(`http://localhost:8080/api/blog/my-list/${user.username}`);
-          setBlogs(myBlogsData);
-        }
-
+        // Fetch blog types always
         const typesData = await getBlogTypes("http://localhost:8080/api/blog/type");
         setTypes(typesData);
+
+        if (mainTabKey === 'all') {
+          const blogsData = await getBlogs("http://localhost:8080/api/blog");
+          setBlogs(blogsData);
+        } else if (mainTabKey === 'myBlogs' && user) {
+          let userBlogsData = [];
+          if (myBlogsSubTabKey === 'published') {
+            userBlogsData = await getMyBlogs(`http://localhost:8080/api/blog/my-list/${user.username}`);
+          } else if (myBlogsSubTabKey === 'drafts') {
+            userBlogsData = await getMyDrafts(`http://localhost:8080/api/blog/my-list/draft/${user.username}`);
+          } else if (myBlogsSubTabKey === 'pending') {
+            userBlogsData = await getMyPending(`http://localhost:8080/api/blog/my-list/pending/${user.username}`);
+          }
+          setBlogs(userBlogsData);
+        }
       } catch (err) {
         console.error("Fetch error in BlogList:", err);
-        // Có thể set lỗi vào state để hiển thị ErrorMessage
+        // Optionally set error to a state to display ErrorMessage component
       }
     };
 
     fetchData();
-  }, [user, key, getBlogs, getBlogTypes, getMyBlogs]);
+  }, [user, mainTabKey, myBlogsSubTabKey, getBlogs, getMyBlogs, getMyDrafts, getMyPending, getBlogTypes]);
 
   // Filter options
   const typeOptions = types.map(type => ({
     value: type,
     label: type
   }));
-  console.log(typeOptions);
-  console.log(blogs);
 
   const handleSearch = (filters) => {
     setCurrentPage(1) // Reset to first page when searching
@@ -98,13 +105,24 @@ const BlogList = () => {
     }
   }
 
-  const handleReadMore = (blogId) => {
-    navigate(`/blogs/${blogId}`)
+  const handleReadMore = (blogID) => {
+    navigate(`/blogs/${blogID}`)
   }
 
-  const handleCreateBlogs = () => {
+  const handleCreateBlog = () => {
     navigate('/blogs/create');
   };
+
+  const handleCategoryFilter = (type) => {
+    setSelectedType(type);
+    setCurrentPage(1);
+  };
+
+  const handleTagFilter = (tag) => {
+    setSearchTerm(tag.replace('#', ''));
+    setCurrentPage(1);
+  };
+
 
   const clearAllFilters = () => {
     setSearchTerm("")
@@ -112,21 +130,24 @@ const BlogList = () => {
     setCurrentPage(1)
   }
 
-  <Container className="py-5">
-    <LoadingSpinner loading={loadingBlogs || loadingBlogTypes} />
-    <ErrorMessage error={errorBlogs || errorBlogTypes} />
-  </Container>
+  // Centralized loading and error handling for main content
+  const isLoading = loadingBlogs || loadingBlogTypes || (mainTabKey === 'myBlogs' && (loadingMyBlogs || loadingMyDrafts || loadingMyPending));
+  const hasError = errorBlogs || errorBlogTypes || (mainTabKey === 'myBlogs' && (errorMyBlogs || errorMyDrafts || errorMyPending));
 
-  if (blogs.length === 0) {
+  if (isLoading) {
     return (
-      <NotFound
-        code="📚"
-        title="No Blogs Found"
-        message="We are realy sorry for this inconvinience."
-        backLink="/"
-        backText="Back Home"
-      />
-    )
+      <Container className="py-5">
+        <LoadingSpinner />
+      </Container>
+    );
+  }
+
+  if (hasError) {
+    return (
+      <Container className="py-5">
+        <ErrorMessage error={hasError} />
+      </Container>
+    );
   }
 
   return (
@@ -165,68 +186,101 @@ const BlogList = () => {
               <div className="text-center mb-5">
                 <h2 className="fw-bold text-dark">Blogs</h2>
                 <div className="blogs-underline mx-auto"></div>
-                <Tab.Container id="blog-tabs" activeKey={key} onSelect={(k) => setKey(k)}>
+
+                <Tab.Container id="main-blog-tabs" activeKey={mainTabKey} onSelect={(k) => {
+                  setMainTabKey(k);
+                  setCurrentPage(1); // Reset page when main tab changes
+                  setBlogs([]); // Clear blogs while new data is fetched
+                }}>
                   <Nav variant="pills" className="mb-3">
-                    {user && (
-                      <Row className="w-100 d-flex justify-content-around align-items-center m-0"> {/* w-100 để chiếm hết chiều rộng, m-0 để bỏ margin mặc định của Row */}
-                        <Col xs={12} md={3} className="mb-2 mb-md-0">
-                          <Nav.Item className="w-100"> {/* w-100 để Nav.Item chiếm hết Col */}
-                            <Nav.Link eventKey="all" className="w-100 rounded-pill shadow-sm custom-button">
-                              All Blogs
-                            </Nav.Link>
-                          </Nav.Item>
-                        </Col>
-                        <Col xs={12} md={3} className="mb-2 mb-md-0">
-                          <Nav.Item className="w-100">
-                            <Nav.Link eventKey="myBlogs" className="w-100 rounded-pill shadow-sm custom-button">
-                              My Blogs
-                            </Nav.Link>
-                          </Nav.Item>
-                        </Col>
-                        <Col xs={12} md={2} className="mb-2 mb-md-0">
-                          <Button variant="info" className="w-100 rounded-pill shadow-sm custom-button" onClick={handleCreateBlogs}>
-                            Create
-                          </Button>
-                        </Col>
-                      </Row>
-                    )}
+                    <Row className="w-100 d-flex justify-content-around align-items-center m-0">
+                      <Col xs={12} md={4} className="mb-2 mb-md-0">
+                        <Nav.Item className="w-100">
+                          <Nav.Link eventKey="all" className="w-100 rounded-pill shadow-sm custom-button">
+                            All Blogs
+                          </Nav.Link>
+                        </Nav.Item>
+                      </Col>
+                      {user && (
+                        <>
+                          <Col xs={12} md={4} className="mb-2 mb-md-0">
+                            <Nav.Item className="w-100">
+                              <Nav.Link eventKey="myBlogs" className="w-100 rounded-pill shadow-sm custom-button">
+                                My Blogs
+                              </Nav.Link>
+                            </Nav.Item>
+                          </Col>
+                          <Col xs={12} md={4} className="mb-2 mb-md-0">
+                            <Button className="w-100 rounded-pill shadow-sm custom-button" onClick={handleCreateBlog}>
+                              <CirclePlus /> Create
+                            </Button>
+                          </Col>
+                        </>
+                      )}
+                    </Row>
                   </Nav>
+
                   <Tab.Content>
                     <Tab.Pane eventKey="all">
-                      {loadingBlogs && <p>Loading Blogs...</p>}
                     </Tab.Pane>
-                    <Tab.Pane eventKey="myBlogs">
-                      {loadingMyBlogs && <p>Loading My Blogs...</p>}
-                    </Tab.Pane>
+                    {user && (
+                      <Tab.Pane eventKey="myBlogs">
+                        {/* Nested Tab for My Blogs (Published, Drafts, Pending) */}
+                        <Tab.Container id="my-blogs-sub-tabs" activeKey={myBlogsSubTabKey} onSelect={(k) => {
+                          setMyBlogsSubTabKey(k);
+                          setCurrentPage(1); // Reset page when sub-tab changes
+                          setBlogs([]); // Clear blogs while new data is fetched
+                        }}>
+                          <Nav variant="pills" className="mb-3 d-flex justify-content-around">
+                            <Nav.Item>
+                              <Nav.Link eventKey="published" className="rounded-pill shadow-sm custom-button-small">
+                                My Published
+                              </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                              <Nav.Link eventKey="drafts" className="rounded-pill shadow-sm custom-button-small">
+                                My Draft
+                              </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                              <Nav.Link eventKey="pending" className="rounded-pill shadow-sm custom-button-small">
+                                My Pending
+                              </Nav.Link>
+                            </Nav.Item>
+                          </Nav>
+                        </Tab.Container>
+                      </Tab.Pane>
+                    )}
                   </Tab.Content>
                 </Tab.Container>
-                {filteredBlogs.length > 0 && (
-                  <p className="text-muted mt-3">
-                    Showing {startIndex + 1}-{Math.min(endIndex, filteredBlogs.length)} of {filteredBlogs.length} events
-                  </p>
-                )}
-              </div>
 
-              {currentBlogs.length === 0 ? (
-                <div className="text-center py-5">
-                  <p className="text-muted">No blogs found matching your criteria.</p>
-                  <Button variant="outline-primary" onClick={clearAllFilters} className="mt-3">
-                    Clear Filters
-                  </Button>
+                {/* Common display area for blogs based on current state */}
+                <div className="blogs-section mt-4">
+                  {(loadingBlogs || loadingMyBlogs || loadingMyDrafts || loadingMyPending) && <LoadingSpinner />}
+                  {(errorBlogs || errorMyBlogs || errorMyDrafts || errorMyPending) && <ErrorMessage error={errorBlogs || errorMyBlogs || errorMyDrafts || errorMyPending} />}
+
+                  {!isLoading && !hasError && currentBlogs.length === 0 ? (
+                    <div className="text-center py-5">
+                      <p className="text-muted">No blogs found matching your criteria.</p>
+                      <Button variant="outline-primary" onClick={clearAllFilters} className="mt-3">
+                        Clear Filters
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      {currentBlogs.map((blog) => (
+                        <BlogCard key={blog.blogID} blog={blog} onReadClick={handleReadMore} />
+                      ))}
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                        itemsPerPage={itemsPerPage}
+                      />
+                    </>
+                  )}
                 </div>
-              ) : (
-                <>
-                  {currentBlogs.map((blog) => (
-                    <BlogCard key={blog.blogID} blog={blog} onReadClick={handleReadMore} />
-                  ))}
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                    itemsPerPage={itemsPerPage}
-                  />
-                </>
-              )}
+              </div>
             </div>
           </Col>
 
@@ -239,7 +293,7 @@ const BlogList = () => {
                 <div className="sidebar-content">
                   <div className="type-buttons">
                     {types.map((type) => (
-                      <button key={type} className="type-button" onClick={() => handleCategoryFilter(type)}>
+                      <button key={type} className={`type-button ${selectedType === type ? 'active' : ''}`} onClick={() => handleCategoryFilter(type)}>
                         {type}
                       </button>
                     ))}
@@ -247,10 +301,11 @@ const BlogList = () => {
                 </div>
               </div>
 
-              {/* Current Blogs */}
+              {/* Popular Blogs */}
               <div className="sidebar-section mb-4">
                 <h5 className="sidebar-title">Popular Blogs</h5>
                 <div className="sidebar-content">
+                  {/* Fetch popular blogs separately or sort the 'all' blogs data */}
                   {blogs.slice(0, 3).map((blog) => (
                     <div key={blog.blogID} className="sidebar-blog-item">
                       <h6 className="mb-1">

@@ -60,7 +60,7 @@ const CourseDetails = () => {
   console.log(enrollmentID);
 
   useEffect(() => {
-    const fetchAllCourseData = async () => {
+    const fetchData = async () => {
       try {
         const courseData = await getCourseDetails(`http://localhost:8080/api/course/${courseID}`);
         setCourse(courseData);
@@ -70,7 +70,7 @@ const CourseDetails = () => {
         setModuleCount(moduleData.length);
 
         const lessonPromises = moduleData.map((mod) =>
-          getLessons(`http://localhost:8080/api/lesson/module/${mod.moduleID}`)
+          getLessons(`http://localhost:8080/api/module/${mod.moduleID}/lessons`)
         );
 
         const lessonsArray = await Promise.all(lessonPromises);
@@ -84,16 +84,16 @@ const CourseDetails = () => {
         setModuleDuration(totalDuration);
       } catch (err) {
         console.error("Fetch error in CourseDetails:", err);
-        // Có thể set lỗi vào state để hiển thị ErrorMessage
+        toast.error("Failed to fetch data at CourseDetails", "danger")
       }
     };
 
-    fetchAllCourseData();
+    fetchData();
   }, [courseID, getCourseDetails, getModules, getLessons]);
 
   useEffect(() => {
     const fetchProgress = async () => {
-      if (enrollmentID && courseID) { // Only fetch if both are defined
+      if (enrollmentID && courseID) {
         try {
           const completionProgressData = await getCompletionProgress(`http://localhost:8080/api/progress/course-completion?enrollmentID=${enrollmentID}&courseID=${courseID}`);
           setCompletionProgress(completionProgressData);

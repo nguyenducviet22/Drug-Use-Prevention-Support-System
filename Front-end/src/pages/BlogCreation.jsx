@@ -7,13 +7,26 @@ import "./BlogCreation.css"
 import useFetch from "../hooks/useFetch"
 import { useAuth } from "../hooks/useAuth"
 import { toast } from "react-toastify"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 const BlogCreation = () => {
 
   const { user } = useAuth()
   const username = user?.username
+  const { id: blogID } = useParams()
   const navigate = useNavigate()
+  const [imagePreview, setImagePreview] = useState(null)
+  const [showAlert, setShowAlert] = useState({ show: false, message: "", blogType: "" })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const fileInputRef = useRef(null)
+  const [types, setTypes] = useState([])
+  const [ageGroups, setAgeGroups] = useState([])
+
+  const { error: errorBlogTypes, loading: loadingBlogTypes, get: getBlogTypes } = useFetch();
+  const { error: errorAgeGroup, loading: loadingAgeGroups, get: getAgeGroups } = useFetch();
+  const { error: errorNewBlog, loading: loadingNewBlog, post: postNewBlog } = useFetch();
+  const { error: errorExistingBlog, loading: loadingExistingBlog, put: putExistingBlog } = useFetch();
+  const { loading: loadingDraft, error: errorDraft, get: getDraft } = useFetch();
 
   const [formData, setFormData] = useState({
     blogName: "",
@@ -24,16 +37,6 @@ const BlogCreation = () => {
     content: "",
     image: null,
   })
-  const [imagePreview, setImagePreview] = useState(null)
-  const [showAlert, setShowAlert] = useState({ show: false, message: "", blogType: "" })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const fileInputRef = useRef(null)
-  const [types, setTypes] = useState([])
-  const [ageGroups, setAgeGroups] = useState([])
-
-  const { error: errorBlogTypes, loading: loadingBlogTypes, get: getBlogTypes } = useFetch();
-  const { error: errorAgeGroup, loading: loadingAgeGroups, get: getAgeGroups } = useFetch();
-  const { error: errorBlog, loading: loadingBlog, post: postBlog } = useFetch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,14 +46,21 @@ const BlogCreation = () => {
 
         const ageGroupsData = await getAgeGroups("http://localhost:8080/api/course/age-group");
         setAgeGroups(ageGroupsData);
+
+        if (blogID) {
+          const blogData = await getDraft(`http://localhost:8080/api/blog/${blogID}`);
+          setFormData(blogData);
+        }
       } catch (err) {
-        console.error("Fetch error in BlogList:", err);
+        console.error("Fetch error in BlogCreation:", err);
         // Có thể set lỗi vào state để hiển thị ErrorMessage
       }
     };
 
     fetchData();
-  }, [getBlogTypes, getAgeGroups]);
+  }, [getBlogTypes, getAgeGroups, blogID, getDraft]);
+
+  console.log('formData', formData);
 
   // React Quill modules configuration
   const quillModules = {
@@ -157,13 +167,14 @@ const BlogCreation = () => {
       };
       console.log(blogData);
 
-      await postBlog(blogData, {}, "http://localhost:8080/api/blog");
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      if (blogID) {
+        await putExistingBlog(blogData, {}, `http://localhost:8080/api/blog/${blogID}`)
+      } else {
+        await postNewBlog(blogData, {}, "http://localhost:8080/api/blog")
+      }
       toast.success("Blog saved as draft successfully!", "success")
       console.log("Saving blog:", formData)
     } catch (error) {
-      // toast.error("Error saving blog. Please try again.", "danger")
-      console.error("Error saving blog. Please try again.", error);
       if (error.response && error.response.data && error.response.data.message) {
         toast.error(error.response.data.message);
       } else {
@@ -197,8 +208,11 @@ const BlogCreation = () => {
       };
       console.log(blogData);
 
-      await postBlog(blogData, {}, "http://localhost:8080/api/blog");
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      if (blogID) {
+        await putExistingBlog(blogData, {}, `http://localhost:8080/api/blog/${blogID}`)
+      } else {
+        await postNewBlog(blogData, {}, "http://localhost:8080/api/blog")
+      }
       toast.success("Blog published successfully!", "success")
       console.log("Publishing blog:", formData)
       // Reset form after successful publish
@@ -256,7 +270,7 @@ const BlogCreation = () => {
                   />
                 </div>
 
-                {/* Type and Target AgeGroup */}
+                {/* Type and AgeGroup */}
                 <Row className="mb-4">
                   <Col md={4}>
                     <Form.Select

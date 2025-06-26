@@ -6,6 +6,11 @@ import { useAuth } from "../hooks/useAuth"
 import RecommendationCard from "./RecommendationCard"
 import { useNavigate } from "react-router-dom"
 
+const getRandomItems = (array, count) => {
+  const shuffled = [...array].sort(() => 0.5 - Math.random())
+  return shuffled.slice(0, count)
+}
+
 const Recommendation = ({ type }) => {
   const { user, authLoading } = useAuth();
   const navigate = useNavigate()
@@ -21,7 +26,11 @@ const Recommendation = ({ type }) => {
 
   useEffect(() => {
     if (get) {
-      get().then(setRecommendations).catch(() => { });
+      get()
+        .then((data) => {
+          setRecommendations(getRandomItems(data, 3))
+        })
+        .catch(() => { })
     }
   }, [get]);
   console.log(recommendations);

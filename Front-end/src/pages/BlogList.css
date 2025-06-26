@@ -105,6 +105,66 @@
   color: #2c5aa0;
 }
 
+/* Custom styles for the main rounded buttons (All Blogs, My Blogs, Create) */
+.custom-button {
+    background-color: #90CAF9 !important; /* Light blue color from image */
+    border-color: #90CAF9 !important; /* Same border color */
+    color: #fff !important; /* White text color */
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    transition: all 0.3s ease;
+    text-align: center;
+    display: flex; /* Use flexbox for button content */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    padding: .75rem 1.25rem; /* Adjust padding as needed */
+}
+
+.custom-button:hover,
+.custom-button.active {
+    background-color: #64B5F6 !important; /* Slightly darker blue on hover/active */
+    border-color: #64B5F6 !important;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* More prominent shadow on hover */
+    color: #fff !important;
+}
+
+/* Specific style for the smaller sub-tab buttons */
+.custom-button-small {
+    background-color: #E0F2F7 !important; /* Lighter background for sub-tabs */
+    border-color: #B2EBF2 !important; /* Border color for sub-tabs */
+    color: #007bff !important; /* Primary blue text for sub-tabs */
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Smaller shadow */
+    transition: all 0.2s ease;
+    text-align: center;
+    padding: .5rem 1rem; /* Smaller padding */
+    border-radius: 50rem !important; /* Pill shape */
+}
+
+.custom-button-small:hover {
+    background-color: #B2EBF2 !important;
+    border-color: #80DEEA !important;
+    color: #0056b3 !important; /* Darker blue on hover */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+.custom-button-small.active {
+    background-color: #007bff !important; /* Active state for sub-tabs */
+    border-color: #007bff !important;
+    color: #fff !important;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure Nav.Link when active maintains white text for main tabs */
+.nav-pills .nav-link.active.custom-button {
+  color: #fff !important;
+}
+
+/* Ensure Nav.Link when active maintains white text for sub tabs */
+.nav-pills .nav-link.active.custom-button-small {
+  color: #fff !important;
+}
+
 /* Responsive adjustments */
 @media (max-width: 992px) {
   .blog-sidebar {

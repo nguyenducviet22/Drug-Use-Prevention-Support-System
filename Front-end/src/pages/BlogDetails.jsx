@@ -1,5 +1,5 @@
-import { Container, Row, Col } from "react-bootstrap"
-import { Calendar, User, Clock } from "lucide-react"
+import { Container, Row, Col, Button } from "react-bootstrap"
+import { Calendar, User, Clock, PencilLine, Trash } from "lucide-react"
 import "./BlogDetails.css"
 import useFetch from "../hooks/useFetch"
 import { useNavigate, useParams } from "react-router-dom"
@@ -9,18 +9,23 @@ import ErrorMessage from "../components/ErrorMessage"
 import BackButton from "../components/BackButton"
 import NotFound from "./NotFound"
 import LoadingSpinner from "../components/LoadingSpinner"
+import { toast } from "react-toastify"
 
 const BlogDetails = () => {
 
     const { id } = useParams()
-    const [blog, setBlog] = useState(null)
-    const { loading, error, get } = useFetch()
+    const [blogDetails, setBlogDetails] = useState(null)
+    const { loading: loadingBlogDetails, error: errorBlogDetails, get: getBlogDetails } = useFetch()
+    const { loading: loadingBlogStatus, error: errorBlogStatus, put: putBlogStatus } = useFetch()
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchBLogs = async () => {
             try {
-                const blogData = await get(`http://localhost:8080/api/blog/${id}`)
-                setBlog(blogData)
+                if (id) {
+                    const blogDetailsData = await getBlogDetails(`http://localhost:8080/api/blog/${id}`)
+                    setBlogDetails(blogDetailsData)
+                }
             } catch (err) {
                 console.error("Fetch error in BlogsDetails:", err)
             }
@@ -28,14 +33,48 @@ const BlogDetails = () => {
 
         fetchBLogs()
     }, [id])
-    console.log(blog);
+    console.log(blogDetails);
 
-    <Container className="py-5" >
-        <LoadingSpinner loading={loading} />
-        <ErrorMessage error={error} />
-    </Container >
+    const handleEditBlog = () => {
+        navigate(`/blogs/create/${id}`);
+    };
 
-    if (!blog) {
+    const handleDeleteBlog = async () => {
+        try {
+            const blogID = blogDetails?.blogID
+            console.log(blogID);
+            if (blogID) {
+                const response = await putBlogStatus({}, {}, `http://localhost:8080/api/blog/${blogID}/status`);
+                console.log("Blog status updated to unavailable:", response);
+                toast.success("Blog deleted successfully!", "success");
+                navigate("/blogs")
+            } else {
+                console.warn("Cannot delete: Blog ID is undefined or null.");
+                toast.error("Blog ID not found for deletion. Please refresh.", "warning");
+            }
+        } catch (error) {
+            toast.error("Error deleting blog. Please try again.", "danger")
+            console.log("Error in handleDeleteBlog:", error);
+        }
+    };
+
+    if (loadingBlogDetails) {
+        return (
+            <Container className="py-5">
+                <LoadingSpinner loading={loadingBlogDetails} />
+            </Container>
+        )
+    }
+
+    if (errorBlogDetails) {
+        return (
+            <Container className="py-5">
+                <ErrorMessage error={errorBlogDetails} />
+            </Container>
+        )
+    }
+
+    if (!blogDetails) {
         return (
             <NotFound
                 code="📚"
@@ -52,27 +91,37 @@ const BlogDetails = () => {
             <Container className="blog-details-container py-5">
                 <Row className="justify-content-center">
                     <Col lg={8} md={10}>
-                        <BackButton label="Back" />
+                        <div className="d-flex justify-content-between align-items-center">
+                            <BackButton label="Back" />
+                            <div className="d-flex gap-2">
+                                <Button className="rounded-pill shadow-sm custom-button-action" onClick={handleEditBlog}>
+                                    <PencilLine className="me-1" size={18} /> Edit
+                                </Button>
+                                <Button variant="danger" className="rounded-pill shadow-sm custom-button-action" onClick={handleDeleteBlog}>
+                                    <Trash className="me-1" size={18} /> Delete
+                                </Button>
+                            </div>
+                        </div>
 
                         {/* Blog Header */}
                         <div className="blog-header text-center mb-5">
-                            <h1 className="blog-detail-title mb-3">{blog.blogName}</h1>
-                            <p className="blog-author mb-4">by {blog.member.username}</p>
+                            <h1 className="blog-detail-title mb-3">{blogDetails.blogName}</h1>
+                            <p className="blog-author mb-4">by {blogDetails.member.username}</p>
 
                             {/* Meta Information */}
                             <div className="blog-meta d-flex justify-content-center align-items-center mb-4">
-                                <span className="category-badge me-4">{blog.blogType}</span>
+                                <span className="category-badge me-4">{blogDetails.blogType}</span>
                                 <span className="meta-info">
                                     <Clock size={16} className="meta-icon" />
-                                    {blog.readingTime} mins
+                                    {blogDetails.readingTime} mins
                                 </span>
                                 <span className="meta-info me-3">
                                     <Calendar size={16} className="meta-icon me-1" />
-                                    {blog.createdAt}
+                                    {blogDetails.createdAt}
                                 </span>
                                 <span className="meta-info">
                                     <User size={16} className="meta-icon me-1" />
-                                    {blog.member.username}
+                                    {blogDetails.member.username}
                                 </span>
                             </div>
                         </div>
@@ -89,8 +138,8 @@ const BlogDetails = () => {
                         {/* Featured Image */}
                         <div className="featured-image-container mb-5">
                             <img
-                                src={blog.img}
-                                alt={blog.blogName}
+                                src={blogDetails.img}
+                                alt={blogDetails.blogName}
                                 className="featured-image"
                             />
                         </div>
@@ -100,12 +149,16 @@ const BlogDetails = () => {
                             {/* Introduction Section */}
                             <section className="content-section mb-5">
                                 <h2 className="section-title mb-3">Introduction</h2>
-                                <p className="section-text">{blog.description}</p>
+                                <p className="section-text">{blogDetails.description}</p>
                             </section>
 
                             {/* Main Content - You can expand this based on your blog structure */}
                             <section className="content-section mb-5">
-                                <p className="section-text">{blog.content}</p>
+                                <h2 className="section-title mb-3">Main Content</h2>
+                                <div
+                                    className="section-text quill-content" // Add a class for potential styling
+                                    dangerouslySetInnerHTML={{ __html: blogDetails.content }}
+                                />
                             </section>
                         </div>
                     </Col>
