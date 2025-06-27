@@ -78,9 +78,9 @@ public class EnrollmentService {
     @PreAuthorize("hasRole('MEMBER')")
     public EnrollmentResponse getEnrollmentByUsernameAndCourseID(UUID courseID, String username) {
         Enrollment enrollment = enrollmentRepository.findByMemberUsernameAndCourseCourseID(username, courseID);
-        if (enrollment == null) {
-            throw new EntityNotFoundException("Enrollment does not exist with username " + username + " courseID " +courseID);
-        }
+//        if (enrollment == null) {
+//            throw new EntityNotFoundException("Enrollment does not exist with username " + username + " courseID " +courseID);
+//        }
         return enrollmentMapper.toDto(enrollment);
     }
 

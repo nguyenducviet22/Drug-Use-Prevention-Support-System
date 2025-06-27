@@ -362,7 +362,7 @@ public class ExcelService {
 
             try {
                 String img = getCellValue(row.getCell(0));
-                String type = getCellValue(row.getCell(1));
+                AssessmentType type = AssessmentType.valueOf(getCellValue(row.getCell(1)));
                 String link = getCellValue(row.getCell(2));
                 String description = getCellValue(row.getCell(3));
                 String details = getCellValue(row.getCell(4));
@@ -382,43 +382,6 @@ public class ExcelService {
             }
         }
         assessmentRepository.saveAll(assessments);
-        workbook.close();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    public void importAssessmentResultsFromExcel(InputStream inputStream) throws IOException {
-        Workbook workbook = new XSSFWorkbook(inputStream);
-        Sheet sheet = workbook.getSheet("AssessmentResults");
-        List<AssessmentResult> results = new ArrayList<>();
-
-        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-            Row row = sheet.getRow(i);
-            if (row == null || isRowEmpty(row)) continue;
-
-            try {
-                Integer score = Integer.valueOf(getCellValue(row.getCell(0)));
-                RiskLevel level = RiskLevel.valueOf(getCellValue(row.getCell(1)));
-                String action = getCellValue(row.getCell(2));
-                LocalDateTime completed = row.getCell(3).getLocalDateTimeCellValue();
-                String username = getCellValue(row.getCell(4));
-                User user = userService.getUserEntity(username);
-                String type = getCellValue(row.getCell(5));
-                Assessment assessment = assessmentService.getAssessmentEntity(type);
-
-                AssessmentResult result = AssessmentResult.builder()
-                        .score(score)
-                        .riskLevel(level)
-                        .suggestedAction(action)
-                        .completedTime(completed)
-                        .user(user)
-                        .assessment(assessment)
-                        .build();
-                results.add(result);
-            } catch (Exception e) {
-                throw new RuntimeException("Error Excel import Assessment Results at line " + (i + 1) + ": " + e.getMessage(), e);
-            }
-        }
-        assessmentResultRepository.saveAll(results);
         workbook.close();
     }
 

@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.entities;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.AssessmentType;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,7 +24,8 @@ public class Assessment {
     @Column(name = "assessment_id")
     UUID assessmentID;
     String img;
-    String assessmentType;
+    @Enumerated(EnumType.STRING)
+    AssessmentType assessmentType;
     String linkTest;
     String description;
     String details;
