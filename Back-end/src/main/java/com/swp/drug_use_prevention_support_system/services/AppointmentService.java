@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.time.*;
 import java.util.*;
 
@@ -23,14 +25,17 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final AppointmentMapper appointmentMapper;
     private final UserService userService;
+    private final GoogleCalendarService googleCalendarService;
     private final ZoneId VIETNAM_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
 
     @PostAuthorize("returnObject.member.username == authentication.name")
-    public AppointmentResponse createAppointment(CreateAppointmentRequest request) {
+    public AppointmentResponse createAppointment(CreateAppointmentRequest request) throws GeneralSecurityException, IOException {
         // Chuyển đổi Instant (UTC) sang giờ địa phương Việt Nam để lưu hoặc xử lý
         Instant utcTime = request.getAppointmentDateTime();
 
         Appointment appointment = appointmentMapper.toEntity(request);
+        String link = googleCalendarService.createGGMeetAppointment(request);
+        appointment.setLink(link);
         appointment.setAppointmentDateTime(utcTime);
         appointment.setStatus(AppointmentStatus.SCHEDULED);
         String loginUsername = userService.getLoginUsername();

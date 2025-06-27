@@ -17,6 +17,7 @@ public class AppointmentResponse {
 
     UUID appointmentID;
     String notes;
+    String link;
     AppointmentStatus status;
     Instant appointmentDateTime;
     LocalDateTime createdAt;

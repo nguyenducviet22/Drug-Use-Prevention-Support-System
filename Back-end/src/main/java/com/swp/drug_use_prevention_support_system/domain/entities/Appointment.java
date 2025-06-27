@@ -22,6 +22,7 @@ public class Appointment {
     @Column(name = "appointment_id")
     UUID appointmentID;
     String notes;
+    String link;
     @Enumerated(EnumType.STRING)
     AppointmentStatus status;
     Instant appointmentDateTime;
