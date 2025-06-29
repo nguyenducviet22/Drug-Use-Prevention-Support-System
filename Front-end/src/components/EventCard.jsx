@@ -1,10 +1,24 @@
 import { Button } from "react-bootstrap";
 import { Calendar, Clock, MapPin } from "lucide-react";
-import { formatDateTime } from '../utils/dateUtils';
+import { formatDateTime } from "../utils/dateUtils";
 
 import "./EventCard.css";
 
-const EventCard = ({ event, onJoinEvent, onViewDetails }) => {
+const EventCard = ({ event, onJoinEvent, onViewDetails, statusInfo }) => {
+  const status = statusInfo?.status;
+  const isFull = statusInfo?.full;
+
+  let buttonLabel = "Join Now";
+  let disabled = false;
+
+  if (status === "REGISTERED") {
+    buttonLabel = "Joined"; 
+    disabled = true;
+  } else if (isFull) {
+    buttonLabel = "Full";
+    disabled = true;
+  }
+
   return (
     <div className="event-card">
       <div
@@ -28,7 +42,9 @@ const EventCard = ({ event, onJoinEvent, onViewDetails }) => {
           <div className="event-meta">
             <div className="event-meta-item">
               <Calendar size={16} className="event-icon" />
-              <span className="event-meta-text">{formatDateTime(event.startDate)}</span>
+              <span className="event-meta-text">
+                {formatDateTime(event.startDate)}
+              </span>
             </div>
             <div className="event-meta-item">
               <Clock size={16} className="event-icon" />
@@ -44,14 +60,23 @@ const EventCard = ({ event, onJoinEvent, onViewDetails }) => {
 
           <div className="event-actions">
             <Button
-              className="btn-join-now"
+              className={`btn-join-now ${
+                buttonLabel === "Joined"
+                  ? "btn-joined"
+                  : buttonLabel === "Full"
+                  ? "btn-full"
+                  : ""
+              }`}
+              variant=""
               onClick={() => onJoinEvent(event.eventID)}
+              disabled={disabled}
             >
-              Join Now
+              {buttonLabel}
             </Button>
             <Button
               className="btn-details"
               onClick={() => onViewDetails(event.eventID)}
+              variant="outline-secondary"
             >
               Details
             </Button>

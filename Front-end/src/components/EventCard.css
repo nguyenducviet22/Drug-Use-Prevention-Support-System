@@ -102,6 +102,21 @@
 .btn-join-now {
   background-color: #3b82f6;
   color: white;
+  min-width: 125px;
+}
+
+button.btn-join-now.btn-joined {
+  background-color: #6c757d !important; /* Bootstrap secondary / gray */
+  color: white !important;
+  border: none;
+  cursor: not-allowed;
+}
+
+button.btn-join-now.btn-full {
+  background-color: #f8d7da !important; /* soft red-pink background */
+  color: #721c24 !important; /* deep red text */
+  border: none;
+  cursor: not-allowed;
 }
 
 .btn-join-now:hover {

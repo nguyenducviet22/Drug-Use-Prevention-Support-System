@@ -1,7 +1,7 @@
-import { useState } from "react"
-import { Row, Col, Form, Button } from "react-bootstrap"
-import { Search } from "lucide-react"
-import "./SearchFilter.css"
+import { useState } from "react";
+import { Row, Col, Form, Button } from "react-bootstrap";
+import { Search } from "lucide-react";
+import "./SearchFilter.css";
 
 const SearchFilter = ({
   searchTerm = "",
@@ -22,10 +22,10 @@ const SearchFilter = ({
   placeholder = "Search",
   className = "",
 }) => {
-  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm)
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
 
   const handleSearchSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (onSearch) {
       onSearch({
         searchTerm: localSearchTerm,
@@ -33,17 +33,17 @@ const SearchFilter = ({
         selectedTopic,
         selectedDuration,
         selectedType,
-      })
+      });
     }
-  }
+  };
 
   const handleSearchInputChange = (e) => {
-    const value = e.target.value
-    setLocalSearchTerm(value)
+    const value = e.target.value;
+    setLocalSearchTerm(value);
     if (onSearchChange) {
-      onSearchChange(value)
+      onSearchChange(value);
     }
-  }
+  };
 
   return (
     <div className={`search-filter-container ${className}`}>
@@ -68,11 +68,15 @@ const SearchFilter = ({
           <Col md={4} className="mb-3 mb-md-0">
             <Form.Select
               value={selectedAgeGroup}
-              onChange={(e) => onAgeGroupChange && onAgeGroupChange(e.target.value)}
+              onChange={(e) =>
+                onAgeGroupChange && onAgeGroupChange(e.target.value)
+              }
               size="lg"
               className="filter-select"
             >
-              <option value="">Choose Age Group</option>
+              <option value="__default__" disabled hidden>
+                Choose Age Group
+              </option>
               {ageGroupOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -116,11 +120,15 @@ const SearchFilter = ({
           <Col md={4}>
             <Form.Select
               value={selectedDuration}
-              onChange={(e) => onDurationChange && onDurationChange(e.target.value)}
+              onChange={(e) =>
+                onDurationChange && onDurationChange(e.target.value)
+              }
               size="lg"
               className="filter-select"
             >
-              <option value="">Duration</option>
+              <option value="__default__" disabled hidden>
+                Duration
+              </option>
               {durationOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -137,7 +145,7 @@ const SearchFilter = ({
         </div> */}
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default SearchFilter
+export default SearchFilter;

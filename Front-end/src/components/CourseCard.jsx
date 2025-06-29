@@ -2,7 +2,7 @@ import { Button, Card } from "react-bootstrap"
 import { Clock, User, Calendar } from "lucide-react"
 import "./CourseCard.css"
 
-const CourseCard = ({ course, status, onEnrollClick, onDetailsClick }) => {
+const CourseCard = ({ course, onEnrollClick, onDetailsClick }) => {
     const getAgeGroupColor = (ageGroup) => {
         const colors = {
             ADOLESCENT: "ageGroup-adolescent",
@@ -52,17 +52,15 @@ const CourseCard = ({ course, status, onEnrollClick, onDetailsClick }) => {
                     </div>
 
                     {/* Action Buttons */}
-                    {status !== 'Learning' && (
-                        <div className="course-actions">
-                            <Button className="enroll-button"
-                                onClick={() => onEnrollClick(course.courseID)}>
-                                Enroll</Button>
-                            <Button variant="outline-secondary" className="details-button"
-                                onClick={() => onDetailsClick(course.courseID)}>
-                                Details
-                            </Button>
-                        </div>
-                    )}
+                    <div className="course-actions">
+                        <Button className="enroll-button"
+                            onClick={() => onEnrollClick(course.courseID)}>
+                            Enroll</Button>
+                        <Button variant="outline-secondary" className="details-button"
+                            onClick={() => onDetailsClick(course.courseID)}>
+                            Details
+                        </Button>
+                    </div>
                 </div>
             </div>
         </Card>

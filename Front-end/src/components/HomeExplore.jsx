@@ -1,11 +1,12 @@
-import { Container, Row, Col, Button, Card } from "react-bootstrap"
-import { MapPin, Clock, Video, User } from "lucide-react"
-import "./HomeExplore.css"
-import useFetch from "../hooks/useFetch"
+import { Container, Row, Col, Button, Card, Spinner } from "react-bootstrap"
+import { Clock, MapPin } from "lucide-react"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import useFetch from "../hooks/useFetch"
 import BlogCard from "./BlogCard"
 import CourseCard from "./CourseCard"
-import { useNavigate } from "react-router-dom"
+import "./HomeExplore.css"
+import moment from "moment"
 
 const getRandomItems = (array, count) => {
   const shuffled = [...array].sort(() => 0.5 - Math.random())
@@ -16,85 +17,53 @@ const HomeExplore = () => {
   const navigate = useNavigate()
   const [randomBlogs, setRandomBlogs] = useState([])
   const [randomCourses, setRandomCourses] = useState([])
+  const [upcomingEvents, setUpcomingEvents] = useState([])
 
-  const [everyoneBlogs, setEveryoneBlogs] = useState([])
-  const { loading: loadingEveryoneBlogs, get: getEveryoneBlogs } = useFetch("http://localhost:8080/api/blog/age-group/EVERYONE")
-
-  const events = [
-    {
-      id: 1,
-      title: "Drug Awareness Week 2025",
-      time: "July 10-15, 2025",
-      location: "FPT University – Ho Chi Minh City Campus",
-      description: "A week to raise awareness about the harmful effects of drugs through a series of activities:",
-      activities: [
-        "Photo exhibition 'Dark corners of life'",
-        "Talkshow 'Try once, pay for life'",
-        "Interact with people who have successfully recovered",
-        "Minigame and distribute propaganda leaflets",
-      ],
-    },
-    {
-      id: 2,
-      title: "Workshop: Refusal Skills & Coping with Pressure",
-      time: "03/08/2025 – 14:00 to 16:00",
-      platform: "Zoom (Online Event)",
-      speaker: "Dr. Elias William - School psychology expert",
-      contents: [
-        "How to recognize drug invitations",
-        "Skills to say 'No' while maintaining relationships",
-        "The role of healthy friendship groups",
-        "Q&A with experts",
-      ],
-    },
-  ]
-
-  const [everyoneCourses, setEveryoneCourses] = useState([])
-  const { loading: loadingEveryoneCourses, get: getEveryoneCourses } = useFetch("http://localhost:8080/api/course/age-group/EVERYONE")
+  const { loading: loadingBlogs, get: getBlogs } = useFetch("http://localhost:8080/api/blog/age-group/EVERYONE")
+  const { loading: loadingCourses, get: getCourses } = useFetch("http://localhost:8080/api/course/age-group/EVERYONE")
+  const { loading: loadingEvents, get: getEvents } = useFetch("http://localhost:8080/api/event/upcoming")
 
   useEffect(() => {
-    getEveryoneBlogs().then(setEveryoneBlogs).catch(() => { })
-    getEveryoneCourses().then(setEveryoneCourses).catch(() => { })
-  }, [getEveryoneBlogs, getEveryoneCourses])
-  console.log(everyoneBlogs);
-  console.log(everyoneCourses);
+    getBlogs().then((data) => {
+      setRandomBlogs(getRandomItems(data, 2))
+    })
+    getCourses().then((data) => {
+      setRandomCourses(getRandomItems(data, 3))
+    })
+    getEvents().then((data) => {
+      console.log("Event API result:", data)
+      if (Array.isArray(data)) {
+        // Nếu là mảng trực tiếp
+        setUpcomingEvents(data.slice(0, 2))
+      } else if (Array.isArray(data?.data)) {
+        // Nếu là object có field data
+        setUpcomingEvents(data.data.slice(0, 2))
+      } else {
+        setUpcomingEvents([])
+      }
+    })
+  }, [getBlogs, getCourses, getEvents])
 
+  // Theo dõi khi upcomingEvents thay đổi
   useEffect(() => {
-    getEveryoneBlogs()
-      .then((data) => {
-        setEveryoneBlogs(data)
-        setRandomBlogs(getRandomItems(data, 2))
-      })
-      .catch(() => { })
-
-    getEveryoneCourses()
-      .then((data) => {
-        setEveryoneCourses(data)
-        setRandomCourses(getRandomItems(data, 3))
-      })
-      .catch(() => { })
-  }, [getEveryoneBlogs, getEveryoneCourses])
-
+    console.log("Render upcomingEvents:", upcomingEvents)
+  }, [upcomingEvents])
 
   const handleReadMore = (blogId) => {
     navigate(`/blogs/${blogId}`)
   }
 
-  if (loadingEveryoneBlogs || loadingEveryoneCourses) {
+  if (loadingBlogs || loadingCourses || loadingEvents) {
     return (
-      <Container className="my-5">
-        <div className="text-center">
-          <div className="spinner-border text-primary" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
+      <Container className="my-5 text-center">
+        <Spinner animation="border" variant="primary" />
       </Container>
     )
   }
 
   return (
     <div className="home-explore">
-      {/* New Blogs Section */}
+      {/* Blogs Section */}
       <Container className="mb-5">
         <div className="bg-light rounded-4 p-4">
           <h3 className="fw-bold text-dark mb-4">New Blogs</h3>
@@ -111,80 +80,47 @@ const HomeExplore = () => {
       {/* Events Section */}
       <Container className="mb-5">
         <div className="bg-light rounded-4 p-4">
-          <h3 className="fw-bold text-dark mb-4">Events</h3>
+          <h3 className="fw-bold text-dark mb-4">Upcoming Events</h3>
           <Row>
-            {events.map((event) => (
-              <Col md={6} key={event.id} className="mb-4">
+            {upcomingEvents.map((event) => (
+              <Col md={6} key={event.eventID} className="mb-4">
                 <Card className="h-100 border-0 shadow-sm event-card">
+                  {event.img && (
+                    <Card.Img
+                      variant="top"
+                      src={event.img}
+                      alt={event.eventName}
+                      style={{ height: 180, objectFit: "cover" }}
+                    />
+                  )}
                   <Card.Body className="p-4">
-                    <Card.Title className="fw-bold text-dark mb-3 fs-5">{event.title}</Card.Title>
-
-                    <div className="mb-3">
-                      <div className="d-flex align-items-center mb-2">
-                        <Clock size={16} className="text-danger me-2" />
-                        <span className="text-danger fw-semibold">Time:</span>
-                        <span className="ms-1">{event.time}</span>
-                      </div>
-
-                      {event.location && (
-                        <div className="d-flex align-items-center mb-2">
-                          <MapPin size={16} className="text-danger me-2" />
-                          <span className="text-danger fw-semibold">Location:</span>
-                          <span className="ms-1">{event.location}</span>
-                        </div>
-                      )}
-
-                      {event.platform && (
-                        <div className="d-flex align-items-center mb-2">
-                          <Video size={16} className="text-danger me-2" />
-                          <span className="text-danger fw-semibold">Platform:</span>
-                          <span className="ms-1">{event.platform}</span>
-                        </div>
-                      )}
-
-                      {event.speaker && (
-                        <div className="d-flex align-items-center mb-2">
-                          <User size={16} className="text-danger me-2" />
-                          <span className="text-danger fw-semibold">Speaker:</span>
-                          <span className="ms-1">{event.speaker}</span>
-                        </div>
-                      )}
+                    <Card.Title className="fw-bold text-dark mb-2 fs-5">{event.eventName}</Card.Title>
+                    {event.subTitle && (
+                      <Card.Subtitle className="mb-2 text-muted">{event.subTitle}</Card.Subtitle>
+                    )}
+                    <div className="mb-2">
+                      <Clock size={16} className="text-danger me-2" />
+                      <span className="text-danger fw-semibold">Time:</span>
+                      <span className="ms-1">
+                        {moment(event.startDate).format("DD/MM/YYYY HH:mm")} – {moment(event.endDate).format("HH:mm")}
+                      </span>
                     </div>
-
-                    {event.description && (
-                      <div className="mb-3">
-                        <span className="text-danger fw-semibold">Description:</span>
-                        <p className="mb-2 mt-1">{event.description}</p>
+                    {event.location && (
+                      <div className="mb-2">
+                        <MapPin size={16} className="text-danger me-2" />
+                        <span className="text-danger fw-semibold">Location:</span>
+                        <span className="ms-1">{event.location}</span>
                       </div>
                     )}
-
-                    {event.activities && (
-                      <ul className="mb-3 ps-3">
-                        {event.activities.map((activity, index) => (
-                          <li key={index} className="mb-1">
-                            {activity}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-
-                    {event.contents && (
-                      <div className="mb-3">
-                        <span className="text-danger fw-semibold">Contents:</span>
-                        <ul className="mb-0 mt-1 ps-3">
-                          {event.contents.map((content, index) => (
-                            <li key={index} className="mb-1">
-                              {content}
-                            </li>
-                          ))}
-                        </ul>
+                    {event.fee !== undefined && (
+                      <div className="mb-2">
+                        <span className="text-danger fw-semibold">Fee:</span>
+                        <span className="ms-1">{event.fee === 0 ? "Free" : `$${event.fee}`}</span>
                       </div>
                     )}
-
+                    {event.description && <p className="mt-3">{event.description}</p>}
                     <div className="text-center mt-4">
-                      <Button variant="primary" className="px-4">
-                        Attend
-                      </Button>
+                      <Button variant="primary">Attend</Button>
                     </div>
                   </Card.Body>
                 </Card>
@@ -194,7 +130,7 @@ const HomeExplore = () => {
         </div>
       </Container>
 
-      {/* Popular Courses Section */}
+      {/* Courses Section */}
       <Container className="mb-5">
         <div className="bg-light rounded-4 p-4">
           <h3 className="fw-bold text-dark mb-4">Popular Courses</h3>

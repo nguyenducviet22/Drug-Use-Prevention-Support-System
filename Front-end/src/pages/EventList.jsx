@@ -1,106 +1,195 @@
 import { useEffect, useMemo, useState } from "react";
-import { Container, Button } from "react-bootstrap";
-import { Calendar, Clock, MapPin } from "lucide-react";
-import "./EventList.css";
-import useFetch from "../hooks/useFetch";
+import { Container, Button, Tabs, Tab } from "react-bootstrap";
 import SearchFilter from "../components/SearchFilter";
 import EventCard from "../components/EventCard";
 import Pagination from "../components/Pagination";
-import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
 import NotFound from "./NotFound";
+import { useNavigate } from "react-router-dom";
+import "./EventList.css";
+
+const ITEMS_PER_PAGE = 3;
 
 const EventList = () => {
-  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
+  const [eventStatuses, setEventStatuses] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // const [events, setEvents] = useState([])
-  // const { loading, error, get } = useFetch("http://localhost:8080/api/event");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState("__default__");
+  const [selectedDuration, setSelectedDuration] = useState("__default__");
+  const [activeTab, setActiveTab] = useState("ALL");
 
-  // useEffect(() => {
-  //   get().then(setEvents).catch(() => { });
-  // }, [get]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
+
+  const ageGroupOptions = [
+    { label: "All", value: "ALL" },
+    { label: "Adolescent", value: "ADOLESCENT" },
+    { label: "Adult", value: "ADULT" },
+    { label: "Senior", value: "SENIOR" },
+    { label: "Everyone", value: "EVERYONE" },
+  ];
+
+  const durationOptions = [
+    { label: "All Durations", value: "" },
+    { label: "Under 30 mins", value: "SHORT" },
+    { label: "30 - 60 mins", value: "MEDIUM" },
+    { label: "Over 60 mins", value: "LONG" },
+  ];
+
+  const fetchEvents = async () => {
+    setLoading(true);
+    try {
+      const url =
+        activeTab === "ONGOING"
+          ? "http://localhost:8080/api/event/upcoming"
+          : "http://localhost:8080/api/event";
+
+      const response = await fetch(url);
+      const result = await response.json();
+      setEvents(result.data);
+    } catch (err) {
+      setError("Failed to fetch events.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStatuses = async (events) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const statusMap = {};
+    await Promise.all(
+      events.map(async (event) => {
+        try {
+          const res = await fetch(
+            `http://localhost:8080/api/event/${event.eventID}/status`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const result = await res.json();
+          statusMap[event.eventID] = result;
+        } catch {
+          console.warn("Failed to fetch status for event:", event.eventID);
+        }
+      })
+    );
+    setEventStatuses(statusMap);
+  };
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch("http://localhost:8080/api/event");
-        const result = await response.json();
-        console.log(result.data);
-        setEvents(result.data);
-      } catch (err) {
-        console.error("Failed to fetch events:", err);
-        setError("Failed to fetch events");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchEvents();
-  }, []);
+  }, [activeTab]);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(3); // Show 3 blog posts per page
+  useEffect(() => {
+    if (events.length > 0) {
+      fetchStatuses(events);
+    }
+  }, [events]);
 
-  const handleJoinEvent = (eventId) => {
-    console.log(`Joining event ${eventId}`);
-    // Handle event registration logic
-  };
-
-  const handleViewDetails = (eventId) => {
-    navigate(`/events/${eventId}`);
-  };
-
-  const handleSearch = (filters) => {
-    setCurrentPage(1); // Reset to first page when searching
-    console.log("Searching with:", filters);
-  };
-
-  // Filter events based on search criteria
   const filteredEvents = useMemo(() => {
-    return events.filter((event) => {
-      return (
-        event.eventName &&
-        event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    });
-  }, [events, searchTerm]);
+    const now = new Date();
 
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredEvents.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentEvents = filteredEvents.slice(startIndex, endIndex);
+    return events
+      .filter((event) =>
+        event.eventName?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      .filter((event) =>
+        selectedAgeGroup === "__default__" || selectedAgeGroup === "ALL"
+          ? true
+          : event.ageGroup === selectedAgeGroup
+      )
+      .filter((event) => {
+        switch (selectedDuration) {
+          case "SHORT":
+            return event.duration < 30;
+          case "MEDIUM":
+            return event.duration >= 30 && event.duration <= 60;
+          case "LONG":
+            return event.duration > 60;
+          default:
+            return true;
+        }
+      });
+  }, [events, searchTerm, selectedAgeGroup, selectedDuration, activeTab]);
+
+  const totalPages = Math.ceil(filteredEvents.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentEvents = filteredEvents.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    // Scroll to top of events section
     document
-      .querySelector(".events-section")
+      .querySelector(".event-section")
       ?.scrollIntoView({ behavior: "smooth" });
   };
 
   const clearAllFilters = () => {
     setSearchTerm("");
+    setSelectedAgeGroup("__default__");
+    setSelectedDuration("__default__");
     setCurrentPage(1);
   };
 
-  <Container className="py-5">
-    <LoadingSpinner loading={loading} />
-    <ErrorMessage error={error} />
-  </Container>;
+  const handleJoinEvent = async (eventID) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:8080/api/event/${eventID}/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const result = await response.json();
+      if (!response.ok)
+        throw new Error(result.message || "Registration failed.");
+      alert(result.data || "Successfully registered!");
+      fetchStatuses(events);
+    } catch (err) {
+      alert(err.message || "Registration failed!");
+    }
+  };
+
+  const handleViewDetails = (eventID) => {
+    navigate(`/events/${eventID}`);
+  };
+
+  if (loading) {
+    return (
+      <Container className="py-5">
+        <LoadingSpinner loading />
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="py-5">
+        <ErrorMessage error={error} />
+      </Container>
+    );
+  }
 
   if (events.length === 0) {
     return (
       <NotFound
         code="📅"
         title="No Events Found"
-        message="We are realy sorry for this inconvinience."
+        message="We're really sorry for this inconvenience."
         backLink="/"
         backText="Back Home"
       />
@@ -109,7 +198,6 @@ const EventList = () => {
 
   return (
     <div className="event-list-page">
-      {/* Header Section */}
       <Container className="my-4">
         <div className="page-header text-center mb-5">
           <h1 className="display-5 fw-bold text-dark mb-3">Upcoming Events</h1>
@@ -119,26 +207,41 @@ const EventList = () => {
           </p>
         </div>
 
-        {/* Search Filter Section */}
         <SearchFilter
           searchTerm={searchTerm}
+          selectedAgeGroup={selectedAgeGroup}
+          selectedDuration={selectedDuration}
           onSearchChange={setSearchTerm}
-          onSearch={handleSearch}
+          onAgeGroupChange={setSelectedAgeGroup}
+          onDurationChange={setSelectedDuration}
           placeholder="Search events..."
+          ageGroupOptions={ageGroupOptions}
+          durationOptions={durationOptions}
         />
       </Container>
 
-      {/* Events List */}
       <Container className="mb-5">
         <div className="event-section">
-          <div className="text-center mb-5">
-            <h2 className="fw-bold text-dark">Events</h2>
-            <div className="events-underline mx-auto"></div>
+          <div className="text-center mb-4">
+            <div className="text-center mb-4 custom-tabs">
+              <Tabs
+                activeKey={activeTab}
+                onSelect={(k) => {
+                  setActiveTab(k);
+                  setCurrentPage(1);
+                }}
+                className="d-inline-flex"
+              >
+                <Tab eventKey="ALL" title="ALL" />
+                <Tab eventKey="ONGOING" title="ONGOING" />
+              </Tabs>
+            </div>
+
             {filteredEvents.length > 0 && (
               <p className="text-muted mt-3">
-                Showing {""}
-                {Math.min(endIndex, filteredEvents.length)} of{" "}
-                {filteredEvents.length} events
+                Showing {startIndex + 1} to{" "}
+                {Math.min(startIndex + ITEMS_PER_PAGE, filteredEvents.length)}{" "}
+                of {filteredEvents.length} events
               </p>
             )}
           </div>
@@ -148,11 +251,7 @@ const EventList = () => {
               <p className="text-muted">
                 No events found matching your criteria.
               </p>
-              <Button
-                variant="outline-primary"
-                onClick={clearAllFilters}
-                className="mt-3"
-              >
+              <Button variant="outline-primary" onClick={clearAllFilters}>
                 Clear Filters
               </Button>
             </div>
@@ -162,6 +261,7 @@ const EventList = () => {
                 <EventCard
                   key={event.eventID}
                   event={event}
+                  statusInfo={eventStatuses[event.eventID]}
                   onJoinEvent={handleJoinEvent}
                   onViewDetails={handleViewDetails}
                 />
@@ -170,7 +270,7 @@ const EventList = () => {
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
-                itemsPerPage={itemsPerPage}
+                itemsPerPage={ITEMS_PER_PAGE}
               />
             </>
           )}

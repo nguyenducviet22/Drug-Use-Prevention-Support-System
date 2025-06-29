@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,13 +32,12 @@ public class EnrollmentService {
         Enrollment enrollment = enrollmentMapper.toEntity(request);
         String loginUsername = userService.getLoginUsername();
         User loginUser = userService.getUserEntity(loginUsername);
+        Course course = courseService.getCourseEntity(request.getCourseID());
         enrollment.setMember(loginUser);
-
-        UUID courseID = request.getCourseId();
-        Course course = courseService.getCourseEntity(courseID);
         enrollment.setCourse(course);
-
-        enrollment.setStatus(EnrollmentStatus.ENROLLED);
+        enrollment.setStartDate(LocalDate.now());
+        enrollment.setEndDate(LocalDate.now().plusWeeks(2));
+        enrollment.setStatus(EnrollmentStatus.LEARNING);
         enrollmentRepository.save(enrollment);
         return enrollmentMapper.toDto(enrollment);
     }
@@ -75,7 +75,16 @@ public class EnrollmentService {
         return enrollmentMapper.toDto(enrollment);
     }
 
-    @PostAuthorize("returnObject.username == authentication.name")
+    @PreAuthorize("hasRole('MEMBER')")
+    public EnrollmentResponse getEnrollmentByUsernameAndCourseID(UUID courseID, String username) {
+        Enrollment enrollment = enrollmentRepository.findByMemberUsernameAndCourseCourseID(username, courseID);
+        if (enrollment == null) {
+            throw new EntityNotFoundException("Enrollment does not exist with username " + username + " courseID " +courseID);
+        }
+        return enrollmentMapper.toDto(enrollment);
+    }
+
+    @PostAuthorize("returnObject.member.username == authentication.name")
     public EnrollmentResponse updateEnrollmentStatus(UUID enrollmentId, EnrollmentStatus status) {
         Enrollment enrollment = getEnrollmentEntity(enrollmentId);
         enrollment.setStatus(status);

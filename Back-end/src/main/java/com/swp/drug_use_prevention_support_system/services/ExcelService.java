@@ -2,6 +2,8 @@ package com.swp.drug_use_prevention_support_system.services;
 
 import com.swp.drug_use_prevention_support_system.domain.entities.*;
 import com.swp.drug_use_prevention_support_system.domain.enums.*;
+import com.swp.drug_use_prevention_support_system.domain.entities.Lesson;
+import com.swp.drug_use_prevention_support_system.domain.entities.Module;
 import com.swp.drug_use_prevention_support_system.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
@@ -15,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +31,13 @@ public class ExcelService {
     private final AssessmentService assessmentService;
     private final AssessmentResultRepository assessmentResultRepository;
     private final CourseRepository courseRepository;
+    private final CourseService courseService;
     private final BlogRepository blogRepository;
     private final EventRepository eventRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    private final ModuleRepository moduleRepository;
+    private final ModuleService moduleService;
+    private final LessonRepository lessonRepository;
 
     @PreAuthorize("hasRole('ADMIN')")
     public void importUsersFromExcel(InputStream inputStream) throws IOException {
@@ -53,6 +61,7 @@ public class ExcelService {
                 Role role = Role.valueOf(getCellValue(row.getCell(8)).toUpperCase());
                 String address = getCellValue(row.getCell(9));
                 UserStatus status = UserStatus.valueOf(getCellValue(row.getCell(10)).toUpperCase());
+                AgeGroup group = AgeGroup.valueOf(getCellValue(row.getCell(11)));
 
                 User user = User.builder()
                         .username(username)
@@ -66,10 +75,11 @@ public class ExcelService {
                         .address(address)
                         .role(role)
                         .status(status)
+                        .ageGroup(group)
                         .build();
                 users.add(user);
             } catch (Exception e) {
-                throw new RuntimeException("Error Excel import Users at line" + (i + 1) + ": " + e.getMessage(), e);
+                throw new RuntimeException("Error Excel import Users at line " + (i + 1) + ": " + e.getMessage(), e);
             }
         }
         userRepository.saveAll(users);
@@ -171,6 +181,7 @@ public class ExcelService {
                 User member = userService.getUserEntity(memberUsername);
                 String content = getCellValue(row.getCell(7));
                 Integer time = Integer.valueOf(getCellValue(row.getCell(8)));
+                AgeGroup group = AgeGroup.valueOf(getCellValue(row.getCell(9)));
 
                 Blog blog = Blog.builder()
                         .blogName(name)
@@ -182,6 +193,7 @@ public class ExcelService {
                         .member(member)
                         .content(content)
                         .readingTime(time)
+                        .ageGroup(group)
                         .build();
                 blogs.add(blog);
             } catch (Exception e) {
@@ -226,6 +238,109 @@ public class ExcelService {
             }
         }
         courseRepository.saveAll(courses);
+        workbook.close();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void importModulesFromExcel(InputStream inputStream) throws IOException {
+        Workbook workbook = new XSSFWorkbook(inputStream);
+        Sheet sheet = workbook.getSheet("Modules");
+        List<Module> modules = new ArrayList<>();
+
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null || isRowEmpty(row)) continue;
+
+            try {
+                UUID moduleID = UUID.fromString(getCellValue(row.getCell(0)));
+                String name = getCellValue(row.getCell(1));
+                UUID courseID = UUID.fromString(getCellValue(row.getCell(2)));
+                Course course = courseService.getCourseEntity(courseID);
+
+                Module module = Module.builder()
+                        .moduleID(moduleID)
+                        .moduleName(name)
+                        .course(course)
+                        .build();
+                modules.add(module);
+            } catch (Exception e) {
+                throw new RuntimeException("Error Excel import Modules at line " + (i + 1) + ": " + e.getMessage(), e);
+            }
+        }
+        moduleRepository.saveAll(modules);
+        workbook.close();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void importLessonsFromExcel(InputStream inputStream) throws IOException {
+        Workbook workbook = new XSSFWorkbook(inputStream);
+        Sheet sheet = workbook.getSheet("Lessons");
+        List<Lesson> lessons = new ArrayList<>();
+
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null || isRowEmpty(row)) continue;
+
+            try {
+                UUID id = UUID.fromString(getCellValue(row.getCell(0)));
+                String name = getCellValue(row.getCell(1));
+                int duration = Integer.parseInt(getCellValue(row.getCell(2)));
+                String objective = getCellValue(row.getCell(3));
+                String content = getCellValue(row.getCell(4));
+                String resrc = getCellValue(row.getCell(5));
+                UUID moduleID = UUID.fromString(getCellValue(row.getCell(6)));
+                Module module = moduleService.getModelEntity(moduleID);
+
+                Lesson lesson = Lesson.builder()
+                        .lessonID(id)
+                        .lessonName(name)
+                        .duration(duration)
+                        .objective(objective)
+                        .content(content)
+                        .resource(resrc)
+                        .module(module)
+                        .build();
+                lessons.add(lesson);
+            } catch (Exception e) {
+                throw new RuntimeException("Error Excel import Lessons at line " + (i + 1) + ": " + e.getMessage(), e);
+            }
+        }
+        lessonRepository.saveAll(lessons);
+        workbook.close();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void importEnrollmentsFromExcel(InputStream inputStream) throws IOException {
+        Workbook workbook = new XSSFWorkbook(inputStream);
+        Sheet sheet = workbook.getSheet("Enrollments");
+        List<Enrollment> enrollments = new ArrayList<>();
+
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null || isRowEmpty(row)) continue;
+
+            try {
+                String memberUsername = getCellValue(row.getCell(0));
+                User member = userService.getUserEntity(memberUsername);
+                UUID courseID = UUID.fromString(getCellValue(row.getCell(1)));
+                Course course = courseService.getCourseEntity(courseID);
+                LocalDate startDate = LocalDate.parse(getCellValue(row.getCell(2)));
+                LocalDate endDate = LocalDate.parse(getCellValue(row.getCell(3)));
+                EnrollmentStatus status = EnrollmentStatus.valueOf(getCellValue(row.getCell(4)).toUpperCase());
+
+                Enrollment enrollment = Enrollment.builder()
+                        .member(member)
+                        .course(course)
+                        .startDate(startDate)
+                        .endDate(endDate)
+                        .status(status)
+                        .build();
+                enrollments.add(enrollment);
+            } catch (Exception e) {
+                throw new RuntimeException("Error Excel import Enrollments at line " + (i + 1) + ": " + e.getMessage(), e);
+            }
+        }
+        enrollmentRepository.saveAll(enrollments);
         workbook.close();
     }
 
@@ -368,6 +483,4 @@ public class ExcelService {
         }
         return true;
     }
-
-
 }

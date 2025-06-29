@@ -1,6 +1,7 @@
 package com.swp.drug_use_prevention_support_system.config;
 
 import com.swp.drug_use_prevention_support_system.domain.entities.User;
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.Role;
 import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
 import com.swp.drug_use_prevention_support_system.repositories.UserRepository;

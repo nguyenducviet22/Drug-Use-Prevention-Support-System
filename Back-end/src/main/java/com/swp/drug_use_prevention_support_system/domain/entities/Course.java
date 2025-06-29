@@ -19,8 +19,8 @@ import java.util.UUID;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Course {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "course_id")
     UUID courseID;
     String courseName;
@@ -37,6 +37,9 @@ public class Course {
 
     @OneToMany(mappedBy = "course")
     List<Enrollment> enrollments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "course")
+    List<Module> modules = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {

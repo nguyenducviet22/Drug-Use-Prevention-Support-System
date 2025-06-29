@@ -4,7 +4,7 @@ import "./RecommendationCard.css"
 const RecommendationCard = ({ recommendation, type, onViewClick }) => {
 
     return (
-        <Card style={{ width: '18rem', cursor: 'pointer' }} onClick={() => onViewClick(recommendation.id)}>
+        <Card style={{ width: '18rem', cursor: 'pointer' }} onClick={() => onViewClick(recommendation[`${type}ID`])}>
             <Card.Img
                 variant="top"
                 src={recommendation.img}

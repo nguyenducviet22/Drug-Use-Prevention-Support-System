@@ -5,12 +5,15 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateEve
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateEventRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EventResponse;
+import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EventStatusResponse;
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.EventStatus;
 import com.swp.drug_use_prevention_support_system.services.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -106,4 +109,39 @@ public class EventController {
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
+
+    //Đăng kí tham gia sự kiện
+    @PostMapping("/{id}/register")
+    public ResponseEntity<ApiResponse<String>> registerEvent(@PathVariable UUID id) {
+        eventService.registerUserToEvent(id);
+
+        ApiResponse<String> response = ApiResponse.<String>builder()
+                .data("Registered successfully")
+                .status(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}/status")
+    public ResponseEntity<EventStatusResponse> getEventStatus(@PathVariable UUID id) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        EventStatusResponse response = eventService.getEventStatus(id, username);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/age-group")
+    public ResponseEntity<List<EventResponse>> getEventsByUserAgeGroup() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<EventResponse> events = eventService.getEventsForCurrentUser(username);
+        return ResponseEntity.ok(events);
+    }
+
+    @GetMapping("/age-group/{ageGroup}")
+    public ResponseEntity<List<EventResponse>> getEventsByAgeGroup(@PathVariable AgeGroup ageGroup) {
+        List<EventResponse> events = eventService.getEventsByAgeGroup(ageGroup);
+        return ResponseEntity.ok(events);
+    }
+
+
 }

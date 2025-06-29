@@ -6,10 +6,12 @@ import { useAuth } from "../hooks/useAuth"
 import { useEffect, useState } from "react"
 import CourseCard from "./CourseCard"
 import BlogCard from "./BlogCard"
+import { useNavigate } from "react-router-dom"
 
 const HomeMe = () => {
     const { user, authLoading } = useAuth();
     console.log(user);
+    const navigate = useNavigate()
 
     const healthData = {
         mentalHealth: "Moderate Anxiety",
@@ -36,41 +38,68 @@ const HomeMe = () => {
         },
     ]
 
-    const upcomingAppointment = {
-        doctor: "Dr. Mohammed Ahijed",
-        specialty: "Addiction Counselor",
-        time: "14:50PM",
-        date: "Sun, 1/08",
-        status: "In Progress",
-    }
-
     const [recommendedCourses, setRecommendedCourses] = useState([])
     const [learningCourses, setLearningCourses] = useState([])
     const [draftBlogs, setDraftBlogs] = useState([])
+    const [upcomingAppointments, setupcomingAppointments] = useState([])
 
-    const { loading: loadingRecommendedCourses,
-        error: errorRecommendedCourses,
-        get: getRecommendedCourses } = useFetch(user?.ageGroup ? `http://localhost:8080/api/course/age-group/${user.ageGroup}` : null)
-
-    const { loading: loadingLearningCourses,
-        error: errorLearningCourses,
-        get: getLearningCourses } = useFetch(user?.username ? `http://localhost:8080/api/course/LEARNING/${user.username}` : null)
-        
-    const { loading: loadingDraftBlogs,
-        error: errorDraftBlogs,
-        get: getDraftBlogs } = useFetch(user?.username ? `http://localhost:8080/api/blog/draft/${user.username}` : null)
+    const { loading: loadingRecommendedCourses, error: errorRecommendedCourses, get: getRecommendedCourses } = useFetch()
+    const { loading: loadingLearningCourses, error: errorLearningCourses, get: getLearningCourses } = useFetch()
+    const { loading: loadingDraftBlogs, error: errorDraftBlogs, get: getDraftBlogs } = useFetch()
+    const { loading: loadingAppointments, error: errorAppointments, get: getAppointments } = useFetch()
 
     useEffect(() => {
-        getRecommendedCourses().then(setRecommendedCourses).catch(() => { })
-        getLearningCourses().then(setLearningCourses).catch(() => { })
-        getDraftBlogs().then(setDraftBlogs).catch(() => { })
-    }, [getRecommendedCourses, getLearningCourses])
+        const fetchData = async () => {
+            try {
+                if (user) {
+                    const ageGroup = user?.ageGroup
+                    const username = user?.username
+                    const recommendedCoursesData = await getRecommendedCourses(`http://localhost:8080/api/course/age-group/${ageGroup}`);
+                    setRecommendedCourses(recommendedCoursesData);
+
+                    const learningCoursesData = await getLearningCourses(`http://localhost:8080/api/course/LEARNING/${username}`);
+                    setLearningCourses(learningCoursesData);
+
+                    const draftBlogsData = await getDraftBlogs(`http://localhost:8080/api/blog/draft/${username}`);
+                    setDraftBlogs(draftBlogsData);
+
+                    const appointmentsData = await getAppointments(`http://localhost:8080/api/appointment/my-list/${username}`);
+                    setupcomingAppointments(appointmentsData);
+                }
+            } catch (err) {
+                console.error("Fetch error in Home Me:", err);
+                // Có thể set lỗi vào state để hiển thị ErrorMessage
+            }
+        };
+
+        fetchData();
+    }, [user, getRecommendedCourses, getLearningCourses, getDraftBlogs, getAppointments]);
+    console.log("recommendedCourses:", recommendedCourses);
+    console.log("learningCourses:", learningCourses);
+    console.log("draftBlogs:", draftBlogs);
+    console.log("upcomingAppointments:", upcomingAppointments);
 
     const handleDraftContinue = (blogId) => {
         navigate(`/blogs/draft/${blogId}`)
     }
 
-    if (!user || authLoading || loadingRecommendedCourses || loadingLearningCourses || loadingDraftBlogs) {
+    const handleMyBlogsClick = () => {
+        navigate('/blogs');
+    };
+
+    const handleMyEventsClick = () => {
+        navigate('/events');
+    };
+
+    const handleMyCoursesClick = () => {
+        navigate('/courses');
+    };
+
+    const handleBookAppointmentClick = () => {
+        navigate('/appointment');
+    };
+
+    if (!user || authLoading || loadingRecommendedCourses || loadingLearningCourses || loadingDraftBlogs || loadingAppointments) {
         return (
             <Container className="my-5">
                 <div className="text-center">
@@ -85,6 +114,30 @@ const HomeMe = () => {
     return (
         <div className="home-me">
             <Container className="mb-5">
+                {/* New Row for Buttons */}
+                <Row className="mb-4 d-flex justify-content-center">
+                    <Col xs={12} md={3} className="mb-2 mb-md-0">
+                        <Button variant="info" className="w-100 rounded-pill shadow-sm custom-button" onClick={handleMyBlogsClick}>
+                            My Blogs
+                        </Button>
+                    </Col>
+                    <Col xs={12} md={3} className="mb-2 mb-md-0">
+                        <Button variant="info" className="w-100 rounded-pill shadow-sm custom-button" onClick={handleMyEventsClick}>
+                            My Events
+                        </Button>
+                    </Col>
+                    <Col xs={12} md={3} className="mb-2 mb-md-0">
+                        <Button variant="info" className="w-100 rounded-pill shadow-sm custom-button" onClick={handleMyCoursesClick}>
+                            My Courses
+                        </Button>
+                    </Col>
+                    <Col xs={12} md={3}>
+                        <Button variant="info" className="w-100 rounded-pill shadow-sm custom-button" onClick={handleBookAppointmentClick}>
+                            Book Appointment
+                        </Button>
+                    </Col>
+                </Row>
+
                 <Row>
                     {/* Health Status Card */}
                     <Col lg={6} className="mb-4">
@@ -187,19 +240,26 @@ const HomeMe = () => {
                                 <h5 className="mb-0 fw-bold">Upcoming Appointment</h5>
                             </div>
                             <Card.Body className="p-4">
-                                <div className="appointment-info bg-light rounded-3 p-3">
-                                    <div className="d-flex justify-content-between align-items-start mb-2">
-                                        <div>
-                                            <h6 className="fw-bold text-dark mb-1">{upcomingAppointment.doctor}</h6>
-                                            <p className="text-muted mb-0 small">{upcomingAppointment.specialty}</p>
-                                        </div>
-                                        <span className="badge bg-warning text-dark">{upcomingAppointment.status}</span>
-                                    </div>
-                                    <div className="appointment-time mt-3">
-                                        <div className="fw-semibold text-primary">{upcomingAppointment.time}</div>
-                                        <div className="text-muted small">{upcomingAppointment.date}</div>
-                                    </div>
-                                </div>
+                                {upcomingAppointments.length > 0 ? (
+                                    <>
+                                        {upcomingAppointments.filter(appointment => appointment.status === "CONFIRMED").map((appointment) => (
+                                            <div className="appointment-info bg-light rounded-3 p-3">
+                                                <div className="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <h6 className="fw-bold text-dark mb-1">{appointment.consultant.username}</h6>
+                                                    </div>
+                                                    <span className="badge bg-warning text-dark">{appointment.status}</span>
+                                                </div>
+                                                <div className="appointment-time mt-3">
+                                                    <div className="fw-semibold text-primary">{appointment.appointmentDateTime}</div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </>
+                                ) : (
+                                    <div className="text-center text-muted">No upcoming appointments at this time.</div>
+                                )}
+
                             </Card.Body>
                         </Card>
                     </Col>
@@ -241,25 +301,6 @@ const HomeMe = () => {
                                 {learningCourses.length > 0 ? (
                                     <>
                                         <CourseCard course={learningCourses[0]} status={'Learning'} />
-                                        <div className="progress-section mb-3">
-                                            <div className="d-flex justify-content-between mb-2">
-                                                <span className="text-muted small">Progress</span>
-                                                <span className="fw-semibold text-primary">95%</span>
-                                            </div>
-                                            <div className="progress progress-custom" style={{ height: "8px" }}>
-                                                <div
-                                                    className="progress-bar bg-primary"
-                                                    style={{ width: "95%" }}
-                                                    role="progressbar"
-                                                    aria-valuenow={95}
-                                                    aria-valuemin={0}
-                                                    aria-valuemax={100}
-                                                ></div>
-                                            </div>
-                                        </div>
-                                        <Button variant="primary" className="w-100">
-                                            Continue
-                                        </Button>
                                     </>
                                 ) : (
                                     <div className="text-center text-muted">No learning courses found.</div>

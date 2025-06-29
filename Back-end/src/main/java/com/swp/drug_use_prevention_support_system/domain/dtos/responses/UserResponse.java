@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.Gender;
 import com.swp.drug_use_prevention_support_system.domain.enums.Role;
 import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
@@ -25,6 +26,7 @@ public class UserResponse {
     String job;
     Role role;
     String address;
+    AgeGroup ageGroup;
     UserStatus status;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

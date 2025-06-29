@@ -4,7 +4,6 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateUse
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateUserRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.UserResponse;
-import com.swp.drug_use_prevention_support_system.domain.enums.BlogType;
 import com.swp.drug_use_prevention_support_system.domain.enums.Gender;
 import com.swp.drug_use_prevention_support_system.domain.enums.Role;
 import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
@@ -69,7 +68,7 @@ public class UserController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/myInfo")
+    @GetMapping("/my-info")
     public ResponseEntity<ApiResponse<UserResponse>> getMyInfo() {
         UserResponse response = userService.getMyInfo();
         ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()

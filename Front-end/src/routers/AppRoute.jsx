@@ -17,6 +17,8 @@ import AssessmentResult from '../pages/AssessmentResult'
 import EventDetails from '../pages/EventDetails'
 import CourseDetails from '../pages/CourseDetails'
 import CourseLesson from '../pages/CourseLesson'
+import BlogCreation from '../pages/BlogCreation'
+import AppointmentBooking from '../pages/AppointmentBooking'
 
 export default function AppRoute() {
     return (
@@ -26,6 +28,7 @@ export default function AppRoute() {
                 <Route path="/oauth2/success" element={<OAuth2RedirectHandler />} />
                 <Route path="/blogs" element={<BlogList />} />
                 <Route path="/blogs/:id" element={<BlogDetails />} />
+                <Route path="/blogs/create" element={<BlogCreation />} />
                 <Route path="/events" element={<EventList />} />
                 <Route path="/events/:id" element={<EventDetails />} />
                 <Route path="/courses" element={<CourseList />} />
@@ -33,6 +36,7 @@ export default function AppRoute() {
                 <Route path="/courses/lesson/:id" element={<CourseLesson />} />
                 <Route path="/assessment" element={<AssessmentList />} />
                 <Route path="/assessment-result/:id" element={<AssessmentResult />} />
+                <Route path="/appointment" element={<AppointmentBooking />} />
                 <Route path='*' element={<NotFound />} />
             </Route>
             <Route path='/login' element={<Login />} />

@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.entities;
 
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.Gender;
 import com.swp.drug_use_prevention_support_system.domain.enums.Role;
 import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
@@ -38,6 +39,8 @@ public class User {
     Role role;
     @Enumerated(EnumType.STRING)
     UserStatus status;
+    @Enumerated(EnumType.STRING)
+    AgeGroup ageGroup;
 
     @OneToMany(mappedBy = "member")
     List<UserDetails> userDetailsList = new ArrayList<>();

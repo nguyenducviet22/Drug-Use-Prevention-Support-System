@@ -8,13 +8,13 @@ import Recommendation from "../components/Recommendation"
 import ErrorMessage from "../components/ErrorMessage"
 import BackButton from "../components/BackButton"
 import NotFound from "./NotFound"
+import LoadingSpinner from "../components/LoadingSpinner"
 
 const BlogDetails = () => {
 
     const { id } = useParams()
     const [blog, setBlog] = useState(null)
     const { loading, error, get } = useFetch()
-    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchBLogs = async () => {

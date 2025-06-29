@@ -1,19 +1,19 @@
 package com.swp.drug_use_prevention_support_system.controllers;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateEnrollmentRequest;
-import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateEnrollmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EnrollmentResponse;
-import com.swp.drug_use_prevention_support_system.domain.entities.Enrollment;
-import com.swp.drug_use_prevention_support_system.domain.enums.BlogType;
 import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
 import com.swp.drug_use_prevention_support_system.services.EnrollmentService;
+import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -24,6 +24,7 @@ import java.util.UUID;
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
+    private final ExcelService excelService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<EnrollmentResponse>> createEnrollment(@Valid @RequestBody CreateEnrollmentRequest request) {
@@ -35,7 +36,7 @@ public class EnrollmentController {
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<ApiResponse<List<EnrollmentResponse>>> getAllEnrollments() {
         List<EnrollmentResponse> responses = enrollmentService.getAllEnrollments();
         ApiResponse<List<EnrollmentResponse>> apiResponse = ApiResponse.<List<EnrollmentResponse>>builder()
@@ -75,15 +76,35 @@ public class EnrollmentController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PatchMapping("/{id}/{status}")
-    public ResponseEntity<ApiResponse<EnrollmentResponse>> deleteEnrollment(@PathVariable UUID id,
-                                                                            @PathVariable EnrollmentStatus status) {
+    @GetMapping
+    public ResponseEntity<ApiResponse<EnrollmentResponse>> getEnrollment(@RequestParam UUID courseID,
+                                                                         @RequestParam String username) {
+        EnrollmentResponse response = enrollmentService.getEnrollmentByUsernameAndCourseID(courseID, username);
+        ApiResponse<EnrollmentResponse> apiResponse = ApiResponse.<EnrollmentResponse>builder()
+                .status(HttpStatus.OK.value())
+                .data(response)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PutMapping("/{id}/{status}")
+    public ResponseEntity<ApiResponse<EnrollmentResponse>> updateEnrollmentStatus(@PathVariable UUID id,
+                                                                                  @PathVariable EnrollmentStatus status) {
         EnrollmentResponse response = enrollmentService.updateEnrollmentStatus(id, status);
         ApiResponse<EnrollmentResponse> apiResponse = ApiResponse.<EnrollmentResponse>builder()
                 .status(HttpStatus.OK.value())
                 .data(response)
                 .build();
         return ResponseEntity.ok(apiResponse);
+    }
+
+    @PostMapping(value = "/import", consumes = "multipart/form-data")
+    public ResponseEntity<String> importEnrollments(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("File is empty!");
+        }
+        excelService.importEnrollmentsFromExcel(file.getInputStream());
+        return ResponseEntity.ok("Excel file data saved Enrollments into DB");
     }
 
     @GetMapping("/status")
