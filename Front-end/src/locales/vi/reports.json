@@ -1,0 +1,23 @@
+{
+    "loading": "Đang tải...",
+    "title": "Báo cáo",
+    "downloadReport": "Tải báo cáo",
+    "blogsRead": "Bài viết đã đọc",
+    "coursesCompleted": "Khóa học đã hoàn thành",
+    "assessmentsTaken": "Bài đánh giá đã làm",
+    "certificatesEarned": "Chứng chỉ đã nhận",
+    "finishedActivities": "Hoạt động đã hoàn thành",
+    "blogsSectionTitle": "Bài viết",
+    "noBlogsWritten": "Chưa có bài viết nào được đăng.",
+    "mins": "phút",
+    "coursesSectionTitle": "Khóa học",
+    "noCoursesCompleted": "Chưa hoàn thành khóa học nào.",
+    "certified": "Đã được chứng nhận",
+    "score": "Điểm số",
+    "assessmentSectionTitle": "Đánh giá",
+    "noAssessmentsCompleted": "Chưa hoàn thành bài đánh giá nào.",
+    "riskLevelLow": "Nguy cơ thấp",
+    "riskLevelModerate": "Nguy cơ trung bình",
+    "riskLevelHigh": "Nguy cơ cao",
+    "viewDetails": "Xem chi tiết"
+}

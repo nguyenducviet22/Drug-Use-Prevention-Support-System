@@ -1,0 +1,18 @@
+{
+  "heroSection": {
+    "title": "Chào mừng đến với ReNewMe",
+    "subtitle": "Hệ thống hỗ trợ phòng ngừa sử dụng ma túy – Bảo vệ bản thân, bảo vệ cộng đồng"
+  },
+  "loggedInNavigation": {
+    "meTab": "CÁ NHÂN",
+    "exploreTab": "KHÁM PHÁ"
+  },
+  "loggedOutSection": {
+    "smallTestText": "Làm bài kiểm tra nhanh nếu bạn mới bắt đầu",
+    "smallTestButton": "Kiểm tra nhanh",
+    "exploreNowTitle": "KHÁM PHÁ NGAY"
+  },
+  "chatButton": {
+    "ariaLabel": "Mở hỗ trợ trò chuyện"
+  }
+}

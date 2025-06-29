@@ -1,0 +1,34 @@
+{
+  "loadingMessage": "Đang tải...",
+  "newBlogsTitle": "Bài Viết Mới",
+  "eventsTitle": "Sự Kiện",
+  "eventTime": "Thời gian:",
+  "eventLocation": "Địa điểm:",
+  "eventPlatform": "Hình thức:",
+  "eventSpeaker": "Diễn giả:",
+  "eventDescription": "Mô tả:",
+  "eventActivities": "Hoạt động:",
+  "eventContents": "Nội dung:",
+  "attendButton": "Tham gia",
+  "popularCoursesTitle": "Khoá Học Phổ Biến",
+  "drugAwarenessWeekTitle": "Tuần Lễ Phòng Chống Ma Túy 2025",
+  "drugAwarenessWeekTime": "10–15 tháng 7, 2025",
+  "drugAwarenessWeekLocation": "Đại học FPT – Cơ sở TP. Hồ Chí Minh",
+  "drugAwarenessWeekDescription": "Chuỗi hoạt động nâng cao nhận thức về tác hại của ma túy:",
+  "drugAwarenessWeekActivities": {
+    "activity1": "Triển lãm ảnh 'Góc tối cuộc đời'",
+    "activity2": "Talkshow 'Thử một lần, trả giá cả đời'",
+    "activity3": "Giao lưu với người đã cai nghiện thành công",
+    "activity4": "Minigame & phát tờ rơi tuyên truyền"
+  },
+  "workshopTitle": "Workshop: Kỹ Năng Từ Chối & Ứng Phó Áp Lực",
+  "workshopTime": "03/08/2025 – 14:00 đến 16:00",
+  "workshopPlatform": "Zoom (Trực tuyến)",
+  "workshopSpeaker": "TS. Elias William – Chuyên gia tâm lý học đường",
+  "workshopContents": {
+    "content1": "Cách nhận diện lời mời sử dụng ma túy",
+    "content2": "Kỹ năng nói 'Không' mà vẫn giữ được mối quan hệ",
+    "content3": "Vai trò của nhóm bạn lành mạnh",
+    "content4": "Hỏi đáp cùng chuyên gia"
+  }
+}

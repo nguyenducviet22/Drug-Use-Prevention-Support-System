@@ -1,0 +1,38 @@
+{
+  "header": {
+    "title": "Đăng Ký Lịch Tư Vấn",
+    "subtitle": "Đặt lịch với chuyên gia phòng ngừa ma túy được chứng nhận của chúng tôi"
+  },
+  "calendarSection": {
+    "availableTimeSlotsTitle": "Khung Giờ Có Sẵn",
+    "placeholderLoading": "Đang tải các khung giờ khả dụng",
+    "eventTitles": {
+      "available": "Còn trống",
+      "pastUnavailable": "Đã qua / Không khả dụng",
+      "selected": "Đã chọn"
+    }
+  },
+  "selectedSlotsSection": {
+    "title": "Khung Giờ Đã Chọn",
+    "dateLabel": "Ngày:",
+    "timeLabel": "Giờ:",
+    "submitButton": "Gửi Yêu Cầu Đặt Lịch ({{count}} khung giờ)"
+  },
+  "confirmationModal": {
+    "title": "Xác Nhận Lịch Hẹn",
+    "slotLabel": "Khung giờ {{index}}:",
+    "confirmButton": "Xác Nhận Đặt Lịch ({{count}} khung giờ)"
+  },
+  "toasts": {
+    "selectSlotWarning": "Vui lòng chọn ít nhất một khung giờ.",
+    "pastSlotError": "Một số khung giờ bạn chọn đã qua và không thể đặt. Vui lòng kiểm tra lại.",
+    "noValidSlotsError": "Không có khung giờ hợp lệ sắp tới để đặt.",
+    "bookingSuccess": "Đặt lịch thành công",
+    "bookingError": "Lỗi khi đặt lịch: {{message}}",
+    "unknownBookingError": "Đã xảy ra lỗi khi đặt lịch. Vui lòng thử lại.",
+    "unavailableSlotInfo": "Khung giờ này không thể đặt (có thể đã qua hoặc đã có người khác đặt).",
+    "slotUnselected": "Đã bỏ chọn khung giờ.",
+    "slotSelected": "Đã chọn khung giờ.",
+    "fetchError": "Không thể tải các khung giờ tư vấn khả dụng của chuyên gia."
+  }
+}

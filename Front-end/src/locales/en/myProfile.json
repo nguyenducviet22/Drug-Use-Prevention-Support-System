@@ -1,0 +1,10 @@
+{
+  "accountCenterTitle": "Account Center",
+  "navigation": {
+    "accountOverview": "Account Overview",
+    "userDetails": "User Details",
+    "familyInformation": "Family Information",
+    "reports": "Reports",
+    "backHome": "Back Home"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "header": "Thông tin gia đình",
+  "addMemberButton": "Thêm thành viên",
+  "noMembersAddedTitle": "Chưa có thành viên gia đình nào được thêm.",
+  "addFirstMemberButton": "Thêm thành viên đầu tiên",
+  "loadingMessage": "Đang tải...",
+  "errorMessage": "Lỗi: {{message}}",
+  "memberTitle": "Người thân {{index}}",
+  "labels": {
+    "fullName": "Họ và tên",
+    "phoneNumber": "Số điện thoại",
+    "relationship": "Quan hệ",
+    "address": "Địa chỉ"
+  },
+  "relationships": {
+    "Father": "Cha",
+    "Mother": "Mẹ",
+    "Brother": "Anh trai",
+    "Sister": "Chị gái",
+    "Son": "Con trai",
+    "Daughter": "Con gái",
+    "Spouse": "Vợ / Chồng",
+    "Other": "Khác"
+  }
+}
