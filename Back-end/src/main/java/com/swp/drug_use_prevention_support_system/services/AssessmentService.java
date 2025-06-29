@@ -4,6 +4,7 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateAss
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateAssessmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AssessmentResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.Assessment;
+import com.swp.drug_use_prevention_support_system.domain.enums.AssessmentType;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.mappers.AssessmentMapper;
 import com.swp.drug_use_prevention_support_system.repositories.AssessmentRepository;
@@ -39,10 +40,10 @@ public class AssessmentService {
 
     public Assessment getAssessmentEntity(UUID assessmentID) {
         return assessmentRepository.findById(assessmentID)
-                .orElseThrow(() -> new EntityNotFoundException("Assessment dose not exist with type: " + assessmentID));
+                .orElseThrow(() -> new EntityNotFoundException("Assessment dose not exist with ID: " + assessmentID));
     }
 
-    public Assessment getAssessmentEntity(String type) {
+    public Assessment getAssessmentEntity(AssessmentType type) {
         return assessmentRepository.findByAssessmentType(type)
                 .orElseThrow(() -> new EntityNotFoundException("Assessment dose not exist with type: " + type));
     }

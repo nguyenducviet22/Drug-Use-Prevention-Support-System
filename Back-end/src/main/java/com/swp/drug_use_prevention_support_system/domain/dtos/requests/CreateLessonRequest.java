@@ -1,9 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.requests;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,15 +13,9 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateLessonRequest {
 
-    @NotBlank(message = "Lesson ID is required")
-    UUID lessonID;
-
     @NotBlank(message = "Lesson name ID is required")
     @Size(max = 255)
     String lessonName;
-
-    @Min(value = 1, message = "Lesson duration must be at least 1 minute")
-    int duration;
 
     @NotEmpty(message = "Objective is required")
     String objective;
@@ -35,6 +26,6 @@ public class CreateLessonRequest {
     @NotEmpty(message = "Resource is required")
     String resource;
 
-    @NotBlank(message = "Module ID is required")
+    @NotNull(message = "Module ID is required")
     UUID moduleID;
 }

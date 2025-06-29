@@ -2,12 +2,15 @@ package com.swp.drug_use_prevention_support_system.services;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateUserRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateUserRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AppointmentResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.UserResponse;
+import com.swp.drug_use_prevention_support_system.domain.entities.Appointment;
 import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.Role;
 import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
 import com.swp.drug_use_prevention_support_system.mappers.UserMapper;
+import com.swp.drug_use_prevention_support_system.repositories.AppointmentRepository;
 import com.swp.drug_use_prevention_support_system.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
 
@@ -27,6 +31,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final AppointmentRepository appointmentRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserResponse register(CreateUserRequest request) {
@@ -102,6 +107,51 @@ public class UserService {
         User user = getUserEntity(username);
         user.setStatus(UserStatus.INACTIVE);
         userRepository.save(user);
+    }
+
+    public List<UserResponse> getUsersByRole(Role role) {
+        List<User> users = userRepository.findByRole(role);
+        return users.stream().map(user -> userMapper.toDto(user)).toList();
+    }
+
+    @PreAuthorize("hasAnyRole('STAFF', 'MANAGER')")
+    public List<UserResponse> getAllUsersByDateDuration(LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
+        List<User> users = userRepository.findByCreatedAtBetween(startDateTime, endDateTime);
+        return users.stream()
+                .map(user -> userMapper.toDto(user))
+                .toList();
+    }
+
+    @PreAuthorize("hasAnyRole('STAFF', 'MANAGER')")
+    public List<UserResponse> getUsersByRoleAndDateDuration(Role role, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
+        List<User> users = userRepository.findByRoleAndCreatedAtBetween(role, startDateTime, endDateTime);
+        return users.stream()
+                .map(user -> userMapper.toDto(user))
+                .toList();
+    }
+
+    public List<UserResponse> getUsersByStatus(UserStatus status) {
+        List<User> users = userRepository.findByStatus(status);
+        return users.stream()
+                .map(user -> userMapper.toDto(user))
+                .toList();
+    }
+
+    public List<UserResponse> getUsersByStatusAndRole(UserStatus status, Role role) {
+        List<User> users = userRepository.findByStatusAndRole(status, role);
+        return users.stream()
+                .map(user -> userMapper.toDto(user))
+                .toList();
+    }
+
+    public List<UserResponse> getMembersOfConsultant(String username) {
+        List<User> members = appointmentRepository.findByConsultantUsername(username).stream()
+                .map(Appointment::getMember).distinct().toList();
+        return members.stream().map(user -> userMapper.toDto(user)).toList();
     }
 
     public boolean changePassword(String newPassword) {

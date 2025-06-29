@@ -222,8 +222,10 @@ public class ExcelService {
                 String description = getCellValue(row.getCell(4));
                 AgeGroup ageGroup = AgeGroup.valueOf(getCellValue(row.getCell(5)).toUpperCase());
                 CourseStatus status = CourseStatus.valueOf(getCellValue(row.getCell(6)).toUpperCase());
+                UUID courseID = UUID.fromString(getCellValue(row.getCell(7)));
 
                 Course course = Course.builder()
+                        .courseID(courseID)
                         .courseName(name)
                         .quantity(quantity)
                         .duration(duration)
@@ -254,12 +256,14 @@ public class ExcelService {
             try {
                 UUID moduleID = UUID.fromString(getCellValue(row.getCell(0)));
                 String name = getCellValue(row.getCell(1));
-                UUID courseID = UUID.fromString(getCellValue(row.getCell(2)));
+                CourseStatus status = CourseStatus.valueOf(getCellValue(row.getCell(2)).toUpperCase());
+                UUID courseID = UUID.fromString(getCellValue(row.getCell(3)));
                 Course course = courseService.getCourseEntity(courseID);
 
                 Module module = Module.builder()
                         .moduleID(moduleID)
                         .moduleName(name)
+                        .status(status)
                         .course(course)
                         .build();
                 modules.add(module);
@@ -288,7 +292,8 @@ public class ExcelService {
                 String objective = getCellValue(row.getCell(3));
                 String content = getCellValue(row.getCell(4));
                 String resrc = getCellValue(row.getCell(5));
-                UUID moduleID = UUID.fromString(getCellValue(row.getCell(6)));
+                CourseStatus status = CourseStatus.valueOf(getCellValue(row.getCell(6)).toUpperCase());
+                UUID moduleID = UUID.fromString(getCellValue(row.getCell(7)));
                 Module module = moduleService.getModelEntity(moduleID);
 
                 Lesson lesson = Lesson.builder()
@@ -298,6 +303,7 @@ public class ExcelService {
                         .objective(objective)
                         .content(content)
                         .resource(resrc)
+                        .status(status)
                         .module(module)
                         .build();
                 lessons.add(lesson);
@@ -356,7 +362,7 @@ public class ExcelService {
 
             try {
                 String img = getCellValue(row.getCell(0));
-                String type = getCellValue(row.getCell(1));
+                AssessmentType type = AssessmentType.valueOf(getCellValue(row.getCell(1)));
                 String link = getCellValue(row.getCell(2));
                 String description = getCellValue(row.getCell(3));
                 String details = getCellValue(row.getCell(4));
@@ -376,43 +382,6 @@ public class ExcelService {
             }
         }
         assessmentRepository.saveAll(assessments);
-        workbook.close();
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    public void importAssessmentResultsFromExcel(InputStream inputStream) throws IOException {
-        Workbook workbook = new XSSFWorkbook(inputStream);
-        Sheet sheet = workbook.getSheet("AssessmentResults");
-        List<AssessmentResult> results = new ArrayList<>();
-
-        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-            Row row = sheet.getRow(i);
-            if (row == null || isRowEmpty(row)) continue;
-
-            try {
-                Integer score = Integer.valueOf(getCellValue(row.getCell(0)));
-                RiskLevel level = RiskLevel.valueOf(getCellValue(row.getCell(1)));
-                String action = getCellValue(row.getCell(2));
-                LocalDateTime completed = row.getCell(3).getLocalDateTimeCellValue();
-                String username = getCellValue(row.getCell(4));
-                User user = userService.getUserEntity(username);
-                String type = getCellValue(row.getCell(5));
-                Assessment assessment = assessmentService.getAssessmentEntity(type);
-
-                AssessmentResult result = AssessmentResult.builder()
-                        .score(score)
-                        .riskLevel(level)
-                        .suggestedAction(action)
-                        .completedTime(completed)
-                        .user(user)
-                        .assessment(assessment)
-                        .build();
-                results.add(result);
-            } catch (Exception e) {
-                throw new RuntimeException("Error Excel import Assessment Results at line " + (i + 1) + ": " + e.getMessage(), e);
-            }
-        }
-        assessmentResultRepository.saveAll(results);
         workbook.close();
     }
 

@@ -4,6 +4,7 @@ import com.swp.drug_use_prevention_support_system.domain.enums.AppointmentStatus
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -16,9 +17,11 @@ public class AppointmentResponse {
 
     UUID appointmentID;
     String notes;
+    String link;
     AppointmentStatus status;
+    Instant appointmentDateTime;
     LocalDateTime createdAt;
-    LocalDateTime appointmentDateTime;
+    LocalDateTime updatedAt;
     UserResponse member;
     UserResponse consultant;
 }

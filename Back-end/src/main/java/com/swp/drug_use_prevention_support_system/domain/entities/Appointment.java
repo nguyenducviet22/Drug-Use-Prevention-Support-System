@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -21,10 +22,12 @@ public class Appointment {
     @Column(name = "appointment_id")
     UUID appointmentID;
     String notes;
+    String link;
     @Enumerated(EnumType.STRING)
     AppointmentStatus status;
+    Instant appointmentDateTime;
     LocalDateTime createdAt;
-    LocalDateTime appointmentDateTime;
+    LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -38,11 +41,11 @@ public class Appointment {
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
         this.createdAt = now;
-        this.appointmentDateTime = now;
+        this.updatedAt = now;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.appointmentDateTime = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }

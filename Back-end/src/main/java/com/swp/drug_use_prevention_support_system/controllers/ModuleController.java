@@ -1,6 +1,8 @@
 package com.swp.drug_use_prevention_support_system.controllers;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateModuleRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.DeleteModulesRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateModuleRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.LessonResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ModuleResponse;
@@ -29,7 +31,7 @@ public class ModuleController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<ModuleResponse>> createModule(@Valid @RequestBody CreateModuleRequest request) {
-        ModuleResponse response = moduleService.createProduct(request);
+        ModuleResponse response = moduleService.createModule(request);
         ApiResponse<ModuleResponse> apiResponse = ApiResponse.<ModuleResponse>builder()
                 .data(response)
                 .status(HttpStatus.CREATED.value())
@@ -49,7 +51,7 @@ public class ModuleController {
 
     @GetMapping("/{moduleID}/lessons")
     public ResponseEntity<ApiResponse<List<LessonResponse>>> getAllLessonByModuleID(@PathVariable UUID moduleID) {
-        List<LessonResponse> responses = lessonService.getLessonsByModuleID(moduleID);
+        List<LessonResponse> responses = lessonService.getLessonsForModule(moduleID);
         ApiResponse<List<LessonResponse>> apiResponse = ApiResponse.<List<LessonResponse>>builder()
                 .data(responses)
                 .status(HttpStatus.OK.value())
@@ -64,5 +66,27 @@ public class ModuleController {
         }
         excelService.importModulesFromExcel(file.getInputStream());
         return ResponseEntity.ok("Excel file data saved Modules into DB");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<ModuleResponse>> updateModule(@PathVariable UUID id,
+                                                                    @RequestBody UpdateModuleRequest request) {
+        ModuleResponse response = moduleService.updateModule(id, request);
+        ApiResponse<ModuleResponse> apiResponse = ApiResponse.<ModuleResponse>builder()
+                .data(response)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PutMapping("/{courseID}/unavailable")
+    public ResponseEntity<ApiResponse<List<ModuleResponse>>> updateModulesStatus(@PathVariable UUID courseID,
+                                                                                 @RequestBody DeleteModulesRequest request) {
+        List<ModuleResponse> responses = moduleService.updateModulesStatus(courseID, request);
+        ApiResponse<List<ModuleResponse>> apiResponse = ApiResponse.<List<ModuleResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(responses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 }

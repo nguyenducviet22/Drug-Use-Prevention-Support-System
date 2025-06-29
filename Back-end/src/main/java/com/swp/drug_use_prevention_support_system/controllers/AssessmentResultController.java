@@ -5,6 +5,7 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.responses.Assessme
 import com.swp.drug_use_prevention_support_system.domain.enums.RiskLevel;
 import com.swp.drug_use_prevention_support_system.services.AssessmentResultService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
+import com.swp.drug_use_prevention_support_system.services.GoogleSheetsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -23,6 +26,7 @@ public class AssessmentResultController {
 
     private final AssessmentResultService assessmentResultService;
     private final ExcelService excelService;
+    private final GoogleSheetsService googleSheetsService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<AssessmentResultResponse>>> getAssessmentResults() {
@@ -54,15 +58,6 @@ public class AssessmentResultController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PostMapping(value = "/import", consumes = "multipart/form-data")
-    public ResponseEntity<String> importUserDetails(@RequestParam("file") MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("File is empty!");
-        }
-        excelService.importAssessmentResultsFromExcel(file.getInputStream());
-        return ResponseEntity.ok("Excel file data saved Assessment Results into DB");
-    }
-
     @GetMapping("/risk-level")
     public ResponseEntity<ApiResponse<List<String>>> getAllAssessmentRiskLevel() {
         List<String> levels = Arrays.stream(RiskLevel.values())
@@ -73,5 +68,11 @@ public class AssessmentResultController {
                 .data(levels)
                 .build();
         return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/sync")
+    public ResponseEntity<String> readFromGGSheet() throws GeneralSecurityException, IOException {
+        googleSheetsService.importDataFromSheet();
+        return ResponseEntity.ok("Google sheet data saved Assessment Results into DB");
     }
 }

@@ -4,6 +4,7 @@ CREATE TABLE assessment_result (
     suggested_action TEXT,
     completed_time DATETIME NOT NULL,
     risk_level ENUM('NORMAL', 'LOW', 'MODERATE', 'HIGH', 'CRITICAL') NOT NULL,
+    assessment_type ENUM('ASSIST', 'CRAFFT') NOT NULL,
     username VARCHAR(100) NOT NULL,
     assessment_id BINARY(16) NOT NULL,
     FOREIGN KEY (username) REFERENCES users(username),

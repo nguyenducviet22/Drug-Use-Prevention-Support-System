@@ -11,4 +11,6 @@ import lombok.experimental.FieldDefaults;
 public class CheckResponse {
     boolean existed;
     double completion;
+    long totalConsultantAppointments;
+    long totalMembersOfConsultant;
 }

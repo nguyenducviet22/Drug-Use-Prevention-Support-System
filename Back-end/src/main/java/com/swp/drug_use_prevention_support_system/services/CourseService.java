@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,6 +31,8 @@ public class CourseService {
     @PreAuthorize("hasRole('STAFF')")
     public CourseResponse createCourse(CreateCourseRequest request) {
         Course course = courseMapper.toEntity(request);
+        course.setCourseID(UUID.randomUUID());
+        course.setStatus(CourseStatus.UNAVAILABLE);
         courseRepository.save(course);
         return courseMapper.toDto(course);
     }
@@ -59,12 +63,11 @@ public class CourseService {
         course.setImg(request.getImg());
         course.setDescription(request.getDescription());
         course.setAgeGroup(request.getAgeGroup());
-        course.setStatus(request.getStatus());
         courseRepository.save(course);
         return courseMapper.toDto(course);
     }
 
-    @PreAuthorize("hasRole('STAFF')")
+    @PreAuthorize("hasRole('MANAGER')")
     public CourseResponse updateCourseStatus(UUID courseId, CourseStatus status) {
         Course course = getCourseEntity(courseId);
         course.setStatus(status);
@@ -81,6 +84,31 @@ public class CourseService {
 
     public List<CourseResponse> getCoursesForMemberByStatus(EnrollmentStatus status, String username) {
         List<Course> courses = enrollmentRepository.findEnrolledCoursesByStatusAndMember(status, username);
+        return courses.stream()
+                .map(course -> courseMapper.toDto(course))
+                .toList();
+    }
+
+    public List<CourseResponse> getCoursesByStatus(CourseStatus status) {
+        List<Course> courses = courseRepository.findByStatusOrderByCreatedAtDesc(status);
+        return courses.stream()
+                .map(course -> courseMapper.toDto(course))
+                .toList();
+    }
+
+    public List<CourseResponse> getCoursesByStatusAndDateDuration(CourseStatus status, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
+        List<Course> courses = courseRepository.findByStatusAndCreatedAtBetween(status, startDateTime, endDateTime);
+        return courses.stream()
+                .map(course -> courseMapper.toDto(course))
+                .toList();
+    }
+
+    public List<CourseResponse> getAllCoursesByDateDuration(LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
+        List<Course> courses = courseRepository.findByCreatedAtBetween(startDateTime, endDateTime);
         return courses.stream()
                 .map(course -> courseMapper.toDto(course))
                 .toList();

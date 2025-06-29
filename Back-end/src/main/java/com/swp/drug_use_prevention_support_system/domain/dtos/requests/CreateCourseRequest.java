@@ -1,7 +1,6 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.requests;
 
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
-import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
