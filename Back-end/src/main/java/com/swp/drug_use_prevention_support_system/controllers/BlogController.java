@@ -7,6 +7,7 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.responses.BlogResp
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogType;
+import com.swp.drug_use_prevention_support_system.domain.enums.Role;
 import com.swp.drug_use_prevention_support_system.services.BlogService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import jakarta.validation.Valid;
@@ -49,16 +50,6 @@ public class BlogController {
         return ResponseEntity.ok(apiResponses);
     }
 
-    @GetMapping("/my-list/{username}")
-    public ResponseEntity<ApiResponse<List<BlogResponse>>> getMemberBlogs(@PathVariable String username) {
-        List<BlogResponse> responses = blogService.getMemberBlogsByStatus(username, BlogStatus.PUBLISHED);
-        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
-                .data(responses)
-                .status(HttpStatus.OK.value())
-                .build();
-        return ResponseEntity.ok(apiResponses);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<BlogResponse>> getBlog(@PathVariable UUID id) {
         BlogResponse response = blogService.getBlog(id);
@@ -80,9 +71,15 @@ public class BlogController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<ApiResponse<BlogResponse>> updateBlogStatus(@PathVariable UUID id) {
-        BlogResponse response = blogService.updateBlogStatus(id, BlogStatus.UNAVAILABLE);
+    @PutMapping("/{id}/status/{status}")
+    public ResponseEntity<ApiResponse<BlogResponse>> updateBlogStatus(@PathVariable UUID id,
+                                                                      @PathVariable BlogStatus status) {
+        BlogResponse response = null;
+        if (status == BlogStatus.PUBLISHED) {
+            response = blogService.approveUserBlogsStatus(id, status);
+        } else if (status == BlogStatus.UNAVAILABLE) {
+            response = blogService.updateBlogStatus(id, status);
+        }
         ApiResponse<BlogResponse> apiResponse = ApiResponse.<BlogResponse>builder()
                 .data(response)
                 .status(HttpStatus.OK.value())
@@ -123,26 +120,6 @@ public class BlogController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/my-list/draft/{username}")
-    public ResponseEntity<ApiResponse<List<BlogResponse>>> getDraftBlogs(@PathVariable String username) {
-        List<BlogResponse> responses = blogService.getMemberBlogsByStatus(username, BlogStatus.DRAFT);
-        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
-                .data(responses)
-                .status(HttpStatus.OK.value())
-                .build();
-        return ResponseEntity.ok(apiResponses);
-    }
-
-    @GetMapping("/my-list/pending/{username}")
-    public ResponseEntity<ApiResponse<List<BlogResponse>>> getPendingBlogs(@PathVariable String username) {
-        List<BlogResponse> responses = blogService.getMemberBlogsByStatus(username, BlogStatus.PENDING);
-        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
-                .data(responses)
-                .status(HttpStatus.OK.value())
-                .build();
-        return ResponseEntity.ok(apiResponses);
-    }
-
     @GetMapping("/age-group/{ageGroup}")
     public ResponseEntity<ApiResponse<List<BlogResponse>>> getBlogsByAgeGroup(@PathVariable AgeGroup ageGroup) {
         List<BlogResponse> responses = blogService.getBlogsByAgeGroup(ageGroup);
@@ -151,5 +128,49 @@ public class BlogController {
                 .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponses);
+    }
+
+    @GetMapping("/my-list/{username}/status/{status}")
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> getMyBlogsByStatus(@PathVariable String username,
+                                                                              @PathVariable BlogStatus status) {
+        List<BlogResponse> responses = blogService.getMyBlogsByStatus(username, status);
+        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
+
+    @GetMapping("/status/{status}/role-except/{role}")
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> getBlogsByStatusExceptRole(@PathVariable BlogStatus status,
+                                                                                      @PathVariable Role role) {
+        List<BlogResponse> responses = blogService.getBlogsByStatusExceptRole(status, role);
+        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
+
+    @GetMapping("/status/{status}/role/{role}")
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> getBlogsByStatusRole(@PathVariable BlogStatus status,
+                                                                                @PathVariable Role role) {
+        List<BlogResponse> responses = blogService.getBlogsByStatusAndRole(status, role);
+        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
+
+    @PutMapping("/staff-list/{id}/status/{status}")
+    public ResponseEntity<ApiResponse<BlogResponse>> approveStaffBlogsStatus(@PathVariable UUID id,
+                                                                             @PathVariable BlogStatus status) {
+        BlogResponse response = blogService.approveStaffBlogsStatus(id, status);
+        ApiResponse<BlogResponse> apiResponse = ApiResponse.<BlogResponse>builder()
+                .data(response)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 }

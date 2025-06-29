@@ -1,45 +1,61 @@
 package com.swp.drug_use_prevention_support_system.services;
 
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
-import com.google.api.services.sheets.v4.model.*;
+import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest;
+import com.google.api.services.sheets.v4.model.CellData;
+import com.google.api.services.sheets.v4.model.ExtendedValue;
+import com.google.api.services.sheets.v4.model.GridRange;
+import com.google.api.services.sheets.v4.model.Request;
+import com.google.api.services.sheets.v4.model.RowData;
+import com.google.api.services.sheets.v4.model.UpdateCellsRequest;
+import com.google.api.services.sheets.v4.model.ValueRange;
 import com.swp.drug_use_prevention_support_system.domain.entities.Assessment;
 import com.swp.drug_use_prevention_support_system.domain.entities.AssessmentResult;
 import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.domain.enums.AssessmentType;
 import com.swp.drug_use_prevention_support_system.domain.enums.RiskLevel;
 import com.swp.drug_use_prevention_support_system.repositories.AssessmentResultRepository;
-import com.swp.drug_use_prevention_support_system.util.GoogleAuthUtil;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toList; // Đảm bảo import này được sử dụng nếu bạn bỏ comment phần stream
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor // Sử dụng Lombok để tạo constructor với các final fields
 public class GoogleSheetsService {
 
     private final UserService userService;
     private final AssessmentService assessmentService;
     private final AssessmentResultRepository assessmentResultRepository;
 
+    // Inject Credential, NetHttpTransport và JsonFactory đã được định nghĩa là Spring Beans
+    private final Credential googleCredential;
+    private final NetHttpTransport httpTransport;
+    private final JsonFactory jsonFactory;
+
     private static final String APPLICATION_NAME = "Drug Use Prevention Sup Sys";
     private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
     @Transactional
     public void importDataFromSheet() throws GeneralSecurityException, IOException {
+        // Sử dụng các đối tượng đã được inject thay vì gọi lại phương thức getCredentials()
         Sheets service = new Sheets.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                GoogleAuthUtil.JSON_FACTORY,
-                GoogleAuthUtil.getCredentials()
+                this.httpTransport, // Sử dụng httpTransport đã inject
+                this.jsonFactory,   // Sử dụng jsonFactory đã inject
+                this.googleCredential // Sử dụng googleCredential đã inject
         ).setApplicationName(APPLICATION_NAME).build();
 
         final String spreadsheetId = "1jgbyNjZjwAhzaA0XcyVwu3NIxHQpXdGuPK_YEbJnOhM";
@@ -61,16 +77,43 @@ public class GoogleSheetsService {
 
         for (int i = 0; i < values.size(); i++) {
             List<Object> row = values.get(i);
+            // Cẩn thận với IndexOutOfBoundsException nếu hàng không đủ cột
             if (row.size() < 7 || !"yes".equalsIgnoreCase(row.get(6).toString())) {
                 try {
-                    Integer score = Integer.valueOf(row.get(0).toString());
-                    RiskLevel level = RiskLevel.valueOf(row.get(1).toString());
-                    String action = row.get(2).toString();
-                    LocalDateTime completed = LocalDateTime.parse(row.get(3).toString(), DATETIME_FORMATTER);
-                    String username = row.get(4).toString();
-                    User user = userService.getUserEntity(username);
-                    AssessmentType type = AssessmentType.valueOf(row.get(5).toString());
-                    Assessment assessment = assessmentService.getAssessmentEntity(type);
+                    // Đảm bảo rằng các cột không rỗng trước khi chuyển đổi
+                    Integer score = (row.get(0) != null) ? Integer.valueOf(row.get(0).toString()) : null;
+                    RiskLevel level = (row.get(1) != null) ? RiskLevel.valueOf(row.get(1).toString()) : null;
+                    String action = (row.get(2) != null) ? row.get(2).toString() : null;
+                    LocalDateTime completed = (row.get(3) != null) ? LocalDateTime.parse(row.get(3).toString(), DATETIME_FORMATTER) : null;
+                    String username = (row.get(4) != null) ? row.get(4).toString() : null;
+
+                    User user = null;
+                    if (username != null) {
+                        try {
+                            user = userService.getUserEntity(username);
+                        } catch (Exception userEx) {
+                            System.err.println("User not found for username: " + username + " at row " + (i + 2) + ". Skipping this row.");
+                            continue; // Bỏ qua hàng này nếu không tìm thấy người dùng
+                        }
+                    } else {
+                        System.err.println("Username is null at row " + (i + 2) + ". Skipping this row.");
+                        continue;
+                    }
+
+                    AssessmentType type = (row.get(5) != null) ? AssessmentType.valueOf(row.get(5).toString()) : null;
+                    Assessment assessment = null;
+                    if (type != null) {
+                        try {
+                            assessment = assessmentService.getAssessmentEntity(type);
+                        } catch (Exception assessmentEx) {
+                            System.err.println("Assessment not found for type: " + type + " at row " + (i + 2) + ". Skipping this row.");
+                            continue; // Bỏ qua hàng này nếu không tìm thấy Assessment
+                        }
+                    } else {
+                        System.err.println("AssessmentType is null at row " + (i + 2) + ". Skipping this row.");
+                        continue;
+                    }
+
 
                     results.add(AssessmentResult.builder()
                             .score(score)
@@ -81,9 +124,15 @@ public class GoogleSheetsService {
                             .assessment(assessment)
                             .build());
 
-                    syncedRows.add(i + 2); // Sheet starts from row 2
+                    syncedRows.add(i + 2); // Sheet starts from row 2 (header is row 1)
+                } catch (IndexOutOfBoundsException e) {
+                    System.err.println("Row " + (i + 2) + " does not have enough columns. Skipping.");
+                } catch (IllegalArgumentException e) {
+                    System.err.println("Data format error at row " + (i + 2) + ": " + e.getMessage() + ". Skipping.");
                 } catch (Exception e) {
-                    throw new RuntimeException("Error at row " + (i + 2) + ": " + e.getMessage(), e);
+                    System.err.println("Error processing row " + (i + 2) + ": " + e.getMessage());
+                    // Thay vì ném RuntimeException, hãy log và bỏ qua hàng bị lỗi
+                    // throw new RuntimeException("Error at row " + (i + 2) + ": " + e.getMessage(), e);
                 }
             }
         }
@@ -97,22 +146,6 @@ public class GoogleSheetsService {
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("Sheet '" + sheetName + "' not found"))
                     .getProperties().getSheetId();
-
-//            List<Request> updateRequests = syncedRows.stream()
-//                    .map(rowNumber -> new Request().setUpdateCells(
-//                            new UpdateCellsRequest()
-//                                    .setRows(List.of(new RowData().setValues(List.of(
-//                                            new CellData().setUserEnteredValue(
-//                                                    new ExtendedValue().setStringValue("yes"))))))
-//                                    .setFields("userEnteredValue")
-//                                    .setRange(new GridRange()
-//                                            .setSheetId(sheetId)
-//                                            .setStartRowIndex(rowNumber - 1)
-//                                            .setEndRowIndex(rowNumber)
-//                                            .setStartColumnIndex(6)
-//                                            .setEndColumnIndex(7)
-//                                    )))
-//                    ).collect(toList());
 
             List<Request> updateRequests = new ArrayList<>();
             for (Integer rowNumber : syncedRows) {
@@ -142,12 +175,17 @@ public class GoogleSheetsService {
         }
     }
 
-    @Scheduled(fixedRate = 1000) // mỗi 1 giây
+    // Đảm bảo @EnableScheduling được đặt ở lớp Main Application
+    @Scheduled(fixedRate = 1000 * 60 * 5) // Chạy mỗi 5 phút (ví dụ, thay vì mỗi 1 giây để tránh quá tải)
     public void syncGoogleSheetsData() {
         try {
+            // Có thể thêm logging ở đây để biết khi nào tác vụ bắt đầu
+            System.out.println("Starting Google Sheets data sync...");
             importDataFromSheet();
+            System.out.println("Google Sheets data sync completed.");
         } catch (Exception e) {
-            System.err.println("Failed to sync: " + e.getMessage());
+            System.err.println("Failed to sync Google Sheets data: " + e.getMessage());
+            e.printStackTrace(); // In ra stack trace để dễ debug hơn
         }
     }
 }

@@ -82,12 +82,32 @@ public class AppointmentService {
         return appointmentMapper.toDto(appointment);
     }
 
-    public AppointmentResponse getMyTodayAppointment(String username) {
-        LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
-        Appointment appointment = appointmentRepository
+    public List<AppointmentResponse> getMyTodayAppointments(String username) {
+        ZoneId zone = ZoneId.systemDefault();
+        Instant startOfDay = LocalDate.now().atStartOfDay(zone).toInstant();
+        Instant endOfDay = LocalDate.now().plusDays(1).atStartOfDay(zone).toInstant();
+        List<Appointment> appointments = appointmentRepository
                 .findByMemberUsernameAndAppointmentDateTimeBetween(username, startOfDay, endOfDay);
-        return appointmentMapper.toDto(appointment);
+        return appointments.stream().map(appointmentMapper::toDto).toList();
+    }
+
+    public List<AppointmentResponse> getAllAppointmentsByDateDuration(LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
+        List<Appointment> appointments = appointmentRepository.findByCreatedAtBetween(startDateTime, endDateTime);
+        return appointments.stream().map(appointmentMapper::toDto).toList();
+    }
+
+    public List<AppointmentResponse> getConsultantAppointments(String username) {
+        List<Appointment> appointments = appointmentRepository.findByConsultantUsername(username);
+        return appointments.stream().map(appointmentMapper::toDto).toList();
+    }
+
+    public long countConsultantAppointments(String username) {
+        return appointmentRepository.countByConsultantUsername(username);
+    }
+
+    public long countTotalMembersOfConsultant(String username) {
+        return appointmentRepository.countDistinctMembersByConsultantUsername(username);
     }
 }

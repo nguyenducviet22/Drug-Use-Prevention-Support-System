@@ -1,56 +1,48 @@
 package com.swp.drug_use_prevention_support_system.services;
 
+import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.model.*;
+import com.google.api.services.calendar.model.ConferenceData;
+import com.google.api.services.calendar.model.ConferenceSolutionKey;
+import com.google.api.services.calendar.model.CreateConferenceRequest;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateAppointmentRequest;
-import com.swp.drug_use_prevention_support_system.util.GoogleAuthUtil;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.Instant;
-import java.util.List;
 
 @Service
 public class GoogleCalendarService {
 
     private static final String APPLICATION_NAME = "Drug Use Prevention Sup Sys";
 
-    public void getGGMeetAppointments() throws GeneralSecurityException, IOException {
-        Calendar service = new Calendar.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                GoogleAuthUtil.JSON_FACTORY,
-                GoogleAuthUtil.getCredentials()
-        ).setApplicationName(APPLICATION_NAME).build();
+    // Inject Credential, NetHttpTransport và JsonFactory đã được định nghĩa là Spring Beans
+    private final Credential googleCredential;
+    private final NetHttpTransport httpTransport;
+    private final JsonFactory jsonFactory;
 
-        DateTime now = new DateTime(System.currentTimeMillis());
-        Events events = service.events().list("primary")
-                .setMaxResults(10)
-                .setTimeMin(now)
-                .setOrderBy("startTime")
-                .setSingleEvents(true)
-                .execute();
-
-        List<Event> items = events.getItems();
-        if (items.isEmpty()) {
-            System.out.println("No upcoming events found.");
-        } else {
-            System.out.println("Upcoming events");
-            for (Event event : items) {
-                DateTime start = event.getStart().getDateTime();
-                if (start == null) start = event.getStart().getDate();
-                System.out.printf("%s (%s)\n", event.getSummary(), start);
-            }
-        }
+    // Constructor để Spring tự động inject các dependencies
+    public GoogleCalendarService(Credential googleCredential,
+                                 NetHttpTransport httpTransport,
+                                 JsonFactory jsonFactory) {
+        this.googleCredential = googleCredential;
+        this.httpTransport = httpTransport;
+        this.jsonFactory = jsonFactory;
     }
 
     public String createGGMeetAppointment(CreateAppointmentRequest request) throws GeneralSecurityException, IOException {
+        // Sử dụng các đối tượng đã được inject thay vì gọi lại phương thức getCredentials()
         Calendar service = new Calendar.Builder(
-                GoogleNetHttpTransport.newTrustedTransport(),
-                GoogleAuthUtil.JSON_FACTORY,
-                GoogleAuthUtil.getCredentials()
+                this.httpTransport, // Sử dụng httpTransport đã inject
+                this.jsonFactory,   // Sử dụng jsonFactory đã inject
+                this.googleCredential // Sử dụng googleCredential đã inject
         ).setApplicationName(APPLICATION_NAME).build();
 
         Instant startInstant = request.getAppointmentDateTime();

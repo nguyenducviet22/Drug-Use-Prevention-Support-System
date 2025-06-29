@@ -149,4 +149,14 @@ public class UserController {
                 .build();
         return ResponseEntity.ok(apiResponses);
     }
+
+    @GetMapping("/{username}/members")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getMembersOfConsultant(@PathVariable String username) {
+        List<UserResponse> responses = userService.getMembersOfConsultant(username);
+        ApiResponse<List<UserResponse>> apiResponses = ApiResponse.<List<UserResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
 }

@@ -21,10 +21,7 @@ public class Password {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "password_id")
     UUID passwordID;
-
     String email;
-
     String otp;
-
     LocalDateTime expiryTime;
 }

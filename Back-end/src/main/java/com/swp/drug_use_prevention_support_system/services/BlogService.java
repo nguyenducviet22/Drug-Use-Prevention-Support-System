@@ -7,6 +7,7 @@ import com.swp.drug_use_prevention_support_system.domain.entities.Blog;
 import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.BlogStatus;
+import com.swp.drug_use_prevention_support_system.domain.enums.Role;
 import com.swp.drug_use_prevention_support_system.mappers.BlogMapper;
 import com.swp.drug_use_prevention_support_system.repositories.BlogRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,6 +16,8 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -50,8 +53,39 @@ public class BlogService {
                 .toList();
     }
 
-    public List<BlogResponse> getMemberBlogsByStatus(String username, BlogStatus status) {
-        List<Blog> blogs = blogRepository.findByMemberUsernameAndBlogStatus(username, status);
+    public List<BlogResponse> getBlogsByStatusExceptRole(BlogStatus status, Role role) {
+        List<Blog> blogs = blogRepository.findByBlogStatusOrderByCreatedAtDesc(status);
+        return blogs.stream()
+                .filter(blog -> !blog.getMember().getRole().equals(role))
+                .map(blog -> blogMapper.toDto(blog))
+                .toList();
+    }
+
+    public List<BlogResponse> getBlogsByStatus(BlogStatus status) {
+        List<Blog> blogs = blogRepository.findByBlogStatusOrderByCreatedAtDesc(status);
+        return blogs.stream()
+                .map(blog -> blogMapper.toDto(blog))
+                .toList();
+    }
+
+    public List<BlogResponse> getBlogsByStatusAndRole(BlogStatus status, Role role) {
+        List<BlogResponse> blogs = getBlogsByStatus(status);
+        return blogs.stream()
+                .filter(blog -> blog.getMember().getRole().equals(role))
+                .toList();
+    }
+
+    public List<BlogResponse> getBlogsByStatusAndDateDuration(BlogStatus status, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
+        List<Blog> blogs = blogRepository.findByBlogStatusAndCreatedAtBetween(status, startDateTime, endDateTime);
+        return blogs.stream()
+                .map(blog -> blogMapper.toDto(blog))
+                .toList();
+    }
+
+    public List<BlogResponse> getMyBlogsByStatus(String username, BlogStatus status) {
+        List<Blog> blogs = blogRepository.findByMemberUsernameAndBlogStatusOrderByCreatedAtDesc(username, status);
         return blogs.stream()
                 .map(blog -> blogMapper.toDto(blog))
                 .toList();
@@ -87,6 +121,22 @@ public class BlogService {
         return blogMapper.toDto(blog);
     }
 
+    @PostAuthorize("hasRole('STAFF')")
+    public BlogResponse approveUserBlogsStatus(UUID blogID, BlogStatus status) {
+        Blog blog = blogMapper.toEntity(getBlog(blogID));
+        blog.setBlogStatus(status);
+        blogRepository.save(blog);
+        return blogMapper.toDto(blog);
+    }
+
+    @PostAuthorize("hasRole('MANAGER')")
+    public BlogResponse approveStaffBlogsStatus(UUID blogID, BlogStatus status) {
+        Blog blog = blogMapper.toEntity(getBlog(blogID));
+        blog.setBlogStatus(status);
+        blogRepository.save(blog);
+        return blogMapper.toDto(blog);
+    }
+
     public List<BlogResponse> getBlogsByAgeGroup(AgeGroup ageGroup) {
         List<Blog> blogs = blogRepository.findByAgeGroupOrderByCreatedAtDesc(ageGroup);
         List<Blog> blogsForEveryone = blogRepository.findByAgeGroupOrderByCreatedAtDesc(AgeGroup.EVERYONE);
@@ -97,9 +147,9 @@ public class BlogService {
                 .toList();
     }
 
-    public Integer calculateReadingTime(String content){
+    public Integer calculateReadingTime(String content) {
         if (content == null || content.isEmpty()) return 0;
         int wordCount = content.trim().split("\\s+").length;
-        return (int) Math.ceil((double) wordCount/WORDS_PER_MINUTE);
+        return (int) Math.ceil((double) wordCount / WORDS_PER_MINUTE);
     }
 }

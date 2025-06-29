@@ -4,6 +4,7 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateApp
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateAppointmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AppointmentResponse;
+import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CheckResponse;
 import com.swp.drug_use_prevention_support_system.services.AppointmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -75,9 +76,34 @@ public class AppointmentController {
     }
 
     @GetMapping("/today/{username}")
-    public ResponseEntity<ApiResponse<AppointmentResponse>> getTodayAppointment(@PathVariable String username) {
-        AppointmentResponse response = appointmentService.getMyTodayAppointment(username);
-        ApiResponse<AppointmentResponse> apiResponse = ApiResponse.<AppointmentResponse>builder()
+    public ResponseEntity<ApiResponse<List<AppointmentResponse>>> getTodayAppointment(@PathVariable String username) {
+        List<AppointmentResponse> response = appointmentService.getMyTodayAppointments(username);
+        ApiResponse<List<AppointmentResponse>> apiResponse = ApiResponse.<List<AppointmentResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(response)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/consultant-list/{username}")
+    public ResponseEntity<ApiResponse<List<AppointmentResponse>>> getConsultantAppointments(@PathVariable String username) {
+        List<AppointmentResponse> responses = appointmentService.getConsultantAppointments(username);
+        ApiResponse<List<AppointmentResponse>> apiResponse = ApiResponse.<List<AppointmentResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(responses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/count-appointments-members/consultant/{username}")
+    public ResponseEntity<ApiResponse<CheckResponse>> countConsultantAppointments(@PathVariable String username) {
+        long totalAppointments = appointmentService.countConsultantAppointments(username);
+        long totalMembers = appointmentService.countTotalMembersOfConsultant(username);
+        CheckResponse response = CheckResponse.builder()
+                .totalConsultantAppointments(totalAppointments)
+                .totalMembersOfConsultant(totalMembers)
+                .build();
+        ApiResponse<CheckResponse> apiResponse = ApiResponse.<CheckResponse>builder()
                 .status(HttpStatus.OK.value())
                 .data(response)
                 .build();

@@ -32,7 +32,6 @@ public class CourseController {
     private final CourseService courseService;
     private final ExcelService excelService;
     private final ModuleService moduleService;
-    private final LessonService lessonService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<CourseResponse>> createCourse(@Valid @RequestBody CreateCourseRequest request) {
@@ -75,9 +74,9 @@ public class CourseController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PatchMapping("/{id}/{status}")
-    public ResponseEntity<ApiResponse<CourseResponse>> deleteCourse(@PathVariable UUID id,
-                                                                    @PathVariable CourseStatus status) {
+    @PutMapping("/{id}/{status}")
+    public ResponseEntity<ApiResponse<CourseResponse>> updateCourseStatus(@PathVariable UUID id,
+                                                                          @PathVariable CourseStatus status) {
         CourseResponse response = courseService.updateCourseStatus(id, status);
         ApiResponse<CourseResponse> apiResponse = ApiResponse.<CourseResponse>builder()
                 .status(HttpStatus.OK.value())
@@ -130,8 +129,8 @@ public class CourseController {
     }
 
     @GetMapping("/{status}/{username}")
-    public ResponseEntity<ApiResponse<List<CourseResponse>>> getCoursesByStatus(@PathVariable EnrollmentStatus status,
-                                                                                @PathVariable String username) {
+    public ResponseEntity<ApiResponse<List<CourseResponse>>> getCoursesForMemberByStatus(@PathVariable EnrollmentStatus status,
+                                                                                         @PathVariable String username) {
         List<CourseResponse> responses = courseService.getCoursesForMemberByStatus(status, username);
         ApiResponse<List<CourseResponse>> apiResponse = ApiResponse.<List<CourseResponse>>builder()
                 .status(HttpStatus.OK.value())
@@ -144,6 +143,16 @@ public class CourseController {
     public ResponseEntity<ApiResponse<List<ModuleResponse>>> getModulesForCourse(@PathVariable UUID id) {
         List<ModuleResponse> responses = moduleService.getAllModulesForCourse(id);
         ApiResponse<List<ModuleResponse>> apiResponse = ApiResponse.<List<ModuleResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(responses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<ApiResponse<List<CourseResponse>>> getCoursesByStatus(@PathVariable CourseStatus status) {
+        List<CourseResponse> responses = courseService.getCoursesByStatus(status);
+        ApiResponse<List<CourseResponse>> apiResponse = ApiResponse.<List<CourseResponse>>builder()
                 .status(HttpStatus.OK.value())
                 .data(responses)
                 .build();

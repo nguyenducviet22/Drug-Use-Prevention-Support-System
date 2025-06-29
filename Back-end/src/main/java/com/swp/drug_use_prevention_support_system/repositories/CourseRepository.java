@@ -2,9 +2,11 @@ package com.swp.drug_use_prevention_support_system.repositories;
 
 import com.swp.drug_use_prevention_support_system.domain.entities.Course;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
+import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,4 +14,10 @@ import java.util.UUID;
 public interface CourseRepository extends JpaRepository<Course, UUID> {
 
     List<Course> findByAgeGroupOrderByCreatedAtDesc(AgeGroup ageGroup);
+
+    List<Course> findByStatusOrderByCreatedAtDesc(CourseStatus status);
+
+    List<Course> findByStatusAndCreatedAtBetween(CourseStatus status, LocalDateTime start, LocalDateTime end);
+
+    List<Course> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 }
