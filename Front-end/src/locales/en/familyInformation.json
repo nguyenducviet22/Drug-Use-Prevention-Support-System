@@ -1,0 +1,25 @@
+{
+    "header": "Family Information",
+    "addMemberButton": "Add Member",
+    "noMembersAddedTitle": "No family members added yet.",
+    "addFirstMemberButton": "Add First Family Member",
+    "loadingMessage": "Loading...",
+    "errorMessage": "Error: {{message}}",
+    "memberTitle": "Person {{index}}",
+    "labels": {
+        "fullName": "Full Name",
+        "phoneNumber": "Phone Number",
+        "relationship": "Relationship",
+        "address": "Address"
+    },
+    "relationships": {
+        "Father": "Father",
+        "Mother": "Mother",
+        "Brother": "Brother",
+        "Sister": "Sister",
+        "Son": "Son",
+        "Daughter": "Daughter",
+        "Spouse": "Spouse",
+        "Other": "Other"
+    }
+}

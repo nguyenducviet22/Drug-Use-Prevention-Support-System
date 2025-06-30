@@ -1,0 +1,48 @@
+{
+    "header": {
+        "title": "Đặt Lịch Tư Vấn",
+        "subtitle": "Hẹn lịch cùng chuyên gia phòng ngừa ma túy được chứng nhận của chúng tôi"
+    },
+    "consultantSelection": {
+        "dropdownPlaceholder": "Chọn chuyên gia",
+        "cardTitle": "Chuyên gia tư vấn"
+    },
+    "calendarSection": {
+        "title": "Khung Giờ Có Sẵn",
+        "placeholderText": "Vui lòng chọn chuyên gia để xem lịch hẹn khả dụng",
+        "placeholderIconAlt": "Biểu tượng lịch",
+        "eventTitles": {
+            "available": "Còn trống",
+            "selected": "Đã chọn",
+            "pastUnavailable": "Đã qua / Không khả dụng"
+        },
+        "infoMessages": {
+            "unavailableSlot": "Khung giờ này không thể đặt (có thể đã qua hoặc đã được đặt trước).",
+            "pastAppointmentError": "Không thể đặt lịch trong quá khứ. Vui lòng chọn khung giờ sắp tới.",
+            "slotPassedError": "Khung giờ đã chọn đã qua. Vui lòng chọn khung giờ khác."
+        },
+        "toastMessages": {
+            "fetchConsultantsError": "Không thể tải lịch tư vấn của chuyên gia.",
+            "selectConsultantTimeSlot": "Vui lòng chọn chuyên gia và khung giờ.",
+            "bookingSuccess": "Đặt lịch thành công",
+            "bookingError": "Lỗi khi đặt lịch: {message}",
+            "generalBookingError": "Đã xảy ra lỗi khi đặt lịch. Vui lòng thử lại."
+        }
+    },
+    "appointmentInformation": {
+        "cardTitle": "Thông Tin Cuộc Hẹn",
+        "consultantLabel": "Chuyên gia:",
+        "dateLabel": "Ngày:",
+        "timeLabel": "Giờ:",
+        "noteLabel": "Ghi chú (Không bắt buộc)",
+        "notePlaceholder": "Hãy chia sẻ vấn đề bạn muốn được tư vấn hoặc bất kỳ điều gì liên quan...",
+        "submitButton": "Gửi"
+    },
+    "confirmationModal": {
+        "title": "Xác Nhận Lịch Hẹn",
+        "consultantLabel": "Chuyên gia:",
+        "dateTimeLabel": "Ngày & Giờ:",
+        "noteLabel": "Ghi chú:",
+        "confirmButton": "Xác nhận"
+    }
+}

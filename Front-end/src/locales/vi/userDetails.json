@@ -1,0 +1,9 @@
+{
+    "title": "Chi tiết người dùng",
+    "fullName": "Họ và tên",
+    "gender": "Giới tính",
+    "dateOfBirth": "Ngày sinh",
+    "phoneNumber": "Số điện thoại",
+    "address": "Địa chỉ",
+    "job": "Nghề nghiệp"
+}

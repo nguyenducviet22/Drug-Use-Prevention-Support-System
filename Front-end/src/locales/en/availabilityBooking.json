@@ -1,0 +1,38 @@
+{
+  "header": {
+    "title": "Book Availabilities",
+    "subtitle": "Schedule your session with our certified drug prevention specialists"
+  },
+  "calendarSection": {
+    "availableTimeSlotsTitle": "Available Time Slots",
+    "placeholderLoading": "Loading available availabilities",
+    "eventTitles": {
+      "available": "Available",
+      "pastUnavailable": "Past/Unavailable",
+      "selected": "Selected"
+    }
+  },
+  "selectedSlotsSection": {
+    "title": "Selected Availability Slots",
+    "dateLabel": "Date:",
+    "timeLabel": "Time:",
+    "submitButton": "Submit Selected Availabilities ({{count}})"
+  },
+  "confirmationModal": {
+    "title": "Book Summary",
+    "slotLabel": "Slot {{index}}:",
+    "confirmButton": "Confirm Booking ({{count}} slots)"
+  },
+  "toasts": {
+    "selectSlotWarning": "Please select at least one availability slot.",
+    "pastSlotError": "Some selected slots are in the past and cannot be booked. Please review your selection.",
+    "noValidSlotsError": "No valid upcoming slots selected for booking.",
+    "bookingSuccess": "Booked availability successfully",
+    "bookingError": "Error booking availability: {{message}}",
+    "unknownBookingError": "Error booking availability. Please try again.",
+    "unavailableSlotInfo": "This slot is not available for booking (it might be in the past or already booked).",
+    "slotUnselected": "Availability slot unselected.",
+    "slotSelected": "Availability slot selected.",
+    "fetchError": "Failed to load consultant's available slots."
+  }
+}

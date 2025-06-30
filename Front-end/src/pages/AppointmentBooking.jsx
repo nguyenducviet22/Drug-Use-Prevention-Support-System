@@ -26,7 +26,7 @@ const AppointmentBooking = () => {
         end: format(nextWeek, 'yyyy-MM-dd'),
     });
     const { loading: loadingConsultants, error: errorConsultants, get: getConsultants } = useFetch()
-    const { loading: loadingAvailabilities, error: errorAvailabilities, get: getAvailabilities } = useFetch()
+    const { loading: loadingConsultantScheduledSlots, error: errorConsultantScheduledSlots, get: getConsultantScheduledSlots } = useFetch()
     const { loading: loadingNewAppointment, error: errorNewAppointment, post: postNewAppointment } = useFetch()
     const [calendarEvents, setCalendarEvents] = useState([])
 
@@ -72,16 +72,15 @@ const AppointmentBooking = () => {
         });
 
         if (selectedConsultant) {
-            fetchConsultantAvailabilities(selectedConsultant.username, newStartDate, newEndDate);
+            fetchConsultantScheduledSlots(selectedConsultant.username, newStartDate, newEndDate);
         }
     };
 
-    const fetchConsultantAvailabilities = async (username, fromDate, toDate) => {
+    const fetchConsultantScheduledSlots = async (username, fromDate, toDate) => {
         try {
-            const specificConsultantAvailabilities = await getAvailabilities(
-                `http://localhost:8080/api/appointment/available?username=${username}&from=${fromDate}&to=${toDate}`
+            const specificConsultantAvailabilities = await getConsultantScheduledSlots(
+                `http://localhost:8080/api/availability/scheduled-slots?username=${username}&from=${fromDate}&to=${toDate}`
             );
-            console.log("Raw availabilities from backend:", specificConsultantAvailabilities);
             const transformedEvents = transformToCalendarEvents(specificConsultantAvailabilities, username);
             setCalendarEvents(transformedEvents);
         } catch (error) {
@@ -110,7 +109,7 @@ const AppointmentBooking = () => {
         setShowConsultantDropdown(false)
         setSelectedTimeSlot(null) // Reset time slot when consultant changes
 
-        fetchConsultantAvailabilities(consultant.username, currentViewRange.start, currentViewRange.end);
+        fetchConsultantScheduledSlots(consultant.username, currentViewRange.start, currentViewRange.end);
     }
     console.log(calendarEvents);
 
@@ -207,7 +206,7 @@ const AppointmentBooking = () => {
                 setSelectedTimeSlot(null)
                 setAppointmentNote("")
                 if (selectedConsultant) {
-                    fetchConsultantAvailabilities(selectedConsultant.username, currentViewRange.start, currentViewRange.end);
+                    fetchConsultantScheduledSlots(selectedConsultant.username, currentViewRange.start, currentViewRange.end);
                 } else {
                     setCalendarEvents([]);
                 }
