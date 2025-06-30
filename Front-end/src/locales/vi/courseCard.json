@@ -1,0 +1,11 @@
+{
+    "durationSuffix": "giờ",
+    "enrollButton": "Đăng Ký",
+    "detailsButton": "Chi Tiết",
+    "ageGroup": {
+        "ADOLESCENT": "Thanh Thiếu Niên",
+        "ADULT": "Người Trưởng Thành",
+        "SENIOR": "Người Cao Tuổi",
+        "EVERYONE": "Mọi Đối Tượng"
+    }
+}

@@ -18,6 +18,8 @@ export const useAuth = () => {
             const loginAccount = await fetchUser();
             const { role } = loginAccount
             if (role === "MEMBER") navigate("/");
+            if (role === "STAFF") navigate("/staff");
+            if (role === "MANAGER") navigate("/manager");
             toast.success("Login successfully")
         } catch (error) {
             if (error.response) {
@@ -77,10 +79,6 @@ export const useAuth = () => {
             setAuthLoading(false);
         }
     }, [fetchUser]);
-
-    // useEffect(() => {
-    //     console.log("User state changed:", user);
-    // }, [user]);
 
     return {
         user,

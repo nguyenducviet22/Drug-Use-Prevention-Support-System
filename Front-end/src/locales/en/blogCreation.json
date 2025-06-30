@@ -1,0 +1,41 @@
+{
+  "header": {
+    "title": "Create Your Own Blog",
+    "subtitle": "Sharing knowledge and experience in drug prevention"
+  },
+  "form": {
+    "alert": {
+      "success": "Blog saved as draft successfully!",
+      "publishSuccess": "Blog published successfully!",
+      "publishError": "Error publishing blog. Please try again.",
+      "previewMessage": "Opening preview...",
+      "loginRequired": "Please log in to post your blog.",
+      "imageSizeError": "Image size should be less than 5MB",
+      "validation": {
+        "blogNameRequired": "Please enter a blog name",
+        "blogTypeRequired": "Please select a topic",
+        "descriptionRequired": "Please enter a description",
+        "contentRequired": "Please enter blog content",
+        "failedToCreate": "Failed to create blog. Please try again."
+      }
+    },
+    "blogNamePlaceholder": "Enter Blog Name",
+    "selectTopic": "Select Topic",
+    "selectAgeGroup": "Select Age Group",
+    "byAuthor": "by {{author}}",
+    "imageUpload": {
+      "clickToUpload": "Click to upload image",
+      "clickToChange": "Click to change image"
+    },
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Write a brief description of the blog content",
+    "blogContentLabel": "Blog Content",
+    "blogContentPlaceholder": "Start writing your blog...",
+    "buttons": {
+      "save": "Save",
+      "view": "View",
+      "publish": "Publish",
+      "publishing": "Publishing..."
+    }
+  }
+}

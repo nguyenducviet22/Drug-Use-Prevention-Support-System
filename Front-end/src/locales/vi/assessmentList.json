@@ -1,0 +1,39 @@
+{
+  "header": {
+    "step1": "1",
+    "step2": "2",
+    "title": "Chọn Bài Đánh Giá",
+    "subtitle": "Hãy chọn bài đánh giá phù hợp với độ tuổi và nhu cầu của bạn"
+  },
+  "noAssessments": {
+    "message": "Không tìm thấy bài đánh giá.",
+    "notFound": {
+      "code": "📝",
+      "title": "Không Có Bài Đánh Giá",
+      "message": "Chúng tôi xin lỗi vì sự bất tiện này.",
+      "backText": "Quay Về Trang Chủ"
+    }
+  },
+  "whyConductAssessmentSection": {
+    "title": "Vì Sao Cần Làm Bài Đánh Giá?",
+    "subtitle": "Lợi ích của việc đánh giá nguy cơ sử dụng chất gây nghiện",
+    "benefits": [
+      {
+        "title": "Phát Hiện Sớm",
+        "description": "Nhận diện dấu hiệu rủi ro trước khi vấn đề trở nên nghiêm trọng, từ đó can thiệp kịp thời và hiệu quả."
+      },
+      {
+        "title": "Đánh Giá Khách Quan",
+        "description": "Áp dụng công cụ đã được nghiên cứu và kiểm chứng khoa học để mang lại kết quả chính xác và đáng tin cậy."
+      },
+      {
+        "title": "Gợi Ý Cá Nhân Hóa",
+        "description": "Nhận được lời khuyên phù hợp với tình huống của bạn — từ khóa học ngắn hạn đến tư vấn chuyên sâu."
+      },
+      {
+        "title": "Bảo Vệ Sức Khỏe Chủ Động",
+        "description": "Chủ động phát hiện và phòng ngừa nguy cơ sử dụng chất gây nghiện, bảo vệ sức khỏe tinh thần và thể chất."
+      }
+    ]
+  }
+}

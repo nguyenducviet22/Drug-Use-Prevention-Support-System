@@ -1,0 +1,48 @@
+{
+    "header": {
+        "title": "Book Consultation Appointment",
+        "subtitle": "Schedule your session with our certified drug prevention specialists"
+    },
+    "consultantSelection": {
+        "dropdownPlaceholder": "Choose Consultant",
+        "cardTitle": "Consultant"
+    },
+    "calendarSection": {
+        "title": "Available Time Slots",
+        "placeholderText": "Select a consultant to view available appointments",
+        "placeholderIconAlt": "Calendar icon",
+        "eventTitles": {
+            "available": "Available",
+            "selected": "Selected",
+            "pastUnavailable": "Past/Unavailable"
+        },
+        "infoMessages": {
+            "unavailableSlot": "This slot is not available for booking (it might be in the past or already booked).",
+            "pastAppointmentError": "Cannot book an appointment in the past. Please select an upcoming slot.",
+            "slotPassedError": "The selected time slot has passed. Please choose another one."
+        },
+        "toastMessages": {
+            "fetchConsultantsError": "Failed to load consultant's available slots.",
+            "selectConsultantTimeSlot": "Please select a consultant and time slot.",
+            "bookingSuccess": "Booked appointment successfully",
+            "bookingError": "Error booking appointment: {message}",
+            "generalBookingError": "Error booking appointment. Please try again."
+        }
+    },
+    "appointmentInformation": {
+        "cardTitle": "Appointment Information",
+        "consultantLabel": "Consultant:",
+        "dateLabel": "Date:",
+        "timeLabel": "Time:",
+        "noteLabel": "Note (Optional)",
+        "notePlaceholder": "Please share any specific concerns or topics you'd like to discuss...",
+        "submitButton": "Submit"
+    },
+    "confirmationModal": {
+        "title": "Book Summary",
+        "consultantLabel": "Consultant:",
+        "dateTimeLabel": "Date Time:",
+        "noteLabel": "Note:",
+        "confirmButton": "Confirm"
+    }
+}

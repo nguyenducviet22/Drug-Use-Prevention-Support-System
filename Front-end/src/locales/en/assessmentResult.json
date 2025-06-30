@@ -1,0 +1,40 @@
+{
+  "notFound": {
+    "code": "📊",
+    "title": "Assessment Result Not Found",
+    "message": "We couldn't find the result you're looking for.",
+    "backLinkText": "Back to Assessments"
+  },
+  "progressIndicator": {
+    "step1": "1",
+    "step2": "2"
+  },
+  "mainResultCard": {
+    "completionTitle": "Completed",
+    "completionSubtitle": "Here is the result!",
+    "details": {
+      "userLabel": "User:",
+      "assessmentScoreLabel": "Assessment Score:",
+      "riskLevelLabel": "Risk Level:",
+      "completedDateTimeLabel": "Completed Date Time:"
+    },
+    "warningSection": {
+      "warningText": "Warning: Possible relapse risk detected",
+      "nextStepsTitle": "Next step to do:",
+      "recommendations": [
+        {
+          "title": "Take a recommended Course below:",
+          "description": "The system will recommend courses that are appropriate for your high risk level."
+        },
+        {
+          "title": "Receive Advice:",
+          "description": "Make an appointment with highly trained consultants."
+        },
+        {
+          "title": "Engage Community Events:",
+          "description": "Connect with relevant educational programs and community activities."
+        }
+      ]
+    }
+  }
+}

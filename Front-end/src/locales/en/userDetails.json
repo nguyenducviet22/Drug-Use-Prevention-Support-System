@@ -1,0 +1,9 @@
+{
+    "title": "User Details",
+    "fullName": "Full Name",
+    "gender": "Gender",
+    "dateOfBirth": "Date of birth",
+    "phoneNumber": "Phone Number",
+    "address": "Address",
+    "job": "Job"
+}

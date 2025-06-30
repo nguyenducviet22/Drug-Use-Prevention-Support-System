@@ -1,0 +1,39 @@
+{
+  "header": {
+    "step1": "1",
+    "step2": "2",
+    "title": "Choose Your Assessment",
+    "subtitle": "Select the assessment that best fits your age group and needs"
+  },
+  "noAssessments": {
+    "message": "No assessments found.",
+    "notFound": {
+      "code": "📝",
+      "title": "No Assessments Found",
+      "message": "We are realy sorry for this inconvenience.",
+      "backText": "Back Home"
+    }
+  },
+  "whyConductAssessmentSection": {
+    "title": "Why Conduct an Assessment?",
+    "subtitle": "Understanding the benefits of taking a risk assessment",
+    "benefits": [
+      {
+        "title": "Early Detection",
+        "description": "Identify risk signs before they become serious problems, allowing for timely and effective intervention."
+      },
+      {
+        "title": "Objective Assessment",
+        "description": "Utilize scientifically researched and tested tools to deliver accurate and reliable results."
+      },
+      {
+        "title": "Personal Advice",
+        "description": "Get recommendations tailored to your specific situation, from taking a course to in-depth consultation."
+      },
+      {
+        "title": "Proactive Health Protection",
+        "description": "Proactively detect and prevent substance use risks before problems occur, protecting your mental and physical health."
+      }
+    ]
+  }
+}

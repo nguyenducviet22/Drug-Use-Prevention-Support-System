@@ -47,7 +47,6 @@ const useFetch = (defaultUrl) => {
   const post = useCallback((body, headers, url = defaultUrl) => request(url, 'POST', body, headers), [request, defaultUrl]);
   const put = useCallback((body, headers, url = defaultUrl) => request(url, 'PUT', body, headers), [request, defaultUrl]);
   const del = useCallback((headers, url = defaultUrl) => request(url, 'DELETE', null, headers), [request, defaultUrl]);
-
   return { data, error, loading, get, post, put, del };
 };
 

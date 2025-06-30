@@ -5,6 +5,7 @@ import App from "./App.jsx"
 import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import './i18n.jsx'
 
 createRoot(document.getElementById("root")).render(
   // <StrictMode>
