@@ -164,7 +164,7 @@ public class AuthenticationService {
         newUser.setFullName(name);
         newUser.setPassword("");
         newUser.setStatus(UserStatus.ACTIVE);
-        newUser.setRole(Role.MEMBER);
+        newUser.setRole(null);
         userRepository.save(newUser);
         return userMapper.toDto(newUser);
     }
