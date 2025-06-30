@@ -42,11 +42,13 @@ const HomeMe = () => {
     const [learningCourses, setLearningCourses] = useState([])
     const [draftBlogs, setDraftBlogs] = useState([])
     const [upcomingAppointments, setupcomingAppointments] = useState([])
+    const [myEvents, setMyEvents] = useState([]);
 
     const { loading: loadingRecommendedCourses, error: errorRecommendedCourses, get: getRecommendedCourses } = useFetch()
     const { loading: loadingLearningCourses, error: errorLearningCourses, get: getLearningCourses } = useFetch()
     const { loading: loadingDraftBlogs, error: errorDraftBlogs, get: getDraftBlogs } = useFetch()
     const { loading: loadingAppointments, error: errorAppointments, get: getAppointments } = useFetch()
+    const { loading: loadingMyEvents, error: errorMyEvents, get: getMyEvents } = useFetch();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -65,6 +67,9 @@ const HomeMe = () => {
 
                     const appointmentsData = await getAppointments(`http://localhost:8080/api/appointment/my-list/${username}`);
                     setupcomingAppointments(appointmentsData);
+
+                    const myEventsData = await getMyEvents(`http://localhost:8080/api/event/my-events/${username}`);
+                    setMyEvents(myEventsData);
                 }
             } catch (err) {
                 console.error("Fetch error in Home Me:", err);
@@ -73,11 +78,12 @@ const HomeMe = () => {
         };
 
         fetchData();
-    }, [user, getRecommendedCourses, getLearningCourses, getDraftBlogs, getAppointments]);
+    }, [user, getRecommendedCourses, getLearningCourses, getDraftBlogs, getAppointments, getMyEvents]);
     console.log("recommendedCourses:", recommendedCourses);
     console.log("learningCourses:", learningCourses);
     console.log("draftBlogs:", draftBlogs);
     console.log("upcomingAppointments:", upcomingAppointments);
+    console.log("myEvents:", myEvents);
 
     const handleDraftContinue = (blogId) => {
         navigate(`/blogs/draft/${blogId}`)
@@ -88,7 +94,7 @@ const HomeMe = () => {
     };
 
     const handleMyEventsClick = () => {
-        navigate('/events');
+        navigate('/my-events');
     };
 
     const handleMyCoursesClick = () => {
@@ -99,7 +105,7 @@ const HomeMe = () => {
         navigate('/appointment');
     };
 
-    if (!user || authLoading || loadingRecommendedCourses || loadingLearningCourses || loadingDraftBlogs || loadingAppointments) {
+    if (!user || authLoading || loadingRecommendedCourses || loadingLearningCourses || loadingDraftBlogs || loadingAppointments || loadingMyEvents) {
         return (
             <Container className="my-5">
                 <div className="text-center">

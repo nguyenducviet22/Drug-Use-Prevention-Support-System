@@ -9,6 +9,9 @@ import BackButton from "../components/BackButton";
 import LoadingSpinner from "../components/LoadingSpinner";
 import NotFound from "./NotFound";
 import { formatEventDateAndTimeRange } from "../utils/dateUtils.js";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../hooks/useAuth";
 
 const EventDetails = () => {
   const { id } = useParams();
@@ -16,6 +19,8 @@ const EventDetails = () => {
   const [statusInfo, setStatusInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [registerLocked, setRegisterLocked] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -96,9 +101,24 @@ const EventDetails = () => {
   let registerVariant = "primary";
   let registerDisabled = false;
 
-  if (statusInfo?.status === "REGISTERED") {
+  const userStatus = statusInfo?.status;
+  const eventStatus = event.status;
+
+  if (userStatus === "REGISTERED") {
     registerLabel = "Joined";
     registerVariant = "secondary";
+    registerDisabled = true;
+  } else if (eventStatus === "CANCELLED") {
+    registerLabel = "Unavailable";
+    registerVariant = "outline-danger";
+    registerDisabled = true;
+  } else if (eventStatus === "EXPIRED") {
+    registerLabel = "Expired";
+    registerVariant = "custom-expired"; // dùng class CSS thay vì variant bootstrap
+    registerDisabled = true;
+  } else if (userStatus === "CANCELLED") {
+    registerLabel = "Cancelled";
+    registerVariant = "outline-dark";
     registerDisabled = true;
   } else if (statusInfo?.full) {
     registerLabel = "Full";
@@ -109,12 +129,10 @@ const EventDetails = () => {
   return (
     <Container className="event-details-container py-4">
       <BackButton label="Back" />
-
       <h1 className="event-title text-center">{event.eventName}</h1>
       <p className="event-subtitle text-center text-muted mb-4">
         {event.subTitle}
       </p>
-
       <Row className="event-stats mb-4">
         <Col xs={6} md={3}>
           <div className="stat-card">
@@ -143,7 +161,6 @@ const EventDetails = () => {
           </div>
         </Col>
       </Row>
-
       <Row>
         <Col lg={8} className="mb-4">
           <div className="event-image-container mb-4">
@@ -168,13 +185,62 @@ const EventDetails = () => {
         <Col lg={4}>
           <div className="event-sidebar">
             <Button
-              variant={registerVariant}
+              variant={
+                registerVariant === "custom-expired"
+                  ? undefined
+                  : registerVariant
+              }
               size="lg"
-              className="register-button w-100 mb-4"
-              disabled={registerDisabled}
+              className={`register-button w-100 mb-4 ${
+                registerLabel === "Expired" ? "btn-expired" : ""
+              }`}
+              disabled={registerDisabled || registerLocked}
               onClick={() => {
+                const token = localStorage.getItem("token");
+
+                if (!token) {
+                  if (registerLocked) return; // chống spam nhiều lần
+
+                  toast.warning(<strong>Please login to register!</strong>);
+                  setRegisterLocked(true);
+                  setTimeout(() => setRegisterLocked(false), 2000); // mở lại sau 2s
+                  return;
+                }
+
                 if (!registerDisabled) {
-                  alert("Joining not implemented here yet.");
+                  if (!user || user.ageGroup !== event.ageGroup) {
+                    console.log(user);
+                    toast.error(<strong>❌ Unsuitable Age!</strong>);
+                    return;
+                  }
+
+                  // 📩 Gọi API đăng ký
+                  fetch(
+                    `http://localhost:8080/api/event/${event.eventID}/register`,
+                    {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                      },
+                    }
+                  )
+                    .then(async (res) => {
+                      const result = await res.json();
+                      if (!res.ok) throw new Error(result.message);
+                      toast.success(
+                        <strong>🎉 Registered Successfully!</strong>
+                      );
+                      setStatusInfo((prev) => ({
+                        ...prev,
+                        status: "REGISTERED",
+                      }));
+                    })
+                    .catch((err) => {
+                      toast.error(
+                        <strong>Registration failed: {err.message}</strong>
+                      );
+                    });
                 }
               }}
             >
@@ -230,8 +296,8 @@ const EventDetails = () => {
           </div>
         </Col>
       </Row>
-
       <Recommendation type="event" />
+      <ToastContainer position="top-right" />;
     </Container>
   );
 };

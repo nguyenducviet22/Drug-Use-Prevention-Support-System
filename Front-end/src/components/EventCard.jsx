@@ -5,18 +5,40 @@ import { formatDateTime } from "../utils/dateUtils";
 import "./EventCard.css";
 
 const EventCard = ({ event, onJoinEvent, onViewDetails, statusInfo }) => {
-  const status = statusInfo?.status;
+  const userStatus = statusInfo?.status; // REGISTERED, CANCELLED, NOT_REGISTERED
   const isFull = statusInfo?.full;
+  const eventStatus = event.status; // NOT_STARTED, ONGOING, CANCELLED, EXPIRED, DRAFT
 
   let buttonLabel = "Join Now";
+  let buttonVariant = "primary";
+  let buttonClass = ""; // ← Khai báo thêm biến này
   let disabled = false;
 
-  if (status === "REGISTERED") {
-    buttonLabel = "Joined"; 
+  if (userStatus === "REGISTERED") {
+    buttonLabel = "Joined";
+    buttonVariant = "secondary";
     disabled = true;
+    buttonClass = "btn-joined";
+  } else if (eventStatus === "CANCELLED") {
+    buttonLabel = "Unavailable";
+    buttonVariant = "outline-danger";
+    disabled = true;
+    buttonClass = "btn-cancelled";
+  } else if (eventStatus === "EXPIRED") {
+    buttonLabel = "Expired";
+    buttonVariant = ""; // không dùng bootstrap variant nữa
+    disabled = true;
+    buttonClass = "btn-expired";
+  } else if (userStatus === "CANCELLED") {
+    buttonLabel = "Cancelled";
+    buttonVariant = "outline-dark";
+    disabled = true;
+    buttonClass = "btn-cancelled";
   } else if (isFull) {
     buttonLabel = "Full";
+    buttonVariant = "outline-secondary";
     disabled = true;
+    buttonClass = "btn-full";
   }
 
   return (
@@ -60,14 +82,7 @@ const EventCard = ({ event, onJoinEvent, onViewDetails, statusInfo }) => {
 
           <div className="event-actions">
             <Button
-              className={`btn-join-now ${
-                buttonLabel === "Joined"
-                  ? "btn-joined"
-                  : buttonLabel === "Full"
-                  ? "btn-full"
-                  : ""
-              }`}
-              variant=""
+              className={`btn-join-now ${buttonClass}`}
               onClick={() => onJoinEvent(event.eventID)}
               disabled={disabled}
             >

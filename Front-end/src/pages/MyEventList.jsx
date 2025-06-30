@@ -5,21 +5,20 @@ import EventCard from "../components/EventCard";
 import Pagination from "../components/Pagination";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ErrorMessage from "../components/ErrorMessage";
+import { useAuth } from "../hooks/useAuth";
+import Recommendation from "../components/Recommendation";
 import NotFound from "./NotFound";
 import { useNavigate } from "react-router-dom";
 import "./EventList.css";
-import { useAuth } from "../hooks/useAuth";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const ITEMS_PER_PAGE = 3;
 
-const EventList = () => {
+const MyEventList = () => {
+  const { user } = useAuth();
   const [events, setEvents] = useState([]);
   const [eventStatuses, setEventStatuses] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { user } = useAuth();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAgeGroup, setSelectedAgeGroup] = useState("__default__");
@@ -45,18 +44,23 @@ const EventList = () => {
   ];
 
   const fetchEvents = async () => {
+    if (!user) return;
     setLoading(true);
     try {
-      const url =
-        activeTab === "ONGOING"
-          ? "http://localhost:8080/api/event/upcoming"
-          : "http://localhost:8080/api/event";
-
-      const response = await fetch(url);
-      const result = await response.json();
-      setEvents(result.data);
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `http://localhost:8080/api/event/my-events/${user.username}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const result = await res.json();
+      setEvents(Array.isArray(result) ? result : result.data || []);
+      setError(null);
     } catch (err) {
-      setError("Failed to fetch events.");
+      setError("Failed to fetch your registered events.");
     } finally {
       setLoading(false);
     }
@@ -89,8 +93,8 @@ const EventList = () => {
   };
 
   useEffect(() => {
-    fetchEvents();
-  }, [activeTab]);
+    if (user) fetchEvents();
+  }, [user, activeTab]);
 
   useEffect(() => {
     if (events.length > 0) {
@@ -146,22 +150,6 @@ const EventList = () => {
   };
 
   const handleJoinEvent = async (eventID) => {
-    if (!user) {
-      toast.warning(<strong>⚠️ Please login to register!</strong>);
-      return;
-    }
-
-    const targetEvent = events.find((e) => e.eventID === eventID);
-    if (!targetEvent) {
-      toast.error(<strong>❌ Event not found.</strong>);
-      return;
-    }
-
-    if (user.ageGroup !== targetEvent.ageGroup) {
-      toast.error(<strong>❌ Unsuitable Age!</strong>);
-      return;
-    }
-
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
@@ -175,13 +163,12 @@ const EventList = () => {
         }
       );
       const result = await response.json();
-
       if (!response.ok)
         throw new Error(result.message || "Registration failed.");
-      toast.success(<strong>🎉 Registered Successfully!</strong>);
-      fetchStatuses(events); // update button
+      alert(result.data || "Successfully registered!");
+      fetchStatuses(events);
     } catch (err) {
-      toast.error(<strong>❌ {err.message || "Registration failed!"}</strong>);
+      alert(err.message || "Registration failed!");
     }
   };
 
@@ -296,10 +283,11 @@ const EventList = () => {
             </>
           )}
         </div>
-        <ToastContainer position="top-right" autoClose={3000} />
+              <Recommendation type="event" />
       </Container>
     </div>
+    
   );
 };
 
-export default EventList;
+export default MyEventList;

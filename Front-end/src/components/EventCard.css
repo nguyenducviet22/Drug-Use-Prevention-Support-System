@@ -134,6 +134,7 @@ button.btn-join-now.btn-full {
   color: #4b5563;
 }
 
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .event-card-inner,

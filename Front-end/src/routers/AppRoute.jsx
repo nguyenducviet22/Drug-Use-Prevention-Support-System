@@ -19,6 +19,7 @@ import CourseDetails from '../pages/CourseDetails'
 import CourseLesson from '../pages/CourseLesson'
 import BlogCreation from '../pages/BlogCreation'
 import AppointmentBooking from '../pages/AppointmentBooking'
+import MyEventList from "../pages/MyEventList";
 
 export default function AppRoute() {
     return (
@@ -31,6 +32,7 @@ export default function AppRoute() {
                 <Route path="/blogs/create" element={<BlogCreation />} />
                 <Route path="/events" element={<EventList />} />
                 <Route path="/events/:id" element={<EventDetails />} />
+                <Route path="/my-events" element={<MyEventList />} />
                 <Route path="/courses" element={<CourseList />} />
                 <Route path="/courses/:id" element={<CourseDetails />} />
                 <Route path="/courses/lesson/:id" element={<CourseLesson />} />

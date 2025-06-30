@@ -143,5 +143,8 @@ public class EventController {
         return ResponseEntity.ok(events);
     }
 
-
+    @GetMapping("/my-events/{memberId}")
+    public List<EventResponse> getMyEvents(@PathVariable String memberId) {
+        return eventService.getEventsByMember(memberId);
+    }
 }

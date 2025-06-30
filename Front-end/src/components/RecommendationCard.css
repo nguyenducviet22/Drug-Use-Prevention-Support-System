@@ -5,47 +5,57 @@
 }
 
 .recommendations-title {
-    font-size: 1.8rem;
-    color: #2c3e50;
-    font-weight: 600;
+  font-size: 1.8rem;
+  color: #2c3e50;
+  font-weight: 600;
 }
 
 .recommendations-divider {
-    height: 2px;
-    background: linear-gradient(to right, transparent, #3498db, transparent);
-    width: 60%;
-    margin: 0 auto;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #3498db, transparent);
+  width: 60%;
+  margin: 0 auto;
 }
 
 .recommendation-card {
-    background-color: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-    height: 100%;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  max-width: 320px;
+  min-height: 350px;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .recommendation-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
 }
 
 .recommendation-image {
-    height: 160px;
-    background-color: #e9ecef;
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
 }
 
 .recommendation-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  color: #555;
+  font-size: 0.95rem;
 }
 
 @media (max-width: 768px) {
-    .recommendations-divider {
-        width: 80%;
-    }
+  .recommendation-card {
+    max-width: 100%;
+  }
 }

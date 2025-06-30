@@ -208,4 +208,14 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
+    @PreAuthorize("hasRole('MEMBER')")
+    public List<EventResponse> getEventsByMember(String memberId) {
+        return eventUserRepository.findByMemberId(memberId).stream()
+                .map(EventUser::getEventId)
+                .map(eventRepository::findById)
+                .flatMap(Optional::stream) // tự động bỏ qua Optional.empty()
+                .map(eventMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 }
