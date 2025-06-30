@@ -12,6 +12,11 @@ const getRandomItems = (array, count) => {
   return shuffled.slice(0, count)
 }
 
+const getRandomItems = (array, count) => {
+  const shuffled = [...array].sort(() => 0.5 - Math.random())
+  return shuffled.slice(0, count)
+}
+
 const Recommendation = ({ type }) => {
   const { t } = useTranslation("recommendation") // Initialize useTranslation
   const { user, authLoading } = useAuth();

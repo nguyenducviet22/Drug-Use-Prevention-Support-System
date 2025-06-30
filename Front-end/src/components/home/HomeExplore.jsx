@@ -71,9 +71,6 @@ const HomeExplore = () => {
       .catch(() => {});
   }, [getEveryoneBlogs, getEveryoneCourses]);
 
-  console.log(everyoneBlogs);
-  console.log(everyoneCourses);
-
   const handleReadMore = (blogId) => {
     navigate(`/blogs/${blogId}`);
   };
