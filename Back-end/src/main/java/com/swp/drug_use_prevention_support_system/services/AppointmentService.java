@@ -30,13 +30,10 @@ public class AppointmentService {
 
     @PostAuthorize("returnObject.member.username == authentication.name")
     public AppointmentResponse createAppointment(CreateAppointmentRequest request) throws GeneralSecurityException, IOException {
-        // Chuyển đổi Instant (UTC) sang giờ địa phương Việt Nam để lưu hoặc xử lý
-        Instant utcTime = request.getAppointmentDateTime();
-
         Appointment appointment = appointmentMapper.toEntity(request);
         String link = googleCalendarService.createGGMeetAppointment(request);
         appointment.setLink(link);
-        appointment.setAppointmentDateTime(utcTime);
+        appointment.setAppointmentDateTime(Instant.parse(request.getAppointmentDateTime()));
         appointment.setStatus(AppointmentStatus.SCHEDULED);
         String loginUsername = userService.getLoginUsername();
         User loginUser = userService.getUserEntity(loginUsername);
@@ -53,7 +50,7 @@ public class AppointmentService {
     }
 
     public List<AppointmentResponse> getMemberAppointments(String username) {
-        List<Appointment> appointments = appointmentRepository.findByMemberUsername(username);
+        List<Appointment> appointments = appointmentRepository.findByMemberUsernameOrderByAppointmentDateTimeAsc(username);
         return appointments.stream().map(appointmentMapper::toDto).toList();
     }
 
@@ -68,13 +65,9 @@ public class AppointmentService {
     }
 
     public AppointmentResponse updateAppointment(UUID id, UpdateAppointmentRequest request) {
-        // Chuyển đổi Instant (UTC) sang giờ địa phương Việt Nam để lưu hoặc xử lý
-        Instant utcTime = request.getAppointmentDateTime();
-
         Appointment appointment = getAppointmentEntity(id);
-        appointment.setAppointmentDateTime(utcTime);
+        appointment.setAppointmentDateTime(Instant.parse(request.getAppointmentDateTime()));
         appointment.setNotes(request.getNotes());
-        appointment.setAppointmentDateTime(request.getAppointmentDateTime());
         appointment.setStatus(request.getStatus());
         User consultant = userService.getUserEntity(request.getConsultantID());
         appointment.setConsultant(consultant);
@@ -82,7 +75,7 @@ public class AppointmentService {
         return appointmentMapper.toDto(appointment);
     }
 
-    public List<AppointmentResponse> getMyTodayAppointments(String username) {
+    public List<AppointmentResponse> getMemberTodayAppointments(String username) {
         ZoneId zone = ZoneId.systemDefault();
         Instant startOfDay = LocalDate.now().atStartOfDay(zone).toInstant();
         Instant endOfDay = LocalDate.now().plusDays(1).atStartOfDay(zone).toInstant();
@@ -91,10 +84,17 @@ public class AppointmentService {
         return appointments.stream().map(appointmentMapper::toDto).toList();
     }
 
-    public List<AppointmentResponse> getAllAppointmentsByDateDuration(LocalDate startDate, LocalDate endDate) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
-        List<Appointment> appointments = appointmentRepository.findByCreatedAtBetween(startDateTime, endDateTime);
+    public List<AppointmentResponse> getConsultantTodayAppointments(String username) {
+        ZoneId zone = ZoneId.systemDefault();
+        Instant startOfDay = LocalDate.now().atStartOfDay(zone).toInstant();
+        Instant endOfDay = LocalDate.now().plusDays(1).atStartOfDay(zone).toInstant();
+        List<Appointment> appointments = appointmentRepository
+                .findByConsultantUsernameAndAppointmentDateTimeBetween(username, startOfDay, endOfDay);
+        return appointments.stream().map(appointmentMapper::toDto).toList();
+    }
+
+    public List<AppointmentResponse> getAllAppointmentsByDateDuration( Instant startedAt,  Instant endedAt) {
+        List<Appointment> appointments = appointmentRepository.findByCreatedAtBetween(startedAt, endedAt);
         return appointments.stream().map(appointmentMapper::toDto).toList();
     }
 

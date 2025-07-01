@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -330,15 +330,15 @@ public class ExcelService {
                 User member = userService.getUserEntity(memberUsername);
                 UUID courseID = UUID.fromString(getCellValue(row.getCell(1)));
                 Course course = courseService.getCourseEntity(courseID);
-                LocalDate startDate = LocalDate.parse(getCellValue(row.getCell(2)));
-                LocalDate endDate = LocalDate.parse(getCellValue(row.getCell(3)));
+                Instant startedAt = Instant.parse(getCellValue(row.getCell(2)));
+                Instant endedAt = Instant.parse(getCellValue(row.getCell(3)));
                 EnrollmentStatus status = EnrollmentStatus.valueOf(getCellValue(row.getCell(4)).toUpperCase());
 
                 Enrollment enrollment = Enrollment.builder()
                         .member(member)
                         .course(course)
-                        .startDate(startDate)
-                        .endDate(endDate)
+                        .startedAt(startedAt)
+                        .endedAt(endedAt)
                         .status(status)
                         .build();
                 enrollments.add(enrollment);
@@ -402,8 +402,8 @@ public class ExcelService {
                 String description = getCellValue(row.getCell(3));
                 String img = getCellValue(row.getCell(4));
                 EventStatus status = EventStatus.valueOf(getCellValue(row.getCell(5)).toUpperCase());
-                LocalDate startDate = LocalDate.parse(getCellValue(row.getCell(6)));
-                LocalDate endDate = LocalDate.parse(getCellValue(row.getCell(7)));
+                Instant startedAt = Instant.parse(getCellValue(row.getCell(6)));
+                Instant endedAt = Instant.parse(getCellValue(row.getCell(7)));
 
                 Event event = Event.builder()
                         .eventName(name)
@@ -412,8 +412,8 @@ public class ExcelService {
                         .description(description)
                         .img(img)
                         .status(status)
-                        .startDate(startDate)
-                        .endDate(endDate)
+                        .startedAt(startedAt)
+                        .endedAt(endedAt)
                         .build();
                 events.add(event);
             } catch (Exception e) {

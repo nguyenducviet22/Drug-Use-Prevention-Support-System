@@ -13,11 +13,11 @@ import java.util.UUID;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
-    List<Appointment> findByMemberUsername(String username);
+    List<Appointment> findByMemberUsernameOrderByAppointmentDateTimeAsc(String username);
 
     List<Appointment> findByMemberUsernameAndAppointmentDateTimeBetween(String username, Instant startOfDay, Instant endOfDay);
 
-    List<Appointment> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    List<Appointment> findByCreatedAtBetween(Instant start, Instant end);
 
     List<Appointment> findByConsultantUsername(String username);
 
@@ -26,4 +26,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     @Query("SELECT COUNT(DISTINCT a.member.id) FROM Appointment a WHERE a.consultant.username = :username")
     long countDistinctMembersByConsultantUsername(@Param("username") String username);
 
+    List<Appointment> findByConsultantUsernameAndAppointmentDateTimeBetween(String username, Instant startOfDay, Instant endOfDay);
 }

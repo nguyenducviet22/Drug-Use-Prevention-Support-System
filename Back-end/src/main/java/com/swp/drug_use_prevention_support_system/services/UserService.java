@@ -2,7 +2,6 @@ package com.swp.drug_use_prevention_support_system.services;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateUserRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateUserRequest;
-import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AppointmentResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.UserResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.Appointment;
 import com.swp.drug_use_prevention_support_system.domain.entities.User;
@@ -20,8 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.List;
 
@@ -65,6 +64,11 @@ public class UserService {
     public User getUserEntity(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("User does not exist with username: " + username));
+    }
+
+    public User getUserEntityByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User does not exist with email: " + email));
     }
 
     public String getLoginUsername() {
@@ -115,20 +119,16 @@ public class UserService {
     }
 
     @PreAuthorize("hasAnyRole('STAFF', 'MANAGER')")
-    public List<UserResponse> getAllUsersByDateDuration(LocalDate startDate, LocalDate endDate) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
-        List<User> users = userRepository.findByCreatedAtBetween(startDateTime, endDateTime);
+    public List<UserResponse> getAllUsersByDateDuration(Instant startedAt,  Instant endedAt) {
+        List<User> users = userRepository.findByCreatedAtBetween(startedAt, endedAt);
         return users.stream()
                 .map(user -> userMapper.toDto(user))
                 .toList();
     }
 
     @PreAuthorize("hasAnyRole('STAFF', 'MANAGER')")
-    public List<UserResponse> getUsersByRoleAndDateDuration(Role role, LocalDate startDate, LocalDate endDate) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
-        List<User> users = userRepository.findByRoleAndCreatedAtBetween(role, startDateTime, endDateTime);
+    public List<UserResponse> getUsersByRoleAndDateDuration(Role role,  Instant startedAt,  Instant endedAt) {
+        List<User> users = userRepository.findByRoleAndCreatedAtBetween(role, startedAt, endedAt);
         return users.stream()
                 .map(user -> userMapper.toDto(user))
                 .toList();

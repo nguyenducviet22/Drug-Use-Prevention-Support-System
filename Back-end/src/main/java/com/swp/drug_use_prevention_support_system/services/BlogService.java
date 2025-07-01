@@ -16,8 +16,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -75,10 +74,8 @@ public class BlogService {
                 .toList();
     }
 
-    public List<BlogResponse> getBlogsByStatusAndDateDuration(BlogStatus status, LocalDate startDate, LocalDate endDate) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
-        List<Blog> blogs = blogRepository.findByBlogStatusAndCreatedAtBetween(status, startDateTime, endDateTime);
+    public List<BlogResponse> getBlogsByStatusAndDateDuration(BlogStatus status, Instant startedAt, Instant endedAt) {
+        List<Blog> blogs = blogRepository.findByBlogStatusAndCreatedAtBetween(status, startedAt, endedAt);
         return blogs.stream()
                 .map(blog -> blogMapper.toDto(blog))
                 .toList();
@@ -106,7 +103,7 @@ public class BlogService {
         blog.setContent(request.getContent());
         blog.setBlogType(request.getBlogType());
         blog.setAgeGroup(request.getAgeGroup());
-        if (!blog.getBlogStatus().equals(BlogStatus.DRAFT)) {
+        if (!request.getBlogStatus().equals(BlogStatus.DRAFT)) {
             blog.setBlogStatus(BlogStatus.PENDING);
         }
         blogRepository.save(blog);

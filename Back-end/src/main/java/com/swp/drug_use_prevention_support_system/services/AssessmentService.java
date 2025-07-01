@@ -53,6 +53,11 @@ public class AssessmentService {
         return assessmentMapper.toDto(assessment);
     }
 
+    public AssessmentResponse getAssessmentByType(AssessmentType type) {
+        Assessment assessment = getAssessmentEntity(type);
+        return assessmentMapper.toDto(assessment);
+    }
+
     @PreAuthorize("hasRole('STAFF')")
     public AssessmentResponse updateAssessment(UUID assessmentID, UpdateAssessmentRequest request) {
         Assessment assessment = getAssessmentEntity(assessmentID);

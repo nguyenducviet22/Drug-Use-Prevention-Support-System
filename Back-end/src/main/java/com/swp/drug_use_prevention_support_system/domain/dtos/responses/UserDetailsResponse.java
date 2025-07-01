@@ -3,7 +3,7 @@ package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+
 import java.util.UUID;
 
 @Data
@@ -18,7 +18,7 @@ public class UserDetailsResponse {
     String phoneNumber;
     String relationship;
     String address;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    String createdAt;
+    String updatedAt;
     UserResponse member;
 }

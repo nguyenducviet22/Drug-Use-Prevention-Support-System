@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
+
 import java.util.UUID;
 
 @Data
@@ -19,8 +19,8 @@ public class UpdateEnrollmentRequest {
     UUID courseId;
 
     @FutureOrPresent(message = "Start date must be today or in the future")
-    LocalDate startDate;
+    String startedAt;
 
     @FutureOrPresent(message = "End date must be today or in the future")
-    LocalDate endDate;
+    String endedAt;
 }

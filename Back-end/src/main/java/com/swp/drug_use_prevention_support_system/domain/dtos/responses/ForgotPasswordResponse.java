@@ -3,7 +3,7 @@ package com.swp.drug_use_prevention_support_system.domain.dtos.responses;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+
 
 @Data
 @NoArgsConstructor
@@ -14,5 +14,5 @@ public class ForgotPasswordResponse {
 
     String email;
     String otp;
-    LocalDateTime expiryTime;
+    String expiryTime;
 }

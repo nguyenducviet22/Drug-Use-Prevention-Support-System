@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.Instant;
+
 
 @Data
 @NoArgsConstructor
@@ -23,7 +23,7 @@ public class UpdateAppointmentRequest {
 
     @NotNull(message = "Appointment date and time is required")
     @FutureOrPresent(message = "Appointment date must be today or in the future")
-    Instant appointmentDateTime;
+    String appointmentDateTime;
 
     @NotBlank(message = "Consultant ID (username) is required")
     String consultantID;

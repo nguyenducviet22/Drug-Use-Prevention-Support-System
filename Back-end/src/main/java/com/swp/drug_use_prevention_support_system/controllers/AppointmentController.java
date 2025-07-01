@@ -75,9 +75,19 @@ public class AppointmentController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @GetMapping("/today/{username}")
-    public ResponseEntity<ApiResponse<List<AppointmentResponse>>> getTodayAppointment(@PathVariable String username) {
-        List<AppointmentResponse> response = appointmentService.getMyTodayAppointments(username);
+    @GetMapping("/today/member/{username}")
+    public ResponseEntity<ApiResponse<List<AppointmentResponse>>> getMemberTodayAppointments(@PathVariable String username) {
+        List<AppointmentResponse> response = appointmentService.getMemberTodayAppointments(username);
+        ApiResponse<List<AppointmentResponse>> apiResponse = ApiResponse.<List<AppointmentResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(response)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/today/consultant/{username}")
+    public ResponseEntity<ApiResponse<List<AppointmentResponse>>> getConsultantTodayAppointments(@PathVariable String username) {
+        List<AppointmentResponse> response = appointmentService.getConsultantTodayAppointments(username);
         ApiResponse<List<AppointmentResponse>> apiResponse = ApiResponse.<List<AppointmentResponse>>builder()
                 .status(HttpStatus.OK.value())
                 .data(response)

@@ -6,8 +6,8 @@ CREATE TABLE qualification (
     year INT NOT NULL,
     description TEXT,
     status ENUM('AVAILABLE', 'UNAVAILABLE') NOT NULL,
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL,
+    created_at DATETIME(6) NOT NULL,
+    updated_at DATETIME(6) NOT NULL,
     consultant_id VARCHAR(100) NOT NULL,
     FOREIGN KEY (consultant_id) REFERENCES users(username)
 );

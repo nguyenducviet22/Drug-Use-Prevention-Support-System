@@ -1,14 +1,9 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.requests;
 
-import com.swp.drug_use_prevention_support_system.domain.enums.AppointmentStatus;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.Instant;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -17,10 +12,15 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateAvailabilityRequest {
 
-    @NotNull(message = "Availability status is required")
-    AppointmentStatus status;
+    @NotNull(message = "Availability date from is required")
+    String from;
+
+    @NotNull(message = "Availability date to is required")
+    String to;
 
     @NotNull(message = "Availability date and time is required")
-    @Valid
-    List<@NotNull @FutureOrPresent(message = "Availability date must be today or in the future") Instant> availabilityDateTimes;
+    String updatedDateTime;
+
+    @NotBlank(message = "Reason is required")
+    String reason;
 }

@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,10 +34,10 @@ public class Event {
     EventStatus status;
     @Enumerated(EnumType.STRING)
     AgeGroup ageGroup;
-    LocalDate startDate;
-    LocalDate endDate;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    Instant startedAt;
+    Instant endedAt;
+    Instant createdAt;
+    Instant updatedAt;
 
     @ManyToMany(mappedBy = "events")
     List<User> members = new ArrayList<>();
@@ -47,13 +47,13 @@ public class Event {
 
     @PrePersist
     protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 }
