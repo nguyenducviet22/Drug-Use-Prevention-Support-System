@@ -1,0 +1,38 @@
+{
+    "backButton": "Back",
+    "courseNotFound": {
+        "code": "📘",
+        "title": "Course Not Found",
+        "message": "We couldn't find the course you're looking for.",
+        "backText": "Back to Courses"
+    },
+    "progressSection": {
+        "progressLabel": "Progress"
+    },
+    "enrollButton": {
+        "loading": "Loading...",
+        "continue": "Continue",
+        "refreshDue": "Refresh due",
+        "completed": "Completed",
+        "enroll": "Enroll"
+    },
+    "enrolledCount": "{{quantity}} already enrolled",
+    "features": {
+        "modules": "{{count}} modules",
+        "minutes": "{{duration}} mins"
+    },
+    "sections": {
+        "whatYouWillLearn": "What you will learn",
+        "courseContent": "Course content",
+        "moduleTitle": "Module {{index}}: {{moduleName}}"
+    },
+    "toastMessages": {
+        "fetchDataError": "Failed to fetch data at CourseDetails",
+        "loginRequired": "Please log in to enroll in the course.",
+        "continueOrCompleted": "You are continuing or have completed this course.",
+        "enrollmentInfoNotFound": "Enrollment information not found to continue.",
+        "enrollmentSuccess": "Course enrolled successfully!",
+        "enrollmentFailed": "Failed to enroll. Please try again.",
+        "apiError": "An error occurred: {{message}}"
+    }
+}

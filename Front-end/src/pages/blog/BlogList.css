@@ -1,0 +1,192 @@
+/* Blog List Page Styles */
+.blog-list-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.blog-header {
+  padding: 2rem 0;
+}
+
+.blog-header h1 {
+  color: #2c5aa0;
+  line-height: 1.2;
+}
+
+.blogs-underline {
+  width: 80px;
+  height: 3px;
+  background-color: #007bff;
+  margin-top: 10px;
+}
+
+/* Sidebar Styling */
+.blog-sidebar {
+  position: sticky;
+  top: 2rem;
+}
+
+.sidebar-section {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.sidebar-title {
+  font-weight: 700;
+  color: #1f2937;
+  padding: 1.25rem;
+  margin: 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sidebar-content {
+  padding: 1.25rem;
+}
+
+.sidebar-blog-item {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sidebar-blog-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sidebar-blog-item h6 a {
+  color: #1f2937;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.sidebar-blog-item h6 a:hover {
+  color: #2c5aa0;
+}
+
+/* Type Buttons */
+.type-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.type-button {
+  background-color: transparent;
+  border: 1px solid #2c5aa0;
+  color: #2c5aa0;
+  border-radius: 9999px;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.type-button:hover {
+  background-color: #2c5aa0;
+  color: white;
+}
+
+/* Custom styles for the main rounded buttons (All Blogs, My Blogs, Create) */
+.custom-button {
+    background-color: #90CAF9 !important; /* Light blue color from image */
+    border-color: #90CAF9 !important; /* Same border color */
+    color: #fff !important; /* White text color */
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    transition: all 0.3s ease;
+    text-align: center;
+    display: flex; /* Use flexbox for button content */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    padding: .75rem 1.25rem; /* Adjust padding as needed */
+}
+
+.custom-button:hover,
+.custom-button.active {
+    background-color: #64B5F6 !important; /* Slightly darker blue on hover/active */
+    border-color: #64B5F6 !important;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* More prominent shadow on hover */
+    color: #fff !important;
+}
+
+/* Specific style for the smaller sub-tab buttons */
+.custom-button-small {
+    background-color: #E0F2F7 !important; /* Lighter background for sub-tabs */
+    border-color: #B2EBF2 !important; /* Border color for sub-tabs */
+    color: #007bff !important; /* Primary blue text for sub-tabs */
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Smaller shadow */
+    transition: all 0.2s ease;
+    text-align: center;
+    padding: .5rem 1rem; /* Smaller padding */
+    border-radius: 50rem !important; /* Pill shape */
+}
+
+.custom-button-small:hover {
+    background-color: #B2EBF2 !important;
+    border-color: #80DEEA !important;
+    color: #0056b3 !important; /* Darker blue on hover */
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+.custom-button-small.active {
+    background-color: #007bff !important; /* Active state for sub-tabs */
+    border-color: #007bff !important;
+    color: #fff !important;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure Nav.Link when active maintains white text for main tabs */
+.nav-pills .nav-link.active.custom-button {
+  color: #fff !important;
+}
+
+/* Ensure Nav.Link when active maintains white text for sub tabs */
+.nav-pills .nav-link.active.custom-button-small {
+  color: #fff !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .blog-sidebar {
+    position: static;
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .blog-header h1 {
+    font-size: 2rem;
+  }
+}
+
+/* Popular Tags */
+.popular-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tag-button {
+  background-color: transparent;
+  border: 1px solid #6b7280;
+  color: #6b7280;
+  border-radius: 9999px;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.tag-button:hover {
+  background-color: #2c5aa0;
+  border-color: #2c5aa0;
+  color: white;
+}

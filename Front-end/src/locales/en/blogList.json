@@ -1,0 +1,28 @@
+{
+    "header": {
+        "titlePart1": "Stories & Experiences",
+        "titlePart2": "On Drug Prevention",
+        "subtitle": "Explore real-life experiences, advice, and perspective\nfrom the community in the journey of drug prevention."
+    },
+    "searchFilter": {
+        "placeholder": "Search blogs..."
+    },
+    "tabs": {
+        "blogsTitle": "Blogs",
+        "allBlogs": "All Blogs",
+        "myBlogs": "My Blogs",
+        "createBlog": "Create",
+        "myPublished": "My Published",
+        "myDrafts": "My Drafts",
+        "myPending": "My Pending"
+    },
+    "noBlogsFound": {
+        "message": "No blogs found matching your criteria.",
+        "clearFilters": "Clear Filters"
+    },
+    "sidebar": {
+        "commonTypesTitle": "Common Types",
+        "popularBlogsTitle": "Popular Blogs",
+        "favoriteTagsTitle": "Favorite Tags"
+    }
+}

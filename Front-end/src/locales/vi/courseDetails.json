@@ -1,0 +1,38 @@
+{
+  "backButton": "Quay Lại",
+  "courseNotFound": {
+    "code": "📘",
+    "title": "Không Tìm Thấy Khóa Học",
+    "message": "Chúng tôi không tìm thấy khóa học bạn đang tìm kiếm.",
+    "backText": "Quay lại Danh sách Khóa học"
+  },
+  "progressSection": {
+    "progressLabel": "Tiến độ"
+  },
+  "enrollButton": {
+    "loading": "Đang tải...",
+    "continue": "Tiếp tục",
+    "refreshDue": "Cần làm mới",
+    "completed": "Đã hoàn thành",
+    "enroll": "Đăng ký"
+  },
+  "enrolledCount": "{{quantity}} người đã đăng ký",
+  "features": {
+    "modules": "{{count}} mô-đun",
+    "minutes": "{{duration}} phút"
+  },
+  "sections": {
+    "whatYouWillLearn": "Bạn sẽ học được gì",
+    "courseContent": "Nội dung khóa học",
+    "moduleTitle": "Mô-đun {{index}}: {{moduleName}}"
+  },
+  "toastMessages": {
+    "fetchDataError": "Không thể tải dữ liệu trong Chi Tiết Khóa Học",
+    "loginRequired": "Vui lòng đăng nhập để đăng ký khóa học.",
+    "continueOrCompleted": "Bạn đang tiếp tục hoặc đã hoàn thành khóa học này.",
+    "enrollmentInfoNotFound": "Không tìm thấy thông tin đăng ký để tiếp tục.",
+    "enrollmentSuccess": "Đăng ký khóa học thành công!",
+    "enrollmentFailed": "Đăng ký thất bại. Vui lòng thử lại.",
+    "apiError": "Đã xảy ra lỗi: {{message}}"
+  }
+}
