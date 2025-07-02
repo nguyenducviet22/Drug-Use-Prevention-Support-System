@@ -92,7 +92,7 @@ const HomeMe = () => {
   };
 
   const handleMyEventsClick = () => {
-    navigate('/events');
+    navigate('/my-events');
   };
 
   const handleMyCoursesClick = () => {

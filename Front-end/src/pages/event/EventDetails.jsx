@@ -18,7 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../hooks/useAuth";
 
 const EventDetails = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation("eventDetails");
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [statusInfo, setStatusInfo] = useState(null);
@@ -26,6 +26,7 @@ const EventDetails = () => {
   const [error, setError] = useState(null);
   const [registerLocked, setRegisterLocked] = useState(false);
   const { user } = useAuth();
+  const [cancelLocked, setCancelLocked] = useState(false);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -87,20 +88,33 @@ const EventDetails = () => {
     return (
       <NotFound
         code="📅"
-        title={t("event.notFoundTitle")}
-        message={t("event.notFoundMessage")}
+        title={t("notFoundTitle")}
+        message={t("notFoundMessage")}
         backLink="/events"
-        backText={t("event.backToEvents")}
+        backText={t("backToEvents")}
       />
     );
   }
+
+  // Lấy nội dung động theo ngôn ngữ
+  const lang = i18n.language;
+  const eventName =
+    lang === "vi" && event.eventNameVi ? event.eventNameVi : event.eventName;
+  const subTitle =
+    lang === "vi" && event.subTitleVi ? event.subTitleVi : event.subTitle;
+  const description =
+    lang === "vi" && event.descriptionVi
+      ? event.descriptionVi
+      : event.description;
+  const details =
+    lang === "vi" && event.detailsVi ? event.detailsVi : event.details;
 
   const { dateStr, timeStr } = formatEventDateAndTimeRange(
     event.startDate,
     event.endDate
   );
 
-  let registerLabel = t("event.register");
+  let registerLabel = t("register");
   let registerVariant = "primary";
   let registerDisabled = false;
 
@@ -108,61 +122,59 @@ const EventDetails = () => {
   const eventStatus = event.status;
 
   if (userStatus === "REGISTERED") {
-    registerLabel = t("event.joined");
+    registerLabel = t("joined");
     registerVariant = "secondary";
     registerDisabled = true;
   } else if (eventStatus === "CANCELLED") {
-    registerLabel = t("event.unavailable");
+    registerLabel = t("unavailable");
     registerVariant = "outline-danger";
     registerDisabled = true;
   } else if (eventStatus === "EXPIRED") {
-    registerLabel = t("event.expired");
+    registerLabel = t("expired");
     registerVariant = "custom-expired";
     registerDisabled = true;
   } else if (userStatus === "CANCELLED") {
-    registerLabel = t("event.cancelled");
+    registerLabel = t("cancelled");
     registerVariant = "outline-dark";
     registerDisabled = true;
   } else if (statusInfo?.full) {
-    registerLabel = t("event.full");
+    registerLabel = t("full");
     registerVariant = "outline-danger";
     registerDisabled = true;
   }
 
   return (
     <Container className="event-details-container py-4">
-      <BackButton label={t("back")} />
-      <h1 className="event-title text-center">{event.eventName}</h1>
-      <p className="event-subtitle text-center text-muted mb-4">
-        {event.subTitle}
-      </p>
+      <BackButton label={t("backToEvents")} />
+      <h1 className="event-title text-center">{eventName}</h1>
+      <p className="event-subtitle text-center text-muted mb-4">{subTitle}</p>
       <Row className="event-stats mb-4">
         <Col xs={6} md={3}>
           <div className="stat-card">
             <div className="stat-value">{event.quantity}</div>
-            <div className="stat-label">{t("event.participants")}</div>
+            <div className="stat-label">{t("participants")}</div>
           </div>
         </Col>
         <Col xs={6} md={3}>
           <div className="stat-card">
             <div className="stat-value">{event.ageGroup}</div>
-            <div className="stat-label">{t("event.ageGroup")}</div>
+            <div className="stat-label">{t("ageGroup")}</div>
           </div>
         </Col>
         <Col xs={6} md={3}>
           <div className="stat-card">
             <div className="stat-value">{event.duration} mins</div>
-            <div className="stat-label">{t("event.duration")}</div>
+            <div className="stat-label">{t("duration")}</div>
           </div>
         </Col>
         <Col xs={6} md={3}>
           <div className="stat-card">
             <div className="stat-value">
               {event.fee != null && event.fee === 0
-                ? t("event.free")
+                ? t("free")
                 : `$${event.fee}`}
             </div>
-            <div className="stat-label">{t("event.fee")}</div>
+            <div className="stat-label">{t("fee")}</div>
           </div>
         </Col>
       </Row>
@@ -171,17 +183,17 @@ const EventDetails = () => {
           <div className="event-image-container mb-4">
             <img
               src={event.img || "/placeholder.svg?height=300&width=300"}
-              alt={event.eventName}
+              alt={eventName}
               className="event-image"
             />
           </div>
 
           <div className="event-content">
-            <h2 className="content-heading">{t("event.introduction")}</h2>
-            <p>{event.description}</p>
+            <h2 className="content-heading">{t("introduction")}</h2>
+            <p>{description}</p>
 
-            <h2 className="content-heading">{t("event.programContent")}</h2>
-            <p>{event.details}</p>
+            <h2 className="content-heading">{t("programContent")}</h2>
+            <p>{details}</p>
           </div>
         </Col>
 
@@ -195,7 +207,7 @@ const EventDetails = () => {
               }
               size="lg"
               className={`register-button w-100 mb-4 ${
-                registerLabel === t("event.expired") ? "btn-expired" : ""
+                registerLabel === t("expired") ? "btn-expired" : ""
               }`}
               disabled={registerDisabled || registerLocked}
               onClick={() => {
@@ -204,7 +216,7 @@ const EventDetails = () => {
                 if (!token) {
                   if (registerLocked) return;
 
-                  toast.warning(<strong>{t("event.pleaseLogin")}</strong>);
+                  toast.warning(<strong>{t("pleaseLogin")}</strong>);
                   setRegisterLocked(true);
                   setTimeout(() => setRegisterLocked(false), 2000);
                   return;
@@ -212,7 +224,7 @@ const EventDetails = () => {
 
                 if (!registerDisabled) {
                   if (!user || user.ageGroup !== event.ageGroup) {
-                    toast.error(<strong>{t("event.unsuitableAge")}</strong>);
+                    toast.error(<strong>{t("unsuitableAge")}</strong>);
                     return;
                   }
 
@@ -229,9 +241,7 @@ const EventDetails = () => {
                     .then(async (res) => {
                       const result = await res.json();
                       if (!res.ok) throw new Error(result.message);
-                      toast.success(
-                        <strong>{t("event.successRegister")}</strong>
-                      );
+                      toast.success(<strong>{t("successRegister")}</strong>);
                       setStatusInfo((prev) => ({
                         ...prev,
                         status: "REGISTERED",
@@ -240,7 +250,7 @@ const EventDetails = () => {
                     .catch((err) => {
                       toast.error(
                         <strong>
-                          {t("event.registerFail")}: {err.message}
+                          {t("registerFail")}: {err.message}
                         </strong>
                       );
                     });
@@ -250,12 +260,56 @@ const EventDetails = () => {
               {registerLabel}
             </Button>
 
-            <h3 className="sidebar-heading text-center mb-3">
-              {t("event.details")}
-            </h3>
+            {userStatus === "REGISTERED" && (
+              <Button
+                variant="outline-danger"
+                size="lg"
+                className="register-button w-100 mb-4"
+                disabled={cancelLocked}
+                onClick={async () => {
+                  if (cancelLocked) return;
+                  setCancelLocked(true);
+                  const token = localStorage.getItem("token");
+                  try {
+                    const res = await fetch(
+                      `http://localhost:8080/api/event/${event.eventID}/cancel`,
+                      {
+                        method: "PUT",
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                        },
+                      }
+                    );
+                    if (!res.ok)
+                      throw new Error(t("cancelFail") || "Cancel failed!");
+                    toast.success(
+                      <strong>
+                        {t("cancelSuccess") || "Cancelled successfully!"}
+                      </strong>
+                    );
+                    setStatusInfo((prev) => ({
+                      ...prev,
+                      status: "NOT_REGISTERED", // hoặc fetch lại status mới nhất từ backend
+                    }));
+                  } catch (err) {
+                    toast.error(
+                      <strong>{err.message || t("cancelFail")}</strong>
+                    );
+                  } finally {
+                    setCancelLocked(false);
+                  }
+                }}
+              >
+                {cancelLocked
+                  ? t("cancellingButton", "Cancelling...")
+                  : t("cancelButton", "Cancel")}
+              </Button>
+            )}
+
+            <h3 className="sidebar-heading text-center mb-3">{t("details")}</h3>
 
             <div className="detail-card mb-3">
-              <div className="detail-label">{t("event.time")}:</div>
+              <div className="detail-label">{t("time")}:</div>
               <div className="detail-value">
                 <Clock size={18} className="detail-icon" />
                 <span>
@@ -266,7 +320,7 @@ const EventDetails = () => {
             </div>
 
             <div className="detail-card mb-3">
-              <div className="detail-label">{t("event.location")}:</div>
+              <div className="detail-label">{t("location")}:</div>
               <div className="detail-value">
                 <MapPin size={18} className="detail-icon" />
                 <span>{event.location}</span>
@@ -274,7 +328,7 @@ const EventDetails = () => {
             </div>
 
             <div className="detail-card mb-3">
-              <div className="detail-label">{t("event.capacity")}:</div>
+              <div className="detail-label">{t("capacity")}:</div>
               <div className="detail-value">
                 <Users size={18} className="detail-icon" />
                 <span>{event.quantity}</span>
@@ -282,7 +336,7 @@ const EventDetails = () => {
             </div>
 
             <div className="detail-card">
-              <div className="detail-label">{t("event.status")}:</div>
+              <div className="detail-label">{t("status")}:</div>
               <div
                 className={`detail-value ${
                   statusInfo?.full ? "status-full" : "status-available"
@@ -291,10 +345,10 @@ const EventDetails = () => {
                 <CircleDot size={18} className="detail-icon" />
                 <span>
                   {statusInfo?.status === "REGISTERED"
-                    ? t("event.registered")
+                    ? t("registered")
                     : statusInfo?.full
-                    ? t("event.full")
-                    : t("event.ongoing")}
+                    ? t("full")
+                    : t("ongoing")}
                 </span>
               </div>
             </div>

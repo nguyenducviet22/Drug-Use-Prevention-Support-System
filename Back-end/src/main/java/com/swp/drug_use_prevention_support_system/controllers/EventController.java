@@ -123,6 +123,13 @@ public class EventController {
         return ResponseEntity.ok(response);
     }
 
+    //Hủy đăng kí tham gia sự kiện
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<Void> cancelRegistration(@PathVariable UUID id) {
+        eventService.cancelEventRegistration(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/{id}/status")
     public ResponseEntity<EventStatusResponse> getEventStatus(@PathVariable UUID id) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

@@ -27,9 +27,9 @@ import AssessmentResult from '../pages/assessment/AssessmentResult'
 import AppointmentBooking from '../pages/appointment/AppointmentBooking'
 import AvailabilityBooking from '../pages/availability/AvailabilityBooking'
 
-import EventList from '../pages/EventList'
-import EventDetails from '../pages/EventDetails'
-import MyEventList from "../pages/MyEventList"
+import EventList from '../pages/event/EventList'
+import EventDetails from '../pages/event/EventDetails'
+import MyEventList from "../pages/event/MyEventList"
 
 import HomeStaff from '../pages/home/HomeStaff'
 import HomeManager from '../pages/home/HomeManager'

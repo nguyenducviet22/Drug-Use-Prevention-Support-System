@@ -11,7 +11,7 @@ import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.EventStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.EventUserStatus;
-import com.swp.drug_use_prevention_support_system.exception.ResourceNotFoundException;
+import com.swp.drug_use_prevention_support_system.exception.*;
 import com.swp.drug_use_prevention_support_system.mappers.EventMapper;
 import com.swp.drug_use_prevention_support_system.repositories.EventRepository;
 import com.swp.drug_use_prevention_support_system.repositories.EventUserRepository;
@@ -21,9 +21,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import com.swp.drug_use_prevention_support_system.exception.AgeGroupMismatchException;
-import com.swp.drug_use_prevention_support_system.exception.AlreadyRegisteredException;
-import com.swp.drug_use_prevention_support_system.exception.EventFullException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -116,7 +113,6 @@ public class EventService {
     }
 
     //Đăng kí sự kiện
-
     @PreAuthorize("hasRole('MEMBER')")
     public void registerUserToEvent(UUID eventId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -159,6 +155,34 @@ public class EventService {
         userEvent.setJoinAt(LocalDateTime.now());
         userEvent.setStatus(EventUserStatus.REGISTERED);
 
+        eventUserRepository.save(userEvent);
+    }
+
+    //Hủy đăng kí sự kiện
+    @PreAuthorize("hasRole('MEMBER')")
+    public void cancelEventRegistration(UUID eventId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+
+        EventUserId id = new EventUserId(eventId, username);
+        EventUser userEvent = eventUserRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("You are not registered for this event"));
+
+        // Kiểm tra điều kiện 3 ngày trước khi sự kiện bắt đầu
+        LocalDateTime now = LocalDateTime.now();
+
+        if (event.getStatus() == EventStatus.CANCELLED || event.getEndDate().isBefore(now)) {
+            throw new EventCancellationBlockedException("This event cannot be canceled.");
+        }
+
+        if (event.getStartDate().isBefore(now.plusDays(3))) {
+            throw new CancellationNotAllowedException("You can only cancel at least 3 days before the event.");
+        }
+
+        // Đánh dấu đã huỷ
+        userEvent.setStatus(EventUserStatus.NOT_REGISTERED);
         eventUserRepository.save(userEvent);
     }
 
@@ -211,6 +235,7 @@ public class EventService {
     @PreAuthorize("hasRole('MEMBER')")
     public List<EventResponse> getEventsByMember(String memberId) {
         return eventUserRepository.findByMemberId(memberId).stream()
+                .filter(eventUser -> eventUser.getStatus() == EventUserStatus.REGISTERED)
                 .map(EventUser::getEventId)
                 .map(eventRepository::findById)
                 .flatMap(Optional::stream) // tự động bỏ qua Optional.empty()

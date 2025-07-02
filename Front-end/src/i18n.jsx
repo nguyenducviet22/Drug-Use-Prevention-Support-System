@@ -35,6 +35,8 @@ import recommendationEn from './locales/en/recommendation.json';
 import reportsEn from './locales/en/reports.json';
 import searchFilterEn from './locales/en/searchFilter.json';
 import userDetailsEn from './locales/en/userDetails.json'; // Import new file
+import eventDetailsEn from './locales/en/eventDetails.json';
+import eventListEn from './locales/en/eventList.json';
 
 // Nếu có tiếng Việt
 import homeVi from './locales/vi/home.json';
@@ -69,6 +71,8 @@ import recommendationVi from './locales/vi/recommendation.json';
 import reportsVi from './locales/vi/reports.json';
 import searchFilterVi from './locales/vi/searchFilter.json';
 import userDetailsVi from './locales/vi/userDetails.json'; // Import new file
+import eventDetailsVi from './locales/vi/eventDetails.json';
+import eventListVi from './locales/vi/eventList.json';
 
 i18n
   .use(LanguageDetector)
@@ -109,7 +113,9 @@ i18n
         recommendation: recommendationEn,
         reports: reportsEn,
         searchFilter: searchFilterEn,
-        userDetails: userDetailsEn // Add new namespace
+        userDetails: userDetailsEn, // Add new namespace
+        eventDetails: eventDetailsEn,
+        eventList: eventListEn,
       },
       vi: {
         home: homeVi,
@@ -143,7 +149,9 @@ i18n
         recommendation: recommendationVi,
         reports: reportsVi,
         searchFilter: searchFilterVi,
-        userDetails: userDetailsVi // Add new namespace
+        userDetails: userDetailsVi, // Add new namespace
+        eventDetails: eventDetailsVi,
+        eventList: eventListVi,
       }
     },
     // Ensure 'userDetails' is added to the `ns` array
@@ -155,7 +163,8 @@ i18n
       'notFound', 'accountOverview', 'assessmentCard', 'blogCard',
       'courseCard', 'eventCard', 'familyInformation', 'footer', 
       'homeExplore', 'homeMe', 'navbar', 'pagination',
-      'recommendation', 'reports', 'searchFilter', 'userDetails' // Add new namespace
+      'recommendation', 'reports', 'searchFilter', 'userDetails', 
+      'eventDetails', 'eventList' // Add new namespace
     ],
     defaultNS: 'home',
     interpolation: {

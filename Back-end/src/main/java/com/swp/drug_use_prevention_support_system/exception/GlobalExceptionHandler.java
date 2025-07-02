@@ -94,4 +94,22 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(CancellationNotAllowedException.class)
+    public ResponseEntity<ApiResponse> handleCancellationNotAllowed(CancellationNotAllowedException ex) {
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EventCancellationBlockedException.class)
+    public ResponseEntity<ApiResponse> handleBlockedCancellation(EventCancellationBlockedException ex) {
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
 }

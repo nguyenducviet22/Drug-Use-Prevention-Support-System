@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Container, Button, Tabs, Tab } from "react-bootstrap";
-import { Calendar, Clock, MapPin } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import SearchFilter from "../../components/others/SearchFilter";
 import EventCard from "../../components/card/EventCard";
 import Pagination from "../../components/others/Pagination";
@@ -16,6 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 const ITEMS_PER_PAGE = 3;
 
 const EventList = () => {
+  const { t, i18n } = useTranslation("eventList");
   const [events, setEvents] = useState([]);
   const [eventStatuses, setEventStatuses] = useState({});
   const [loading, setLoading] = useState(true);
@@ -31,18 +32,18 @@ const EventList = () => {
   const navigate = useNavigate();
 
   const ageGroupOptions = [
-    { label: "All", value: "ALL" },
-    { label: "Adolescent", value: "ADOLESCENT" },
-    { label: "Adult", value: "ADULT" },
-    { label: "Senior", value: "SENIOR" },
-    { label: "Everyone", value: "EVERYONE" },
+    { label: t("all"), value: "ALL" },
+    { label: t("adolescent"), value: "ADOLESCENT" },
+    { label: t("adult"), value: "ADULT" },
+    { label: t("senior"), value: "SENIOR" },
+    { label: t("everyone"), value: "EVERYONE" },
   ];
 
   const durationOptions = [
-    { label: "All Durations", value: "" },
-    { label: "Under 30 mins", value: "SHORT" },
-    { label: "30 - 60 mins", value: "MEDIUM" },
-    { label: "Over 60 mins", value: "LONG" },
+    { label: t("allDurations"), value: "" },
+    { label: t("under30"), value: "SHORT" },
+    { label: t("between30and60"), value: "MEDIUM" },
+    { label: t("over60"), value: "LONG" },
   ];
 
   const fetchEvents = async () => {
@@ -91,17 +92,17 @@ const EventList = () => {
 
   useEffect(() => {
     fetchEvents();
-  }, [activeTab]);
+    // eslint-disable-next-line
+  }, [activeTab, i18n.language]);
 
   useEffect(() => {
     if (events.length > 0) {
       fetchStatuses(events);
     }
+    // eslint-disable-next-line
   }, [events]);
 
   const filteredEvents = useMemo(() => {
-    const now = new Date();
-
     return events
       .filter((event) =>
         event.eventName?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -148,18 +149,18 @@ const EventList = () => {
 
   const handleJoinEvent = async (eventID) => {
     if (!user) {
-      toast.warning(<strong>⚠️ Please login to register!</strong>);
+      toast.warning(<strong>⚠️ {t("pleaseLogin")}</strong>);
       return;
     }
 
     const targetEvent = events.find((e) => e.eventID === eventID);
     if (!targetEvent) {
-      toast.error(<strong>❌ Event not found.</strong>);
+      toast.error(<strong>❌ {t("eventNotFound")}</strong>);
       return;
     }
 
     if (user.ageGroup !== targetEvent.ageGroup) {
-      toast.error(<strong>❌ Unsuitable Age!</strong>);
+      toast.error(<strong>❌ {t("unsuitableAge")}</strong>);
       return;
     }
 
@@ -177,12 +178,35 @@ const EventList = () => {
       );
       const result = await response.json();
 
-      if (!response.ok)
-        throw new Error(result.message || "Registration failed.");
-      toast.success(<strong>🎉 Registered Successfully!</strong>);
+      if (!response.ok) throw new Error(result.message || t("registerFailed"));
+      toast.success(<strong>🎉 {t("registerSuccess")}</strong>);
       fetchStatuses(events); // update button
     } catch (err) {
-      toast.error(<strong>❌ {err.message || "Registration failed!"}</strong>);
+      toast.error(<strong>❌ {err.message || t("registerFailed")}</strong>);
+    }
+  };
+
+  const handleCancelEvent = async (eventID) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:8080/api/event/${eventID}/cancel`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) throw new Error(t("cancelFailed", "Cancel failed!"));
+      toast.success(
+        <strong>✅ {t("cancelSuccess", "Cancelled successfully!")}</strong>
+      );
+      fetchStatuses(events); // update button/status
+    } catch (err) {
+      toast.error(
+        <strong>❌ {err.message || t("cancelFailed", "Cancel failed!")}</strong>
+      );
     }
   };
 
@@ -210,10 +234,10 @@ const EventList = () => {
     return (
       <NotFound
         code="📅"
-        title="No Events Found"
-        message="We're really sorry for this inconvenience."
+        title={t("noEventsFound")}
+        message={t("noEventsMessage")}
         backLink="/"
-        backText="Back Home"
+        backText={t("backHome")}
       />
     );
   }
@@ -222,11 +246,10 @@ const EventList = () => {
     <div className="event-list-page">
       <Container className="my-4">
         <div className="page-header text-center mb-5">
-          <h1 className="display-5 fw-bold text-dark mb-3">Upcoming Events</h1>
-          <p className="lead text-muted">
-            Join our community events and workshops for drug prevention
-            awareness
-          </p>
+          <h1 className="display-5 fw-bold text-dark mb-3">
+            {t("upcomingEvents")}
+          </h1>
+          <p className="lead text-muted">{t("intro")}</p>
         </div>
 
         <SearchFilter
@@ -236,7 +259,7 @@ const EventList = () => {
           onSearchChange={setSearchTerm}
           onAgeGroupChange={setSelectedAgeGroup}
           onDurationChange={setSelectedDuration}
-          placeholder="Search events..."
+          placeholder={t("searchPlaceholder")}
           ageGroupOptions={ageGroupOptions}
           durationOptions={durationOptions}
         />
@@ -254,27 +277,25 @@ const EventList = () => {
                 }}
                 className="d-inline-flex"
               >
-                <Tab eventKey="ALL" title="ALL" />
-                <Tab eventKey="ONGOING" title="ONGOING" />
+                <Tab eventKey="ALL" title={t("tabAll")} />
+                <Tab eventKey="ONGOING" title={t("tabOngoing")} />
               </Tabs>
             </div>
 
             {filteredEvents.length > 0 && (
               <p className="text-muted mt-3">
-                Showing {startIndex + 1} to{" "}
+                {t("showing")} {startIndex + 1} {t("to")}{" "}
                 {Math.min(startIndex + ITEMS_PER_PAGE, filteredEvents.length)}{" "}
-                of {filteredEvents.length} events
+                {t("of")} {filteredEvents.length} {t("events")}
               </p>
             )}
           </div>
 
           {currentEvents.length === 0 ? (
             <div className="text-center py-5">
-              <p className="text-muted">
-                No events found matching your criteria.
-              </p>
+              <p className="text-muted">{t("noEventsCriteria")}</p>
               <Button variant="outline-primary" onClick={clearAllFilters}>
-                Clear Filters
+                {t("clearFilters")}
               </Button>
             </div>
           ) : (
@@ -286,6 +307,7 @@ const EventList = () => {
                   statusInfo={eventStatuses[event.eventID]}
                   onJoinEvent={handleJoinEvent}
                   onViewDetails={handleViewDetails}
+                  onCancelEvent={handleCancelEvent}
                 />
               ))}
               <Pagination
