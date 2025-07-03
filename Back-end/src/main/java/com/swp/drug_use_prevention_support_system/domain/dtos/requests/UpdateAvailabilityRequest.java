@@ -12,14 +12,8 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateAvailabilityRequest {
 
-    @NotNull(message = "Availability date from is required")
-    String from;
-
-    @NotNull(message = "Availability date to is required")
-    String to;
-
     @NotNull(message = "Availability date and time is required")
-    String updatedDateTime;
+    String availabilityDateTime;
 
     @NotBlank(message = "Reason is required")
     String reason;

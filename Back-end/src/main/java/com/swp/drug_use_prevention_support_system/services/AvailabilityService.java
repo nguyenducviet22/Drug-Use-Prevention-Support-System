@@ -1,13 +1,18 @@
 package com.swp.drug_use_prevention_support_system.services;
 
+import com.swp.drug_use_prevention_support_system.domain.MailBody;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateAvailabilityRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateAvailabilityRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AvailabilityResponse;
+import com.swp.drug_use_prevention_support_system.domain.entities.Appointment;
 import com.swp.drug_use_prevention_support_system.domain.entities.Availability;
 import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.domain.enums.AppointmentStatus;
 import com.swp.drug_use_prevention_support_system.mappers.AvailabilityMapper;
+import com.swp.drug_use_prevention_support_system.repositories.AppointmentRepository;
 import com.swp.drug_use_prevention_support_system.repositories.AvailabilityRepository;
+import jakarta.mail.MessagingException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +28,11 @@ import java.util.stream.Collectors;
 public class AvailabilityService {
 
     private final AvailabilityRepository availabilityRepository;
+    private final AppointmentRepository appointmentRepository;
     private final AvailabilityMapper availabilityMapper;
     private final UserService userService;
     private final ZoneId VIETNAM_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
+    private final EmailService emailService;
 
     @Transactional
     public List<AvailabilityResponse> createConsultantAvailabilities(CreateAvailabilityRequest request) {
@@ -62,7 +69,10 @@ public class AvailabilityService {
         return savedAvailabilities.stream().map(availabilityMapper::toDto).toList();
     }
 
-    public List<LocalDateTime> getConsultantSlotsByStatus(String username, String fromDateString, String toDateString, AppointmentStatus status) {
+    public List<LocalDateTime> getConsultantBookedSlotsByStatus(String username,
+                                                                String fromDateString,
+                                                                String toDateString,
+                                                                AppointmentStatus status) {
         // Parse the input strings as LocalDate first
         LocalDate fromLocalDate = LocalDate.parse(fromDateString);
         LocalDate toLocalDate = LocalDate.parse(toDateString);
@@ -79,7 +89,9 @@ public class AvailabilityService {
                 .toList();
     }
 
-    public List<LocalDateTime> getConsultantAvailableSlots(String username, String fromDateString, String toDateString) {
+    public List<LocalDateTime> getConsultantAvailableSlots(String username,
+                                                           String fromDateString,
+                                                           String toDateString) {
         // Parse the input strings as LocalDate first
         LocalDate fromLocalDate = LocalDate.parse(fromDateString);
         LocalDate toLocalDate = LocalDate.parse(toDateString);
@@ -123,46 +135,62 @@ public class AvailabilityService {
         return availableSlotsLocal;
     }
 
-
-    public List<Availability> getByConsultantUsernameAndAvailabilityDateTimeBetween(String username, Instant from, Instant to) {
+    private List<Availability> getByConsultantUsernameAndAvailabilityDateTimeBetween(String username,
+                                                                                     Instant from,
+                                                                                     Instant to) {
         return availabilityRepository.findByConsultantUsernameAndAvailabilityDateTimeBetween(username, from, to);
     }
 
-    private Availability getConsultantAvailabilityByAvailabilityDateTime(String username, Instant time) {
+    public Availability getConsultantAvailabilityEntityByAvailabilityDateTime(String username,
+                                                                               Instant time) {
         return availabilityRepository.findByConsultantUsernameAndAvailabilityDateTime(username, time);
     }
 
-    public List<AvailabilityResponse> cancelConsultantScheduledSlots(AppointmentStatus status, UpdateAvailabilityRequest request) {
+    @Transactional
+    public AvailabilityResponse cancelConsultantScheduledSlots(AppointmentStatus status,
+                                                               UpdateAvailabilityRequest request) throws MessagingException {
         String loginConsultant = userService.getLoginUsername();
-        User consultant = userService.getUserEntity(loginConsultant);
+        Instant slotToCancel = Instant.parse(request.getAvailabilityDateTime());
 
-        Instant updatedSlot = Instant.parse(request.getUpdatedDateTime());
-
-        LocalDate fromLocalDate = LocalDate.parse(request.getFrom());
-        LocalDate toLocalDate = LocalDate.parse(request.getTo());
-        Instant fromInstantForQuery = fromLocalDate.atStartOfDay(VIETNAM_ZONE).toInstant();
-        Instant toInstantForQuery = toLocalDate.atTime(LocalTime.MAX).atZone(VIETNAM_ZONE).toInstant();
-        List<Availability> existingAvailabilities = getByConsultantUsernameAndAvailabilityDateTimeBetween(
-                loginConsultant, fromInstantForQuery, toInstantForQuery
-        );
-        List<Instant> existingTimesForThisConsultant = existingAvailabilities.stream()
-                .map(Availability::getAvailabilityDateTime) // Extract the Instant from each Availability object
-                .toList();
-
-        List<Availability> newAvailabilitiesToPersist = new ArrayList<>();
-
-        if (existingTimesForThisConsultant.contains(updatedSlot)) {
-            Availability availability = getConsultantAvailabilityByAvailabilityDateTime(loginConsultant, updatedSlot);
+        Availability availability = getConsultantAvailabilityEntityByAvailabilityDateTime(loginConsultant, slotToCancel);
+        if (availability != null) {
             if (status.equals(AppointmentStatus.CANCELLED)) {
                 availability.setStatus(AppointmentStatus.CANCELLED);
-                availability.setReason(request.getReason());
+                String reason = request.getReason();
+                availability.setReason(reason);
+                availabilityRepository.save(availability);
+                Appointment appointment = appointmentRepository.findByConsultantUsernameAndAppointmentDateTime(loginConsultant, slotToCancel);
+                if (appointment != null) {
+                    appointment.setStatus(AppointmentStatus.CANCELLED);
+                    appointmentRepository.save(appointment);
+
+                    // Notify the member and the consultant
+                    User member = appointment.getMember();
+                    String memberEmail = member.getEmail();
+                    User consultant = appointment.getConsultant();
+                    String consultantEmail = consultant.getEmail();
+                    String[] recipients = {memberEmail, consultantEmail};
+                    MailBody mailBody = MailBody.builder()
+                            .to(recipients)
+                            .subject("Appointment Canceled by Consultant")
+                            .content(reason)
+                            .build();
+                    emailService.sendEmail(mailBody);
+                }
+                return availabilityMapper.toDto(availability);
             } else {
                 throw new RuntimeException("This status does not exist in AppointmentStatus");
             }
+        } else {
+            throw new EntityNotFoundException("This slot does not exist to cancel");
         }
+    }
 
-        List<Availability> savedAvailabilities = availabilityRepository.saveAll(newAvailabilitiesToPersist);
-        consultant.getConsultantAvailabilities().addAll(savedAvailabilities);
-        return savedAvailabilities.stream().map(availabilityMapper::toDto).toList();
+    public void confirmConsultantScheduledSlots(String username,
+                                                Instant time,
+                                                AppointmentStatus status) {
+        Availability availability = getConsultantAvailabilityEntityByAvailabilityDateTime(username, time);
+        availability.setStatus(status);
+        availabilityRepository.save(availability);
     }
 }

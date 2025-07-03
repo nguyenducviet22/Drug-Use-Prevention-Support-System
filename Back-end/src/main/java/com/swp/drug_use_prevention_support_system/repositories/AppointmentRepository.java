@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,4 +26,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     long countDistinctMembersByConsultantUsername(@Param("username") String username);
 
     List<Appointment> findByConsultantUsernameAndAppointmentDateTimeBetween(String username, Instant startOfDay, Instant endOfDay);
+
+    Appointment findByConsultantUsernameAndAppointmentDateTime(String username, Instant time);
+
+    Appointment findByMemberUsernameAndAppointmentDateTime(String username, Instant time);
 }

@@ -46,8 +46,9 @@ public class PasswordService {
     }
 
     public void sendOtpEmail(String email, String otp) throws MessagingException {
+        String[] recipients = {email};
         MailBody mailBody = MailBody.builder()
-                .to(email)
+                .to(recipients)
                 .subject("Password Reset OTP")
                 .content("Your OTP code to reset your password is: " + otp + "\n"
                         + "This code will expire in " + OTP_EXPIRATION_MINUTES + " minutes.\n"

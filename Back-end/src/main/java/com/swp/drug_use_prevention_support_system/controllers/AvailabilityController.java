@@ -6,6 +6,7 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiRespo
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AvailabilityResponse;
 import com.swp.drug_use_prevention_support_system.domain.enums.AppointmentStatus;
 import com.swp.drug_use_prevention_support_system.services.AvailabilityService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,9 +44,10 @@ public class AvailabilityController {
     }
 
     @GetMapping("/slots/{status}")
-    public ResponseEntity<ApiResponse<List<LocalDateTime>>> getConsultantSlotsByStatus(String username, String from, String to,
-                                                                                       @PathVariable AppointmentStatus status) {
-        List<LocalDateTime> responses = availabilityService.getConsultantSlotsByStatus(username, from, to, status);
+    public ResponseEntity<ApiResponse<List<LocalDateTime>>> getConsultantBookedSlotsByStatus(String username,
+                                                                                             String from, String to,
+                                                                                             @PathVariable AppointmentStatus status) {
+        List<LocalDateTime> responses = availabilityService.getConsultantBookedSlotsByStatus(username, from, to, status);
         ApiResponse<List<LocalDateTime>> apiResponse = ApiResponse.<List<LocalDateTime>>builder()
                 .status(HttpStatus.OK.value())
                 .data(responses)
@@ -54,12 +56,12 @@ public class AvailabilityController {
     }
 
     @PutMapping("/{status}")
-    public ResponseEntity<ApiResponse<List<AvailabilityResponse>>> updateConsultantAvailabilities(@PathVariable AppointmentStatus status,
-                                                                                                  @Valid @RequestBody UpdateAvailabilityRequest request) {
-        List<AvailabilityResponse> responses = availabilityService.cancelConsultantScheduledSlots(status, request);
-        ApiResponse<List<AvailabilityResponse>> apiResponse = ApiResponse.<List<AvailabilityResponse>>builder()
+    public ResponseEntity<ApiResponse<AvailabilityResponse>> cancelConsultantScheduledSlots(@PathVariable AppointmentStatus status,
+                                                                                            @Valid @RequestBody UpdateAvailabilityRequest request) throws MessagingException {
+        AvailabilityResponse response = availabilityService.cancelConsultantScheduledSlots(status, request);
+        ApiResponse<AvailabilityResponse> apiResponse = ApiResponse.<AvailabilityResponse>builder()
                 .status(HttpStatus.OK.value())
-                .data(responses)
+                .data(response)
                 .build();
         return ResponseEntity.ok(apiResponse);
     }
