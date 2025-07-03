@@ -1,5 +1,5 @@
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
-import { Heart, Clipboard, Calendar, BookOpen, AlertTriangle, CalendarIcon, User } from "lucide-react";
+import { Heart, Clipboard, Calendar, BookOpen, AlertTriangle, CalendarIcon, User, Video } from "lucide-react";
 import "./HomeMe.css";
 import useFetch from "../../hooks/useFetch";
 import { useAuth } from "../../hooks/useAuth";
@@ -64,7 +64,7 @@ const HomeMe = () => {
           const learningCoursesData = await getLearningCourses(`http://localhost:8080/api/course/LEARNING/${username}`);
           setLearningCourses(learningCoursesData);
 
-          const draftBlogsData = await getDraftBlogs(`http://localhost:8080/api/blog/my-list/draft/${username}`);
+          const draftBlogsData = await getDraftBlogs(`http://localhost:8080/api/blog/my-list/${user.username}/status/DRAFT`);
           setDraftBlogs(draftBlogsData);
 
           const appointmentsData = await getAppointments(`http://localhost:8080/api/appointment/my-list/${username}`);
@@ -83,8 +83,8 @@ const HomeMe = () => {
   console.log("draftBlogs:", draftBlogs);
   console.log("upcomingAppointments:", upcomingAppointments);
 
-  const handleDraftContinue = (blogId) => {
-    navigate(`/blogs/draft/${blogId}`);
+  const handleDraftContinue = (blogID) => {
+    navigate(`/blogs/${blogID}`);
   };
 
   const handleMyBlogsClick = () => {
@@ -95,8 +95,8 @@ const HomeMe = () => {
     navigate('/events');
   };
 
-  const handleMyCoursesClick = () => {
-    navigate('/courses');
+  const handleMyCoursesClick = (courseID) => {
+    navigate(`/courses/${courseID}`);
   };
 
   const handleBookAppointmentClick = () => {
@@ -246,17 +246,34 @@ const HomeMe = () => {
               <Card.Body className="p-4">
                 {upcomingAppointments.length > 0 ? (
                   <>
-                    {upcomingAppointments.filter(appointment => appointment.status === "SCHEDULED").map((appointment) => (
-                      <div className="appointment-info bg-light rounded-3 p-3">
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                          <div>
-                            <h6 className="fw-bold text-dark mb-1">{appointment.consultant.username}</h6>
+                    {upcomingAppointments.filter(appointment => appointment.status === "SCHEDULED"
+                      && new Date(appointment.appointmentDateTime) >= new Date()
+                    ).map((appointment) => (
+                      <div key={appointment.id} className="appointment-item">
+                        <div className="appointment-info bg-light rounded-3 p-3">
+                          <div className="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                              <h6 className="fw-bold text-dark mb-1">{appointment.consultant.username}</h6>
+                            </div>
+                            <span className="badge bg-warning text-dark">{appointment.status}</span>
                           </div>
-                          <span className="badge bg-warning text-dark">{appointment.status}</span>
+                          <div className="appointment-time mt-3">
+                            <div className="fw-semibold text-primary">{appointment.appointmentDateTime}</div>
+                          </div>
                         </div>
-                        <div className="appointment-time mt-3">
-                          <div className="fw-semibold text-primary">{appointment.appointmentDateTime}</div>
-                        </div>
+                        <Row className="mt-3">
+                          <Col>
+                            <Button
+                              variant="primary"
+                              size="sm"
+                              className="btn-custom btn-primary-custom"
+                              onClick={() => window.open(appointment.link)}
+                            >
+                              <Video size={14} className="me-1" />
+                              Join Meeting
+                            </Button>
+                          </Col>
+                        </Row>
                       </div>
                     ))}
                   </>
@@ -276,7 +293,9 @@ const HomeMe = () => {
               </div>
               <Card.Body className="p-4">
                 {recommendedCourses.length > 0 ? (
-                  <CourseCard course={recommendedCourses[0]} />
+                  <CourseCard course={recommendedCourses[0]}
+                    onEnrollClick={handleMyCoursesClick}
+                    onDetailsClick={handleMyCoursesClick} />
                 ) : (
                   <div className="text-center text-muted">{t("noRecommendedCourses")}</div>
                 )}
@@ -303,7 +322,9 @@ const HomeMe = () => {
               <Card.Body className="p-4">
                 {learningCourses.length > 0 ? (
                   <>
-                    <CourseCard course={learningCourses[0]} status={'Learning'} />
+                    <CourseCard course={learningCourses[0]}
+                      status={'learning'}
+                      onContinueClick={handleMyCoursesClick} />
                   </>
                 ) : (
                   <div className="text-center text-muted">{t("noLearningCourses")}</div>

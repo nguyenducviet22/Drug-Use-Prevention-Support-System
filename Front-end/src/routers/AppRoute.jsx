@@ -25,6 +25,7 @@ import ModuleCreation from '../pages/module/ModuleCreation'
 import LessonCreation from '../pages/lesson/LessonCreation'
 import HomeStaff from '../pages/home/HomeStaff'
 import HomeManager from '../pages/home/HomeManager'
+import HomeConsultant from '../pages/home/HomeConsultant'
 
 export default function AppRoute() {
     return (
@@ -33,6 +34,7 @@ export default function AppRoute() {
                 <Route path='/' element={<Home />} />
                 <Route path='/staff' element={<HomeStaff />} />
                 <Route path='/manager' element={<HomeManager />} />
+                <Route path='/consultant' element={<HomeConsultant />} />
                 <Route path="/oauth2/success" element={<OAuth2RedirectHandler />} />
                 <Route path="/blogs" element={<BlogList />} />
                 <Route path="/blogs/:id" element={<BlogDetails />} />

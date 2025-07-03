@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Users, Calendar, BookOpen, FileText, MessageSquare, UserCheck, Award, Target, ChevronRight } from 'lucide-react';
+import './HomeManager.css'
 import StatusCard from '../../components/StatusCard';
 import PendingCard from '../../components/PendingCard';
 import LineChart from '../../components/LineChart';
@@ -10,8 +11,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import Pagination from '../../components/others/Pagination';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 function HomeManager() {
+  const { t } = useTranslation('homeManager'); // Initialize useTranslation with the 'homeManager' namespace
   const [activeTab, setActiveTab] = useState('dashboard');
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -93,10 +96,10 @@ function HomeManager() {
         setPendingCourses(prevCourses => prevCourses.filter(course => course.courseID !== id));
       }
 
-      toast.success(`Successfully approved ${type} with ID: ${id}`);
+      toast.success(t('successfullyApproved', { type: type, id: id }));
     } catch (error) {
       console.error(`Error approving ${type} with ID ${id}:`, error);
-      toast.error(`Failed to approve ${type} with ID: ${id}`);
+      toast.error(t('failedToApprove', { type: type, id: id }));
     }
   };
 
@@ -116,7 +119,7 @@ function HomeManager() {
             <Row className="g-3">
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title="Total Members"
+                  title={t('totalMembers')}
                   value={stat.totalMembers}
                   change={12}
                   icon={Users}
@@ -125,7 +128,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title="Staff Members"
+                  title={t('staffMembers')}
                   value={stat.staffMembers}
                   change={8}
                   icon={UserCheck}
@@ -134,7 +137,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title="Consultants"
+                  title={t('consultants')}
                   value={stat.consultants}
                   change={5}
                   icon={Award}
@@ -143,7 +146,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title="Monthly Consultations"
+                  title={t('monthlyConsultations')}
                   value={stat.monthlyConsultations}
                   change={15}
                   icon={MessageSquare}
@@ -152,7 +155,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title="Active Courses"
+                  title={t('activeCourses')}
                   value={stat.activeCourses}
                   change={-2}
                   icon={BookOpen}
@@ -161,7 +164,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title="Blogs"
+                  title={t('blogs')}
                   value={stat.blogs}
                   change={18}
                   icon={FileText}
@@ -170,7 +173,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title="Events"
+                  title={t('events')}
                   value={stat.events}
                   change={22}
                   icon={Calendar}
@@ -179,7 +182,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title="Courses"
+                  title={t('courses')}
                   value={stat.courses}
                   change={10}
                   icon={Target}
@@ -194,7 +197,7 @@ function HomeManager() {
         <Row className="g-4 mb-4">
           <Col lg={4} className="d-flex flex-column">
             <PendingCard
-              title="Blogs"
+              title={t('pendingBlogs')}
               count={staffPendingBlogs.length}
               items={currentBlogItems}
               onView={(id) => handleView(id, 'blog')}
@@ -211,7 +214,7 @@ function HomeManager() {
 
           <Col lg={4} className="d-flex flex-column">
             <PendingCard
-              title="Courses"
+              title={t('pendingCourses')}
               count={pendingCourses.length}
               items={currentCourseItems}
               onView={(id) => handleView(id, 'course')}
@@ -228,12 +231,12 @@ function HomeManager() {
 
           <Col lg={4} className="d-flex flex-column">
             <PendingCard
-              title="Events"
+              title={t('pendingEvents')}
               count={3}
               items={[
-                { title: "Community Drug Prevention Summit 2024", author: "Event Team", date: "3 hours ago" },
-                { title: "Youth Leadership Workshop", author: "Amanda Rodriguez", date: "6 hours ago" },
-                { title: "Parent-Teacher Drug Awareness Meeting", author: "School District", date: "1 day ago" }
+                { title: t('communityDrugPreventionSummit2024'), author: "Event Team", date: `3 ${t('hoursAgo')}` },
+                { title: t('youthLeadershipWorkshop'), author: "Amanda Rodriguez", date: `6 ${t('hoursAgo')}` },
+                { title: t('parentTeacherDrugAwarenessMeeting'), author: "School District", date: `1 ${t('dayAgo')}` }
               ]}
             />
             {/* {totalEventPages > 1 && (
@@ -254,11 +257,11 @@ function HomeManager() {
                 <div className="icon-gradient-primary p-3 rounded-3 text-white me-3">
                   <Users size={24} />
                 </div>
-                <h5 className="fw-bold text-dark mb-0">User Management</h5>
+                <h5 className="fw-bold text-dark mb-0">{t('userManagement')}</h5>
               </div>
-              <p className="text-muted mb-4">Manage members, staff, and consultants with comprehensive tools</p>
+              <p className="text-muted mb-4">{t('manageUsersDescription')}</p>
               <div className="d-flex align-items-center text-primary fw-semibold">
-                Access Dashboard <ChevronRight size={16} className="ms-1" />
+                {t('accessDashboard')} <ChevronRight size={16} className="ms-1" />
               </div>
             </div>
           </Col>

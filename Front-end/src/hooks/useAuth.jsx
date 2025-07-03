@@ -20,6 +20,7 @@ export const useAuth = () => {
             if (role === "MEMBER") navigate("/");
             if (role === "STAFF") navigate("/staff");
             if (role === "MANAGER") navigate("/manager");
+            if (role === "CONSULTANT") navigate("/consultant");
             toast.success("Login successfully")
         } catch (error) {
             if (error.response) {

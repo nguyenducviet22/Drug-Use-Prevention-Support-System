@@ -60,7 +60,7 @@ const ManagementCard = ({
                             </Card.Text>
                         </div>
                         <div className="d-flex align-items-center gap-2 flex-shrink-0">
-                            {item.blogID && item.blogStatus === 'PENDING' && (
+                            {item.blogID && item.blogStatus === 'PENDING' && item.member.role !== 'STAFF' && (
                                 <Button
                                     size="sm"
                                     variant="success"

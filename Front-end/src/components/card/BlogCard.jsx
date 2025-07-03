@@ -41,9 +41,12 @@ const BlogCard = ({ blog, status, onReadClick }) => {
           <p className="blog-excerpt mb-4">{blog.description}</p>
 
           {status !== 'draft' && (
-            <Button variant="primary" className="read-button" onClick={() => onReadClick(blog.blogID)}>
-              {t("readButton")}
-            </Button>
+            <div className="d-flex justify-content-end mt-5">
+              <Button variant="primary" className="read-button"
+                onClick={() => onReadClick(blog.blogID)}>
+                {t("readButton")}
+              </Button>
+            </div>
           )}
         </div>
       </div>

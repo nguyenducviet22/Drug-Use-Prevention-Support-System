@@ -3,7 +3,7 @@ import { Clock, User, Calendar } from "lucide-react";
 import "./CourseCard.css";
 import { useTranslation } from "react-i18next"; // Import useTranslation
 
-const CourseCard = ({ course, onEnrollClick, onDetailsClick }) => {
+const CourseCard = ({ course, onEnrollClick, onDetailsClick, onContinueClick, status }) => {
   const { t } = useTranslation("courseCard"); // Initialize useTranslation
 
   const getAgeGroupColor = (ageGroup) => {
@@ -11,7 +11,7 @@ const CourseCard = ({ course, onEnrollClick, onDetailsClick }) => {
       ADOLESCENT: "ageGroup-adolescent",
       ADULT: "ageGroup-adult",
       SENIOR: "ageGroup-senior",
-      EVERYONE : "ageGroup-everyone",
+      EVERYONE: "ageGroup-everyone",
     };
     return colors[ageGroup] || "ageGroup-default";
   };
@@ -59,19 +59,30 @@ const CourseCard = ({ course, onEnrollClick, onDetailsClick }) => {
 
           {/* Action Buttons */}
           <div className="course-actions">
-            <Button
-              className="enroll-button"
-              onClick={() => onEnrollClick(course.courseID)}
-            >
-              {t("enrollButton")}
-            </Button>
-            <Button
-              variant="outline-secondary"
-              className="details-button"
-              onClick={() => onDetailsClick(course.courseID)}
-            >
-              {t("detailsButton")}
-            </Button>
+            {status === "learning" ? (
+              <Button
+                className="details-button"
+                onClick={() => onContinueClick(course.courseID)}
+              >
+                {t("continueButton")}
+              </Button>
+            ) : (
+              <>
+                <Button
+                  className="enroll-button"
+                  onClick={() => onEnrollClick(course.courseID)}
+                >
+                  {t("enrollButton")}
+                </Button>
+                <Button
+                  variant="outline-secondary"
+                  className="details-button"
+                  onClick={() => onDetailsClick(course.courseID)}
+                >
+                  {t("detailsButton")}
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

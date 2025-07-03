@@ -11,9 +11,11 @@ import NotFound from "../not-found/NotFound"
 import LoadingSpinner from "../../components/LoadingSpinner"
 import { toast } from "react-toastify"
 import { useTranslation } from "react-i18next" // Import useTranslation
+import { useAuth } from "../../hooks/useAuth"
 
 const BlogDetails = () => {
-    const { t } = useTranslation("blogDetails") // Khai báo useTranslation với namespace 'blogDetails'
+    const { user } = useAuth()
+    const { t } = useTranslation("blogDetails");// Khai báo useTranslation với namespace 'blogDetails'
 
     const { id } = useParams()
     const [blogDetails, setBlogDetails] = useState(null)
@@ -46,7 +48,7 @@ const BlogDetails = () => {
             const blogID = blogDetails?.blogID
             console.log(blogID);
             if (blogID) {
-                const response = await putBlogStatus({}, {}, `http://localhost:8080/api/blog/${blogID}/status`);
+                const response = await putBlogStatus({}, {}, `http://localhost:8080/api/blog/${blogID}/status/UNAVAILABLE`);
                 console.log("Blog status updated to unavailable:", response);
                 toast.success(t("toastMessages.deleteSuccess"), "success");
                 navigate("/blogs")
@@ -95,14 +97,16 @@ const BlogDetails = () => {
                     <Col lg={8} md={10}>
                         <div className="d-flex justify-content-between align-items-center">
                             <BackButton label={t("backButton")} />
-                            <div className="d-flex gap-2">
-                                <Button className="rounded-pill shadow-sm custom-button-action" onClick={handleEditBlog}>
-                                    <PencilLine className="me-1" size={18} /> {t("editButton")}
-                                </Button>
-                                <Button variant="danger" className="rounded-pill shadow-sm custom-button-action" onClick={handleDeleteBlog}>
-                                    <Trash className="me-1" size={18} /> {t("deleteButton")}
-                                </Button>
-                            </div>
+                            {user?.username === blogDetails?.member?.username && (
+                                <div className="d-flex gap-2">
+                                    <Button className="rounded-pill shadow-sm custom-button-action" onClick={handleEditBlog}>
+                                        <PencilLine className="me-1" size={18} /> {t("editButton")}
+                                    </Button>
+                                    <Button variant="danger" className="rounded-pill shadow-sm custom-button-action" onClick={handleDeleteBlog}>
+                                        <Trash className="me-1" size={18} /> {t("deleteButton")}
+                                    </Button>
+                                </div>
+                            )}
                         </div>
 
                         {/* Blog Header */}

@@ -34,7 +34,16 @@ import paginationEn from './locales/en/pagination.json';
 import recommendationEn from './locales/en/recommendation.json';
 import reportsEn from './locales/en/reports.json';
 import searchFilterEn from './locales/en/searchFilter.json';
-import userDetailsEn from './locales/en/userDetails.json'; // Import new file
+import userDetailsEn from './locales/en/userDetails.json';
+import homeManagerEn from './locales/en/homeManager.json';
+import homeStaffEn from './locales/en/homeStaff.json';
+import homeConsultantEn from './locales/en/homeConsultant.json';
+import lineChartEn from './locales/en/lineChart.json';
+import statusCardEn from './locales/en/statusCard.json';
+import pendingCardEn from './locales/en/pendingCard.json';
+// New import for AnalyticsPreview
+import analyticsPreviewEn from './locales/en/analyticsPreview.json';
+
 
 // Nếu có tiếng Việt
 import homeVi from './locales/vi/home.json';
@@ -68,7 +77,15 @@ import paginationVi from './locales/vi/pagination.json';
 import recommendationVi from './locales/vi/recommendation.json';
 import reportsVi from './locales/vi/reports.json';
 import searchFilterVi from './locales/vi/searchFilter.json';
-import userDetailsVi from './locales/vi/userDetails.json'; // Import new file
+import userDetailsVi from './locales/vi/userDetails.json';
+import homeManagerVi from './locales/vi/homeManager.json';
+import homeStaffVi from './locales/vi/homeStaff.json';
+import homeConsultantVi from './locales/vi/homeConsultant.json';
+import lineChartVi from './locales/vi/lineChart.json';
+import statusCardVi from './locales/vi/statusCard.json';
+import pendingCardVi from './locales/vi/pendingCard.json';
+// New import for AnalyticsPreview
+import analyticsPreviewVi from './locales/vi/analyticsPreview.json';
 
 i18n
   .use(LanguageDetector)
@@ -109,7 +126,15 @@ i18n
         recommendation: recommendationEn,
         reports: reportsEn,
         searchFilter: searchFilterEn,
-        userDetails: userDetailsEn // Add new namespace
+        userDetails: userDetailsEn,
+        homeManager: homeManagerEn,
+        homeStaff: homeStaffEn,
+        homeConsultant: homeConsultantEn,
+        lineChart: lineChartEn,
+        statusCard: statusCardEn,
+        pendingCard: pendingCardEn,
+        // Add new namespace for AnalyticsPreview
+        analyticsPreview: analyticsPreviewEn
       },
       vi: {
         home: homeVi,
@@ -143,19 +168,29 @@ i18n
         recommendation: recommendationVi,
         reports: reportsVi,
         searchFilter: searchFilterVi,
-        userDetails: userDetailsVi // Add new namespace
+        userDetails: userDetailsVi,
+        homeManager: homeManagerVi,
+        homeStaff: homeStaffVi,
+        homeConsultant: homeConsultantVi,
+        lineChart: lineChartVi,
+        statusCard: statusCardVi,
+        pendingCard: pendingCardVi,
+        // Add new namespace for AnalyticsPreview
+        analyticsPreview: analyticsPreviewVi
       }
     },
-    // Ensure 'userDetails' is added to the `ns` array
+    // Ensure 'analyticsPreview' is added to the `ns` array
     ns: [
       'home', 'appointmentBooking', 'assessmentList', 'assessmentResult',
       'availabilityBooking', 'blogCreation', 'blogDetails', 'blogList',
       'courseCreation', 'courseDetails', 'courseLesson', 'courseList',
       'lessonCreation', 'loginPage', 'moduleCreation', 'myProfile',
       'notFound', 'accountOverview', 'assessmentCard', 'blogCard',
-      'courseCard', 'eventCard', 'familyInformation', 'footer', 
+      'courseCard', 'eventCard', 'familyInformation', 'footer',
       'homeExplore', 'homeMe', 'navbar', 'pagination',
-      'recommendation', 'reports', 'searchFilter', 'userDetails' // Add new namespace
+      'recommendation', 'reports', 'searchFilter', 'userDetails',
+      'homeManager', 'homeStaff', 'homeConsultant', 'lineChart',
+      'statusCard', 'pendingCard', 'analyticsPreview' // Add new namespace
     ],
     defaultNS: 'home',
     interpolation: {

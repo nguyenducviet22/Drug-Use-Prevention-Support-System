@@ -176,6 +176,7 @@ const BlogCreation = () => {
       }
       toast.success(t("form.alert.success"), "success") 
       console.log("Saving blog:", formData)
+      navigate("/blogs")
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {
         toast.error(error.response.data.message);
@@ -211,7 +212,8 @@ const BlogCreation = () => {
       console.log(blogData);
 
       if (blogID) {
-        await putExistingBlog(blogData, {}, `http://localhost:8080/api/blog/${blogID}`)
+        const res = await putExistingBlog(blogData, {}, `http://localhost:8080/api/blog/${blogID}`)
+        console.log(res);
       } else {
         await postNewBlog(blogData, {}, "http://localhost:8080/api/blog")
       }
@@ -230,6 +232,7 @@ const BlogCreation = () => {
         })
         setImagePreview(null)
       }, 2000)
+      navigate("/blogs")
     } catch (error) {
       toast.error(t("form.alert.publishError"), "danger") 
     } finally {

@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import { BookOpen, Calendar, FileText, Play } from 'lucide-react';
-import ManagementCard from '../../components/card/ManagementCard'; // Import the new component
+import './HomeStaff.css'
+import ManagementCard from '../../components/card/ManagementCard';
 import useFetch from '../../hooks/useFetch';
 import { useAuth } from '../../hooks/useAuth';
 import Pagination from '../../components/others/Pagination';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 function HomeStaff() {
+  const { t } = useTranslation('homeStaff'); // Initialize useTranslation with the 'homeStaff' namespace
   const { user } = useAuth()
   const navigate = useNavigate()
   const [itemsPerPage] = useState(4) // Show 4 items per page.
@@ -42,15 +45,15 @@ function HomeStaff() {
   // Hardcoded event data for example
   const eventData = {
     pending: [
-      { id: 1, title: 'Youth Awareness Workshop', submittedDate: '1 week ago' },
-      { id: 2, title: 'Parent Education Seminar', submittedDate: '3 weeks ago' }
+      { id: 1, title: t('youthAwarenessWorkshop'), submittedDate: `1 ${t('weekAgo')}` },
+      { id: 2, title: t('parentEducationSeminar'), submittedDate: `3 ${t('weeksAgo')}` }
     ],
     approved: [
-      { id: 3, title: 'Teacher Training Session', submittedDate: '1 week ago' },
-      { id: 4, title: 'Community Outreach Event', submittedDate: '2 weeks ago' },
-      { id: 5, title: 'Event A', submittedDate: '1 day ago' },
-      { id: 6, title: 'Event B', submittedDate: '2 days ago' },
-      { id: 7, title: 'Event C', submittedDate: '3 days ago' },
+      { id: 3, title: t('teacherTrainingSession'), submittedDate: `1 ${t('weekAgo')}` },
+      { id: 4, title: t('communityOutreachEvent'), submittedDate: `2 ${t('weeksAgo')}` },
+      { id: 5, title: t('eventA'), submittedDate: `1 ${t('dayAgo')}` },
+      { id: 6, title: t('eventB'), submittedDate: `2 ${t('daysAgo')}` },
+      { id: 7, title: t('eventC'), submittedDate: `3 ${t('daysAgo')}` },
     ]
   };
 
@@ -147,10 +150,10 @@ function HomeStaff() {
     try {
       await putApproveBlog({}, {}, `http://localhost:8080/api/blog/${id}/status/PUBLISHED`);
       setPendingBlogs(prevBlogs => prevBlogs.filter(blog => blog.blogID !== id));
-      toast.success(`Successfully approved ${type} with ID: ${id}`);
+      toast.success(t('successfullyApproved', { type: type, id: id }));
     } catch (error) {
       console.error(`Error approving ${type} with ID ${id}:`, error);
-      toast.error(`Failed to approve ${type} with ID: ${id}`);
+      toast.error(t('failedToApprove', { type: type, id: id }));
     }
   };
 
@@ -161,7 +164,7 @@ function HomeStaff() {
           {/* Course Management */}
           <Col lg={4} className="d-flex flex-column">
             <ManagementCard
-              title="Course Management"
+              title={t('courseManagement')}
               icon={BookOpen}
               iconBgClass="bg-primary bg-opacity-10 text-primary"
               data={{ [courseActiveTab]: currentCourseItems }}
@@ -187,7 +190,7 @@ function HomeStaff() {
           {/* Event Management */}
           <Col lg={4} className="d-flex flex-column">
             <ManagementCard
-              title="Event Management"
+              title={t('eventManagement')}
               icon={Calendar}
               iconBgClass="bg-danger bg-opacity-10 text-danger"
               data={{ [eventActiveTab]: currentEventItems }}
@@ -212,7 +215,7 @@ function HomeStaff() {
           {/* Blog Management */}
           <Col lg={4} className="d-flex flex-column">
             <ManagementCard
-              title="Blog Management"
+              title={t('blogManagement')}
               icon={FileText}
               iconBgClass="bg-success bg-opacity-10 text-success"
               data={{
@@ -262,7 +265,7 @@ function HomeStaff() {
                   >
                     <Play size={20} />
                   </div>
-                  <Card.Title className="mb-0 h5">Where You Left Off</Card.Title>
+                  <Card.Title className="mb-0 h5">{t('whereYouLeftOff')}</Card.Title>
                 </div>
 
                 <Card className="bg-primary bg-opacity-10 border-0">
@@ -275,13 +278,13 @@ function HomeStaff() {
                         <BookOpen size={24} />
                       </div>
                       <div className="flex-grow-1">
-                        <Card.Title className="h6 mb-2">Understanding Peer Pressure in Teens</Card.Title>
+                        <Card.Title className="h6 mb-2">{t('understandingPeerPressureInTeens')}</Card.Title>
                         <Card.Text className="text-muted small mb-3">
-                          The impact of peer pressure on adolescent decision-making regarding substance use is a complex topic that requires...
+                          {t('peerPressureDescription')}
                         </Card.Text>
                         <div className="d-flex justify-content-between align-items-center">
-                          <small className="text-muted">Last edited: 2 hours ago</small>
-                          <Button variant="primary">Continue</Button>
+                          <small className="text-muted">{t('lastEdited', { time: `2 ${t('hoursAgo')}` })}</small>
+                          <Button variant="primary">{t('continue')}</Button>
                         </div>
                       </div>
                     </div>
@@ -302,7 +305,7 @@ function HomeStaff() {
                   >
                     <Calendar size={20} />
                   </div>
-                  <Card.Title className="mb-0 h5">Upcoming Events & Responsibilities</Card.Title>
+                  <Card.Title className="mb-0 h5">{t('upcomingEventsResponsibilities')}</Card.Title>
                 </div>
 
                 <div className="d-flex flex-column gap-3">
@@ -311,7 +314,7 @@ function HomeStaff() {
                       <div className="bg-primary rounded me-3" style={{ width: '4px', height: '48px' }}></div>
                       <div>
                         <div className="text-primary small fw-medium">Jun 15, 2024 • 2:00 PM</div>
-                        <div className="fw-medium">Youth Awareness Workshop</div>
+                        <div className="fw-medium">{t('youthAwarenessWorkshop')}</div>
                       </div>
                     </Card.Body>
                   </Card>
@@ -321,7 +324,7 @@ function HomeStaff() {
                       <div className="bg-success rounded me-3" style={{ width: '4px', height: '48px' }}></div>
                       <div>
                         <div className="text-success small fw-medium">Jul 2, 2024 • 10:00 AM</div>
-                        <div className="fw-medium">Parent Education Seminar</div>
+                        <div className="fw-medium">{t('parentEducationSeminar')}</div>
                       </div>
                     </Card.Body>
                   </Card>
@@ -331,7 +334,7 @@ function HomeStaff() {
                       <div className="bg-info rounded me-3" style={{ width: '4px', height: '48px' }}></div>
                       <div>
                         <div className="text-info small fw-medium">Jul 8, 2024 • 1:30 PM</div>
-                        <div className="fw-medium">Teacher Training Session</div>
+                        <div className="fw-medium">{t('teacherTrainingSession')}</div>
                       </div>
                     </Card.Body>
                   </Card>

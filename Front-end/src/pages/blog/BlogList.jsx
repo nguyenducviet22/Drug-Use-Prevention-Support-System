@@ -41,16 +41,16 @@ const BlogList = () => {
         setTypes(typesData);
 
         if (mainTabKey === 'all') {
-          const blogsData = await getBlogs("http://localhost:8080/api/blog");
+          const blogsData = await getBlogs("http://localhost:8080/api/blog/status/PUBLISHED");
           setBlogs(blogsData);
         } else if (mainTabKey === 'myBlogs' && user) {
           let userBlogsData = [];
           if (myBlogsSubTabKey === 'published') {
-            userBlogsData = await getMyBlogs(`http://localhost:8080/api/blog/my-list/${user.username}`);
+            userBlogsData = await getMyBlogs(`http://localhost:8080/api/blog/my-list/${user.username}/status/PUBLISHED`);
           } else if (myBlogsSubTabKey === 'drafts') {
-            userBlogsData = await getMyDrafts(`http://localhost:8080/api/blog/my-list/draft/${user.username}`);
+            userBlogsData = await getMyDrafts(`http://localhost:8080/api/blog/my-list/${user.username}/status/DRAFT`);
           } else if (myBlogsSubTabKey === 'pending') {
-            userBlogsData = await getMyPending(`http://localhost:8080/api/blog/my-list/pending/${user.username}`);
+            userBlogsData = await getMyPending(`http://localhost:8080/api/blog/my-list/${user.username}/status/PENDING`);
           }
           setBlogs(userBlogsData);
         }

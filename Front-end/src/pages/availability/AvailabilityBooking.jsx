@@ -9,10 +9,11 @@ import useFetch from "../../hooks/useFetch"
 import { toast } from "react-toastify"
 import { format } from 'date-fns'
 import { useAuth } from "../../hooks/useAuth"
-import { useTranslation } from "react-i18next" // Import useTranslation
+import { useTranslation } from "react-i18next"
+import BackButton from "../../components/BackButton"
 
 const AvailabilityBooking = () => {
-    const { t } = useTranslation('availabilityBooking') // Sử dụng namespace 'availabilityBooking'
+    const { t } = useTranslation('availabilityBooking') // Initialize useTranslation
 
     const { user } = useAuth()
     const consultantID = user?.username
@@ -20,6 +21,9 @@ const AvailabilityBooking = () => {
     const calendarRef = useRef(null)
     const [selectedTimeSlots, setSelectedTimeSlots] = useState([])
     const [showConfirmModal, setShowConfirmModal] = useState(false)
+    const [showCancelModal, setShowCancelModal] = useState(false); // New state for cancel confirmation modal
+    const [slotToCancel, setSlotToCancel] = useState(null); // New state to store the slot to be cancelled
+    const [cancellationReason, setCancellationReason] = useState("");
     const today = new Date();
     const nextWeek = new Date(today);
     nextWeek.setDate(today.getDate() + 7);
@@ -28,10 +32,13 @@ const AvailabilityBooking = () => {
         end: format(nextWeek, 'yyyy-MM-dd'),
     });
     const { loading: loadingConsultantAvailableSlots, error: errorConsultantAvailableSlots, get: getConsultantAvailableSlots } = useFetch()
+    const { loading: loadingConsultantScheduledSlots, error: errorConsultantScheduledSlots, get: getConsultantScheduledSlots } = useFetch()
+    const { loading: loadingConsultantCancelledSlots, error: errorConsultantCancelledSlots, get: getConsultantCancelledSlots } = useFetch()
     const { loading: loadingNewAvailabilities, error: errorNewAvailabilities, post: postNewAvailabilities } = useFetch()
+    const { loading: loadingCancelAvailability, error: errorCancelAvailability, put: cancelScheduledSlots } = useFetch()
     const [calendarEvents, setCalendarEvents] = useState([])
 
-    const transformToCalendarEvents = (rawData, consultantID) => {
+    const transformToCalendarEvents = (rawData, consultantID, type) => {
         if (!rawData || !Array.isArray(rawData)) {
             console.warn("Invalid rawData format:", rawData);
             return [];
@@ -44,21 +51,43 @@ const AvailabilityBooking = () => {
             const slotEnd = new Date(slotStart);
             slotEnd.setHours(slotStart.getHours() + 1);
 
-            const id = `${consultantID}-${slotStart.toISOString()}`;
-            const isAvailableForBooking = slotStart > now; // Only check if in the past
+            const id = `${consultantID}-${type}-${slotStart.toISOString()}`;
+            const isAvailableForBooking = slotStart > now;
+            const isPastSlot = slotStart <= now;
+
+            let eventTitle = "";
+            let backgroundColor = "";
+            let borderColor = "";
+
+            if (type === "available") {
+                eventTitle = isAvailableForBooking ? t("calendarSection.eventTitles.available") : t("calendarSection.eventTitles.pastUnavailable");
+                backgroundColor = isAvailableForBooking ? "#28a745" : "#6c757d";
+                borderColor = isAvailableForBooking ? "#28a745" : "#6c757d";
+            } else if (type === "scheduled") {
+                eventTitle = isPastSlot ? t("calendarSection.eventTitles.pastScheduled") : t("calendarSection.eventTitles.scheduled");
+                backgroundColor = isPastSlot ? "#6c757d" : "#ffc107";
+                borderColor = isPastSlot ? "#6c757d" : "#ffc107";
+            } else if (type === "cancelled") {
+                eventTitle = t("calendarSection.eventTitles.cancelled"); // New translation key for cancelled
+                backgroundColor = "#dc3545"; // Red for cancelled
+                borderColor = "#dc3545";
+                // You might also consider adding a specific class for strikethrough via eventDidMount
+            }
 
             return {
                 id: id,
-                title: isAvailableForBooking ? t("calendarSection.eventTitles.available") : t("calendarSection.eventTitles.pastUnavailable"),
+                title: eventTitle,
                 start: slotStart.toISOString(),
                 end: slotEnd.toISOString(),
-                backgroundColor: isAvailableForBooking ? "#28a745" : "#6c757d",
-                borderColor: isAvailableForBooking ? "#28a745" : "#6c757d",
+                backgroundColor: backgroundColor,
+                borderColor: borderColor,
                 textColor: "#ffffff",
                 extendedProps: {
                     consultantID: consultantID,
                     available: isAvailableForBooking,
-                    type: "available-slot",
+                    type: type,
+                    isPast: isPastSlot,
+                    originalTime: timeString,
                 },
             };
         });
@@ -71,43 +100,110 @@ const AvailabilityBooking = () => {
             start: newStartDate,
             end: newEndDate,
         });
-        fetchConsultantAvailableSlots(consultantID, newStartDate, newEndDate);
+        fetchConsultantSlots(consultantID, newStartDate, newEndDate);
     };
 
-    const fetchConsultantAvailableSlots = async (consultantID, fromDate, toDate) => {
+    const fetchConsultantSlots = async (consultantID, fromDate, toDate) => {
         if (!consultantID || !fromDate || !toDate) {
             console.warn("Cannot fetch availabilities: missing consultantID, fromDate, or toDate.");
             return;
         }
         try {
-            const consultantAvailableSlots = await getConsultantAvailableSlots(
+            const cancelledRawSlots = await getConsultantCancelledSlots(
+                `http://localhost:8080/api/availability/slots/CANCELLED?username=${consultantID}&from=${fromDate}&to=${toDate}`
+            );
+            const transformedCancelledEvents = transformToCalendarEvents(cancelledRawSlots, consultantID, "cancelled");
+            const cancelledTimes = new Set(transformedCancelledEvents.map(event => event.extendedProps.originalTime));
+
+            const scheduledRawSlots = await getConsultantScheduledSlots(
+                `http://localhost:8080/api/availability/slots/SCHEDULED?username=${consultantID}&from=${fromDate}&to=${toDate}`
+            );
+            // Filter out any scheduled slots that are also marked as cancelled
+            const filteredScheduledRawSlots = scheduledRawSlots.filter(scheduledTime => {
+                // Sử dụng areDatesEqualIgnoringMillis nếu có thể có sự khác biệt nhỏ về mili giây
+                return !cancelledTimes.has(scheduledTime);
+                // Hoặc: return !Array.from(cancelledTimes).some(cancelledT => areDatesEqualIgnoringMillis(scheduledTime, cancelledT));
+            });
+            const transformedScheduledEvents = transformToCalendarEvents(filteredScheduledRawSlots, consultantID, "scheduled");
+            const scheduledTimes = new Set(transformedScheduledEvents.map(event => event.extendedProps.originalTime));
+
+            const availableRawSlots = await getConsultantAvailableSlots(
                 `http://localhost:8080/api/availability/available-slots?username=${consultantID}&from=${fromDate}&to=${toDate}`
             );
-            const transformedEvents = transformToCalendarEvents(consultantAvailableSlots, consultantID);
-            setCalendarEvents(transformedEvents);
+            // Filter out available slots that are already scheduled or cancelled
+            const combinedUnavailableTimes = new Set([...cancelledTimes, ...scheduledTimes]);
+
+            const filteredAvailableRawSlots = availableRawSlots.filter(availableTime => {
+                return !combinedUnavailableTimes.has(availableTime);
+                // Hoặc: return !Array.from(combinedUnavailableTimes).some(unavailableT => areDatesEqualIgnoringMillis(availableTime, unavailableT));
+            });
+            const transformedAvailableEvents = transformToCalendarEvents(filteredAvailableRawSlots, consultantID, "available");
+
+            setCalendarEvents([
+                ...transformedAvailableEvents,
+                ...transformedScheduledEvents,
+                ...transformedCancelledEvents
+            ]);
+
         } catch (error) {
-            console.error("Error fetching consultant's available slots:", error);
+            console.error("Error fetching consultant's slots:", error);
             setCalendarEvents([]);
-            toast.error(t("toasts.fetchError"), "danger");
+            toast.error(t("toasts.fetchError"));
         }
     }
 
     useEffect(() => {
         if (consultantID) {
-            fetchConsultantAvailableSlots(consultantID, currentViewRange.start, currentViewRange.end);
+            fetchConsultantSlots(consultantID, currentViewRange.start, currentViewRange.end);
         }
-    }, [consultantID, getConsultantAvailableSlots, currentViewRange.start, currentViewRange.end]);
+    }, [consultantID, currentViewRange.start, currentViewRange.end]);
 
     const handleEventClick = (clickInfo) => {
         const event = clickInfo.event;
         const now = new Date();
 
-        if (event.extendedProps.type === "available-slot" && event.extendedProps.available) {
+        // If it's a future scheduled slot, open the cancellation modal
+        if (event.extendedProps.type === "scheduled" && !event.extendedProps.isPast) {
+            setSlotToCancel({
+                id: event.id,
+                start: event.start,
+                end: event.end,
+                consultant: consultantID,
+                formattedDate: event.start.toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                }),
+                formattedTime: event.start.toLocaleTimeString("en-US", {
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                }),
+                originalTime: event.extendedProps.originalTime, // Pass the original time for deletion
+            });
+            setCancellationReason("");
+            setShowCancelModal(true);
+            return;
+        }
+
+        // Prevent interaction with past events or scheduled events (that are not future and thus not cancellable)
+        if (event.extendedProps.isPast || event.extendedProps.type === "scheduled") {
+            if (event.extendedProps.type === "scheduled") {
+                toast.info(t("toasts.scheduledSlotInfo"));
+            } else {
+                toast.info(t("toasts.unavailableSlotInfo"));
+            }
+            return;
+        }
+
+        // Only allow interaction with available future slots for adding
+        if (event.extendedProps.type === "available" && event.extendedProps.available) {
             const clickedSlot = {
                 id: event.id,
                 start: event.start,
                 end: event.end,
-                consultant: consultantID, // Thêm consultantID vào đây
+                consultant: consultantID,
                 formattedDate: event.start.toLocaleDateString("en-US", {
                     weekday: "long",
                     year: "numeric",
@@ -121,7 +217,6 @@ const AvailabilityBooking = () => {
                 }),
             };
 
-            // Kiểm tra xem slot đã được chọn chưa
             const isSelected = selectedTimeSlots.some(slot => slot.id === clickedSlot.id);
 
             let updatedSelectedSlots;
@@ -129,28 +224,22 @@ const AvailabilityBooking = () => {
             const eventIndexInCalendar = updatedCalendarEvents.findIndex(evt => evt.id === event.id);
 
             if (isSelected) {
-                // Nếu đã chọn, bỏ chọn (xóa khỏi mảng và đổi màu về mặc định)
                 updatedSelectedSlots = selectedTimeSlots.filter(slot => slot.id !== clickedSlot.id);
                 if (eventIndexInCalendar > -1) {
                     updatedCalendarEvents[eventIndexInCalendar] = {
                         ...updatedCalendarEvents[eventIndexInCalendar],
-                        backgroundColor: "#28a745", // Màu xanh mặc định
+                        backgroundColor: "#28a745",
                         borderColor: "#28a745",
                         title: t("calendarSection.eventTitles.available")
                     };
                 }
                 toast.info(t("toasts.slotUnselected"));
             } else {
-                // Nếu chưa chọn, thêm vào (thêm vào mảng và đổi màu thành đã chọn)
-                if (clickedSlot.start <= now) {
-                    toast.error(t("toasts.pastSlotError"));
-                    return;
-                }
                 updatedSelectedSlots = [...selectedTimeSlots, clickedSlot];
                 if (eventIndexInCalendar > -1) {
                     updatedCalendarEvents[eventIndexInCalendar] = {
                         ...updatedCalendarEvents[eventIndexInCalendar],
-                        backgroundColor: "#4285f4", // Màu xanh dương đã chọn
+                        backgroundColor: "#4285f4",
                         borderColor: "#4285f4",
                         title: t("calendarSection.eventTitles.selected")
                     };
@@ -160,8 +249,6 @@ const AvailabilityBooking = () => {
 
             setSelectedTimeSlots(updatedSelectedSlots);
             setCalendarEvents(updatedCalendarEvents);
-        } else {
-            toast.info(t("toasts.unavailableSlotInfo"));
         }
     }
 
@@ -171,33 +258,25 @@ const AvailabilityBooking = () => {
             return;
         }
 
-        const now = new Date();
-        const futureSlots = selectedTimeSlots.filter(slot => slot.start > now);
-
-        if (futureSlots.length !== selectedTimeSlots.length) {
-            toast.error(t("toasts.pastSlotError"));
-        }
-
         setShowConfirmModal(true);
     }
 
     const handleConfirmBooking = async () => {
         try {
             const now = new Date();
-            const slotsToBook = selectedTimeSlots.filter(slot => slot.start > now);
+            const slotsToBook = selectedTimeSlots.filter(slot => slot.start > now); // Ensure only future slots are booked
+            console.log(slotsToBook);
 
             if (slotsToBook.length === 0) {
                 toast.error(t("toasts.noValidSlotsError"));
                 setShowConfirmModal(false);
                 setSelectedTimeSlots([]);
-                // Refetch to clear any potentially stale selections
                 if (consultantID) {
-                    fetchConsultantAvailableSlots(consultantID, currentViewRange.start, currentViewRange.end);
+                    fetchConsultantSlots(consultantID, currentViewRange.start, currentViewRange.end);
                 }
                 return;
             }
 
-            // Tạo mảng các chuỗi ISO datetime từ các slot đã chọn
             const availabilityDateTimes = slotsToBook.map(slot => slot.start.toISOString());
 
             const availabilitiesData = {
@@ -210,10 +289,9 @@ const AvailabilityBooking = () => {
 
             if (response) {
                 setShowConfirmModal(false)
-                setSelectedTimeSlots([]) // Clear selected slots
+                setSelectedTimeSlots([])
                 if (user) {
-                    // Refetch availabilities to update the calendar display
-                    fetchConsultantAvailableSlots(user.username, currentViewRange.start, currentViewRange.end);
+                    fetchConsultantSlots(user.username, currentViewRange.start, currentViewRange.end);
                 } else {
                     setCalendarEvents([]);
                 }
@@ -226,6 +304,64 @@ const AvailabilityBooking = () => {
             toast.error(t("toasts.unknownBookingError"));
         }
     }
+
+    const handleConfirmCancellation = async () => {
+        if (!slotToCancel || !consultantID) {
+            toast.error(t("toasts.cancellationError"));
+            setShowCancelModal(false);
+            return;
+        }
+
+        try {
+            const now = new Date();
+            if (slotToCancel.start <= now) { // Check if the slot is in the past
+                toast.error(t("toasts.cannotCancelPastSlot")); // Add a new translation key if needed
+                setShowCancelModal(false);
+                return;
+            }
+
+            const requestBody = {
+                updatedDateTime: slotToCancel.start.toISOString(),
+                from: format(slotToCancel.start, 'yyyy-MM-dd'),
+                to: format(slotToCancel.end, 'yyyy-MM-dd'),
+                reason: cancellationReason
+            };
+            console.log(requestBody);
+
+            const response = await cancelScheduledSlots(requestBody, {}, "http://localhost:8080/api/availability/CANCELLED");
+
+            if (response) {
+                toast.success(t("toasts.cancellationSuccess"));
+                setShowCancelModal(false);
+                setSlotToCancel(null);
+                setCancellationReason("");
+                if (consultantID) {
+                    fetchConsultantSlots(consultantID, currentViewRange.start, currentViewRange.end);
+                }
+            } else {
+                toast.error(t("toasts.cancellationError", { message: response?.message || t("toasts.unknownCancellationError") }));
+            }
+        } catch (error) {
+            console.error("Error canceling availability:", error);
+            toast.error(t("toasts.unknownCancellationError"));
+        }
+    };
+
+    const handleCancelBooking = () => {
+        setShowConfirmModal(false);
+        setSelectedTimeSlots([]);
+        // Refetch to reset the calendar display if needed
+        if (consultantID) {
+            fetchConsultantSlots(consultantID, currentViewRange.start, currentViewRange.end);
+        }
+        toast.info(t("toasts.bookingCancelled"));
+    }
+
+    const handleCloseCancelModal = () => {
+        setShowCancelModal(false);
+        setSlotToCancel(null);
+        setCancellationReason("");
+    };
 
     const calendarOptions = {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -246,45 +382,63 @@ const AvailabilityBooking = () => {
         weekends: false,
         eventClick: handleEventClick,
         eventMouseEnter: (info) => {
-            if (info.event.extendedProps.available) {
+            // Cursor behavior based on event type and past status
+            const { type, isPast } = info.event.extendedProps;
+            // Allow pointer for available and future scheduled/cancelled slots
+            if ((type === "available" && !isPast) || (type === "scheduled" && !isPast)) {
                 info.el.style.cursor = "pointer";
             } else {
                 info.el.style.cursor = "not-allowed";
             }
         },
         eventDidMount: (info) => {
-            const { available } = info.event.extendedProps;
+            const { available, type, isPast } = info.event.extendedProps;
             const isCurrentlySelected = selectedTimeSlots.some(slot => slot.id === info.event.id);
 
-            if (!available) {
-                // If unavailable (past or booked)
+            if (isPast) {
+                // All past events (available, scheduled, or cancelled) become grey
                 info.el.style.backgroundColor = "#6c757d"; // Darker grey
                 info.el.style.borderColor = "#6c757d";
                 info.el.style.color = "#ffffff";
                 info.el.style.opacity = "0.7";
                 info.el.style.cursor = "not-allowed";
-                if (info.event.title !== t("calendarSection.eventTitles.pastUnavailable")) {
+                if (type === "available") {
                     info.event.setProp('title', t("calendarSection.eventTitles.pastUnavailable"));
+                } else if (type === "scheduled" || type === "cancelled") { // Past scheduled/cancelled
+                    info.event.setProp('title', t("calendarSection.eventTitles.pastScheduled"));
                 }
+            } else if (type === "scheduled") {
+                // Future scheduled events are yellow
+                info.el.style.backgroundColor = "#ffc107"; // Yellow for scheduled
+                info.el.style.borderColor = "#ffc107";
+                info.el.style.color = "#000000"; // Black text for yellow background
+                info.el.style.opacity = "0.9";
+                info.el.style.cursor = "pointer"; // Allow clicking to cancel
+                info.event.setProp('title', t("calendarSection.eventTitles.scheduled"));
+            } else if (type === "cancelled") {
+                // Future cancelled events are red (distinct from scheduled)
+                info.el.style.backgroundColor = "#dc3545"; // Red for cancelled
+                info.el.style.borderColor = "#dc3545";
+                info.el.style.color = "#ffffff"; // White text for red background
+                info.el.style.opacity = "0.9";
+                info.el.style.cursor = "not-allowed"; // Typically, you wouldn't click a cancelled slot
+                info.event.setProp('title', t("calendarSection.eventTitles.cancelled")); // New translation key
             } else if (isCurrentlySelected) {
-                // If available AND currently selected
-                info.el.style.backgroundColor = "#4285f4"; // Màu xanh dương đã chọn
+                // If available AND currently selected (future)
+                info.el.style.backgroundColor = "#4285f4"; // Blue for selected
                 info.el.style.borderColor = "#4285f4";
                 info.el.style.color = "#ffffff";
                 info.el.style.opacity = "1";
                 info.el.style.cursor = "pointer";
                 info.event.setProp('title', t("calendarSection.eventTitles.selected"));
-            }
-            else {
-                // Available slot (not selected)
+            } else {
+                // Available slot (not selected, future)
                 info.el.style.backgroundColor = "#28a745"; // Default green
                 info.el.style.borderColor = "#28a745";
                 info.el.style.color = "#ffffff";
                 info.el.style.opacity = "1";
                 info.el.style.cursor = "pointer";
-                if (info.event.title === t("calendarSection.eventTitles.pastUnavailable")) {
-                    info.event.setProp('title', t("calendarSection.eventTitles.available"));
-                }
+                info.event.setProp('title', t("calendarSection.eventTitles.available"));
             }
         },
         dayHeaderFormat: { weekday: "short", day: "numeric" },
@@ -315,8 +469,8 @@ const AvailabilityBooking = () => {
 
             {/* Main Booking Section */}
             <Container className="py-5">
+                <BackButton label={t("backButton")} />
                 <Row>
-
                     {/* Calendar Section */}
                     <Col lg={12}>
                         <Card className="calendar-card">
@@ -372,7 +526,7 @@ const AvailabilityBooking = () => {
                 </Row>
             </Container>
 
-            {/* Confirmation Modal */}
+            {/* Confirmation Modal for Adding Slots */}
             <Modal show={showConfirmModal} onHide={() => setShowConfirmModal(false)} centered>
                 <Modal.Body className="confirmation-modal">
                     <h4 className="modal-title mb-4">{t("confirmationModal.title")}</h4>
@@ -388,8 +542,47 @@ const AvailabilityBooking = () => {
                     </div>
 
                     <div className="text-center mt-4">
-                        <Button variant="primary" size="lg" className="confirm-btn" onClick={handleConfirmBooking}>
-                            {t("confirmationModal.confirmButton", { count: selectedTimeSlots.length })}
+                        <Button variant="primary" size="lg" className="confirm-btn me-2" onClick={handleConfirmBooking} disabled={loadingNewAvailabilities}>
+                            {loadingNewAvailabilities ? t("confirmationModal.confirmingButton") : t("confirmationModal.confirmButton", { count: selectedTimeSlots.length })}
+                        </Button>
+                        <Button variant="secondary" size="lg" onClick={handleCancelBooking} disabled={loadingNewAvailabilities}>
+                            {t("confirmationModal.cancelButton")}
+                        </Button>
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+            {/* Confirmation Modal for Cancelling Slots */}
+            <Modal show={showCancelModal} onHide={handleCloseCancelModal} centered>
+                <Modal.Body className="confirmation-modal">
+                    <h4 className="modal-title mb-4">{t("cancellationModal.title")}</h4>
+                    {slotToCancel && (
+                        <div className="booking-details">
+                            <p>{t("cancellationModal.message")}</p>
+                            <div className="detail-row mb-2">
+                                <span className="detail-label">{t("cancellationModal.dateLabel")}</span>
+                                <span className="detail-value">
+                                    {slotToCancel.formattedDate} at {slotToCancel.formattedTime}
+                                </span>
+                            </div>
+                            <Form.Group className="mb-3" controlId="cancellationReason">
+                                <Form.Label>{t("cancellationModal.reasonLabel")}</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    value={cancellationReason}
+                                    onChange={(e) => setCancellationReason(e.target.value)}
+                                    placeholder={t("cancellationModal.reasonPlaceholder")}
+                                />
+                            </Form.Group>
+                        </div>
+                    )}
+                    <div className="text-center mt-4">
+                        <Button variant="danger" size="lg" className="confirm-btn me-2" onClick={handleConfirmCancellation} disabled={loadingCancelAvailability}>
+                            {loadingCancelAvailability ? t("cancellationModal.cancellingButton") : t("cancellationModal.confirmCancellationButton")}
+                        </Button>
+                        <Button variant="secondary" size="lg" onClick={handleCloseCancelModal} disabled={loadingCancelAvailability}>
+                            {t("cancellationModal.doNotCancelButton")}
                         </Button>
                     </div>
                 </Modal.Body>
