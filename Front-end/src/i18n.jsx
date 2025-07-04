@@ -43,6 +43,7 @@ import statusCardEn from './locales/en/statusCard.json';
 import pendingCardEn from './locales/en/pendingCard.json';
 // New import for AnalyticsPreview
 import analyticsPreviewEn from './locales/en/analyticsPreview.json';
+import appointmentCardEn from './locales/en/appointmentCard.json';
 
 
 // Nếu có tiếng Việt
@@ -86,12 +87,13 @@ import statusCardVi from './locales/vi/statusCard.json';
 import pendingCardVi from './locales/vi/pendingCard.json';
 // New import for AnalyticsPreview
 import analyticsPreviewVi from './locales/vi/analyticsPreview.json';
+import appointmentCardVi from './locales/vi/appointmentCard.json';
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'en',
+    fallbackLng: 'vi',
     debug: true,
     resources: {
       en: {
@@ -134,7 +136,8 @@ i18n
         statusCard: statusCardEn,
         pendingCard: pendingCardEn,
         // Add new namespace for AnalyticsPreview
-        analyticsPreview: analyticsPreviewEn
+        analyticsPreview: analyticsPreviewEn,
+        appointmentCard: appointmentCardEn
       },
       vi: {
         home: homeVi,
@@ -176,7 +179,8 @@ i18n
         statusCard: statusCardVi,
         pendingCard: pendingCardVi,
         // Add new namespace for AnalyticsPreview
-        analyticsPreview: analyticsPreviewVi
+        analyticsPreview: analyticsPreviewVi,
+        appointmentCard: appointmentCardVi
       }
     },
     // Ensure 'analyticsPreview' is added to the `ns` array
@@ -190,7 +194,7 @@ i18n
       'homeExplore', 'homeMe', 'navbar', 'pagination',
       'recommendation', 'reports', 'searchFilter', 'userDetails',
       'homeManager', 'homeStaff', 'homeConsultant', 'lineChart',
-      'statusCard', 'pendingCard', 'analyticsPreview' // Add new namespace
+      'statusCard', 'pendingCard', 'analyticsPreview', 'appointmentCard' // Add new namespace
     ],
     defaultNS: 'home',
     interpolation: {

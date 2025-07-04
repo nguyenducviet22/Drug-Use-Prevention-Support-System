@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Users, Calendar, BookOpen, FileText, MessageSquare, UserCheck, Award, Target, ChevronRight } from 'lucide-react';
 import './HomeManager.css'
-import StatusCard from '../../components/StatusCard';
-import PendingCard from '../../components/PendingCard';
-import LineChart from '../../components/LineChart';
-import AnalyticsPreview from '../../components/AnalyticsPreview';
+import StatusCard from '../../components/dashboard/StatusCard';
+import PendingCard from '../../components/dashboard/PendingCard';
+import LineChart from '../../components/dashboard/LineChart';
+import AnalyticsPreview from '../../components/dashboard/AnalyticsPreview';
 import useFetch from '../../hooks/useFetch';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';

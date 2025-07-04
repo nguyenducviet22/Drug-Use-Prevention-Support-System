@@ -13,7 +13,8 @@
       "selected": "Selected",
       "scheduled": "Scheduled",
       "pastScheduled": "Past",
-      "cancelled": "Cancelled"
+      "cancelled": "Cancelled",
+      "confirmed": "Confirmed"
     }
   },
   "selectedSlotsSection": {
@@ -34,7 +35,7 @@
     "message": "Are you sure you want to cancel the following time slot?",
     "dateLabel": "Date:",
     "timeLabel": "Time:",
-    "reasonLabel": "Reason for cancellation (optional):",
+    "reasonLabel": "Reason for cancellation (required):",
     "reasonPlaceholder": "E.g., Consultant unavailable, client requested reschedule...",
     "cancellingButton": "Cancelling...",
     "confirmCancellationButton": "Confirm Cancellation",

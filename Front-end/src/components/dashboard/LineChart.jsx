@@ -11,7 +11,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import useFetch from '../hooks/useFetch';
+import useFetch from '../../hooks/useFetch';
 import { useTranslation } from 'react-i18next'; // Import useTranslation
 
 // Đăng ký các thành phần cần thiết cho Chart.js

@@ -15,6 +15,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import useFetch from '../../hooks/useFetch';
 import { useTranslation } from "react-i18next"; // Import useTranslation
+import AppointmentCard from '../../components/card/AppointmentCard';
 
 function HomeConsultant() {
   const { user } = useAuth();
@@ -34,11 +35,12 @@ function HomeConsultant() {
     const fetchData = async () => {
       try {
         if (user) {
-          const todayAppointmentsResponse = await getTodayAppointments(`http://localhost:8080/api/appointment/today/consultant/${user?.username}`);
+          const username = user?.username;
+          const todayAppointmentsResponse = await getTodayAppointments(`http://localhost:8080/api/appointment/today/consultant/${username}`);
           setTodayAppointments(todayAppointmentsResponse);
-          const totalAppointmentsAndMembersResponse = await getTotalAppointmentsAndMembers(`http://localhost:8080/api/appointment/count-appointments-members/consultant/${user?.username}`);
+          const totalAppointmentsAndMembersResponse = await getTotalAppointmentsAndMembers(`http://localhost:8080/api/appointment/count-appointments-members/consultant/${username}`);
           setTotalAppointmentsAndMembers(totalAppointmentsAndMembersResponse);
-          const totalMembersResponse = await getTotalMembers(`http://localhost:8080/api/user/${user?.username}/members`);
+          const totalMembersResponse = await getTotalMembers(`http://localhost:8080/api/user/${username}/members`);
           setTotalMembers(totalMembersResponse);
         }
       } catch (error) {
@@ -120,57 +122,9 @@ function HomeConsultant() {
         </Row>
 
         <Row>
-          {/* Enhanced Today's Appointments */}
+          {/* Today's Appointments */}
           <Col lg={6} className="mb-4">
-            <Card className="card-custom h-100">
-              <Card.Header className="card-header-custom">
-                <h5 className="mb-0">
-                  <Calendar className="me-2" size={20} />
-                  {t('todaysAppointments')}
-                </h5>
-              </Card.Header>
-              <Card.Body className="p-0">
-                {todayAppointments.length > 0 ? (
-                  todayAppointments.filter(appointment => new Date(appointment.appointmentDateTime) >= new Date()
-                  ).map((appointment) => (
-                    <div key={appointment.id} className="appointment-item">
-                      <div className="appointment-info bg-light rounded-3 p-3">
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                          <div>
-                            <h6 className="fw-bold text-dark mb-1">{appointment.member.username}</h6>
-                          </div>
-                          <span className="badge bg-warning text-dark">{appointment.status}</span>
-                        </div>
-                        <div className="appointment-time mt-3">
-                          <div className="fw-semibold text-primary">{appointment.appointmentDateTime}</div>
-                        </div>
-                      </div>
-                      <Row className="mt-3">
-                        <Col>
-                          <Button
-                            variant="primary"
-                            size="sm"
-                            className="btn-custom btn-primary-custom"
-                            onClick={() => window.open(appointment.link)}
-                          >
-                            <Video size={14} className="me-1" />
-                            {t('joinMeeting')}
-                          </Button>
-                        </Col>
-                      </Row>
-                    </div>
-                  ))
-                ) : (
-                  <div className="p-3 text-center text-muted">{t('noAppointmentsToday')}</div>
-                )}
-                <div className="p-3 text-center border-top">
-                  <Button variant="primary" className="btn-custom btn-primary-custom">
-                    <Plus className="me-2" size={16} />
-                    {t('viewAllAppointments')}
-                  </Button>
-                </div>
-              </Card.Body>
-            </Card>
+            <AppointmentCard appointments={todayAppointments} />
           </Col>
 
           {/* Enhanced Member Progress Tracker */}

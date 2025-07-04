@@ -34,7 +34,7 @@
     "message": "Bạn có chắc chắn muốn hủy khung giờ sau không?",
     "dateLabel": "Ngày:",
     "timeLabel": "Thời gian:",
-    "reasonLabel": "Lý do hủy (tùy chọn):",
+    "reasonLabel": "Lý do hủy (bắt buộc):",
     "reasonPlaceholder": "Ví dụ: Chuyên gia tư vấn bận, khách hàng yêu cầu đổi lịch...",
     "cancellingButton": "Đang hủy...",
     "confirmCancellationButton": "Xác Nhận Hủy",
