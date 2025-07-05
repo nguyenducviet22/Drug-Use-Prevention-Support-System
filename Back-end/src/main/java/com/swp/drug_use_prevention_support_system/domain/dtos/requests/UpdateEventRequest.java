@@ -6,7 +6,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
+
 
 @Data
 @NoArgsConstructor
@@ -36,9 +36,9 @@ public class UpdateEventRequest {
 
     @NotNull(message = "Start date is required")
     @FutureOrPresent(message = "Start date must be today or in the future")
-    LocalDate startDate;
+    String startedAt;
 
     @NotNull(message = "End date is required")
     @FutureOrPresent(message = "End date must be today or in the future")
-    LocalDate endDate;
+    String endedAt;
 }

@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -24,7 +25,7 @@ public class AssessmentResult {
     @Enumerated(EnumType.STRING)
     RiskLevel riskLevel;
     String suggestedAction;
-    LocalDateTime completedTime;
+    Instant completedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "username", nullable = false)

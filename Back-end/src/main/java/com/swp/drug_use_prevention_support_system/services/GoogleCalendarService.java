@@ -1,7 +1,6 @@
 package com.swp.drug_use_prevention_support_system.services;
 
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.DateTime;
@@ -45,8 +44,8 @@ public class GoogleCalendarService {
                 this.googleCredential // Sử dụng googleCredential đã inject
         ).setApplicationName(APPLICATION_NAME).build();
 
-        Instant startInstant = request.getAppointmentDateTime();
-        Instant endInstant = startInstant.plusSeconds(60 * 60); // 1h
+        String startInstant = request.getAppointmentDateTime();
+        String endInstant = Instant.parse(startInstant).plusSeconds(60 * 60).toString(); // 1h
 
         Event event = new Event()
                 .setSummary("Tư vấn với " + request.getConsultantID())

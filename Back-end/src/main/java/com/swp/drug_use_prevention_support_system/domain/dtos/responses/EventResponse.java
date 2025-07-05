@@ -5,8 +5,8 @@ import com.swp.drug_use_prevention_support_system.domain.enums.EventStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+
+
 import java.util.UUID;
 
 @Data
@@ -24,8 +24,8 @@ public class EventResponse {
     String img;
     EventStatus status;
     AgeGroup ageGroup;
-    LocalDate startDate;
-    LocalDate endDate;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    String startedAt;
+    String endedAt;
+    String createdAt;
+    String updatedAt;
 }

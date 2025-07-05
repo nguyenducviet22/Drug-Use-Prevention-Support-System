@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -21,16 +21,16 @@ public class Qualification {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "qualification_id")
     UUID qualificationID;
+    String name;
     String img;
     @Enumerated(EnumType.STRING)
     Degree degree;
     String institution;
     Integer year;
-    String description;
     @Enumerated(EnumType.STRING)
     CourseStatus status;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    Instant createdAt;
+    Instant updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consultant_id", nullable = false)
@@ -38,13 +38,13 @@ public class Qualification {
 
     @PrePersist
     protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 }

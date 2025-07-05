@@ -7,10 +7,10 @@ CREATE TABLE event (
     img VARCHAR(255),
     status ENUM('NOT_STARTED', 'ONGOING', 'EXPIRED', 'CANCELLED') NOT NULL,
     age_group ENUM('ADOLESCENT', 'ADULT', 'SENIOR', 'EVERYONE') NOT NULL,
-    start_date DATE,
-    end_date DATE,
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL
+    started_at DATETIME(6),
+    ended_at DATETIME(6),
+    created_at DATETIME(6) NOT NULL,
+    updated_at DATETIME(6) NOT NULL
 );
 
 CREATE TABLE user_event (

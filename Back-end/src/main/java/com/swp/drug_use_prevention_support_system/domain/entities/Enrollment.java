@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
+import java.time.Instant;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -24,8 +25,8 @@ public class Enrollment {
     UUID enrollmentID;
     @Enumerated(EnumType.STRING)
     EnrollmentStatus status;
-    LocalDate startDate;
-    LocalDate endDate;
+    Instant startedAt;
+    Instant endedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -37,4 +38,16 @@ public class Enrollment {
 
     @OneToMany(mappedBy = "enrollment")
     List<Progress> progresses = new ArrayList<>();
+
+    @PrePersist
+    protected void onCreate() {
+        Instant now = Instant.now();
+        this.startedAt = now;
+        this.endedAt = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.endedAt = Instant.now();
+    }
 }

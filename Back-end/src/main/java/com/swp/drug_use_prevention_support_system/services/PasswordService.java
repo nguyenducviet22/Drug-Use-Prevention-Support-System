@@ -12,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Random;
 
 @Service
@@ -32,7 +33,7 @@ public class PasswordService {
         User user = userService.getUserEntity(loginUsername);
         String email = user.getEmail();
         String otp = String.valueOf(new Random().nextInt(100_000, 999_999));
-        LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES);
+        Instant expiryTime = Instant.now().plus(OTP_EXPIRATION_MINUTES, ChronoUnit.MINUTES);
 
         passwordRepository.deleteByEmail(email);
         Password newPassword = Password.builder()
@@ -45,8 +46,9 @@ public class PasswordService {
     }
 
     public void sendOtpEmail(String email, String otp) throws MessagingException {
+        String[] recipients = {email};
         MailBody mailBody = MailBody.builder()
-                .to(email)
+                .to(recipients)
                 .subject("Password Reset OTP")
                 .content("Your OTP code to reset your password is: " + otp + "\n"
                         + "This code will expire in " + OTP_EXPIRATION_MINUTES + " minutes.\n"
@@ -62,7 +64,7 @@ public class PasswordService {
         String otp = request.getOtp();
         Password password = passwordRepository.findByEmailAndOtp(email, otp);
 
-        if (password.getExpiryTime().isBefore(LocalDateTime.now())){
+        if (password.getExpiryTime().isBefore(Instant.now())){
             return false;
         }
         return userService.changePassword(request.getNewPassword());

@@ -5,7 +5,7 @@ import com.swp.drug_use_prevention_support_system.domain.enums.Degree;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+
 import java.util.UUID;
 
 @Data
@@ -16,13 +16,13 @@ import java.util.UUID;
 public class QualificationResponse {
 
     UUID qualificationID;
+    String name;
     String img;
     Degree degree;
     String institution;
     Integer year;
-    String description;
     CourseStatus status;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    String createdAt;
+    String updatedAt;
     UserResponse consultant;
 }

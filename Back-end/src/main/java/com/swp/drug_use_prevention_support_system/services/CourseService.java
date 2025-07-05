@@ -15,8 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -76,7 +75,7 @@ public class CourseService {
     }
 
     public List<CourseResponse> getCoursesByAgeGroup(AgeGroup ageGroup) {
-        List<Course> courses = courseRepository.findByAgeGroupOrderByCreatedAtDesc(ageGroup);
+        List<Course> courses = courseRepository.findByAgeGroupAndStatusOrderByCreatedAtDesc(ageGroup, CourseStatus.AVAILABLE);
         return courses.stream()
                 .map(course -> courseMapper.toDto(course))
                 .toList();
@@ -96,19 +95,15 @@ public class CourseService {
                 .toList();
     }
 
-    public List<CourseResponse> getCoursesByStatusAndDateDuration(CourseStatus status, LocalDate startDate, LocalDate endDate) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
-        List<Course> courses = courseRepository.findByStatusAndCreatedAtBetween(status, startDateTime, endDateTime);
+    public List<CourseResponse> getCoursesByStatusAndDateDuration(CourseStatus status, Instant startedAt, Instant endedAt) {
+        List<Course> courses = courseRepository.findByStatusAndCreatedAtBetween(status, startedAt, endedAt);
         return courses.stream()
                 .map(course -> courseMapper.toDto(course))
                 .toList();
     }
 
-    public List<CourseResponse> getAllCoursesByDateDuration(LocalDate startDate, LocalDate endDate) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
-        List<Course> courses = courseRepository.findByCreatedAtBetween(startDateTime, endDateTime);
+    public List<CourseResponse> getAllCoursesByDateDuration( Instant startedAt,  Instant endedAt) {
+        List<Course> courses = courseRepository.findByCreatedAtBetween(startedAt, endedAt);
         return courses.stream()
                 .map(course -> courseMapper.toDto(course))
                 .toList();

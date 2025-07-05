@@ -45,7 +45,7 @@ public class UserDetailsService {
     }
 
     public List<UserDetailsResponse> getMemberUserDetails(String username) {
-        List<UserDetails> userDetailsList = userDetailsRepository.findByMemberUsername(username);
+        List<UserDetails> userDetailsList = userDetailsRepository.findByMemberUsernameAndStatus(username, UserStatus.ACTIVE);
         return userDetailsList.stream()
                 .map(userDetails -> userDetailsMapper.toDto(userDetails))
                 .toList();

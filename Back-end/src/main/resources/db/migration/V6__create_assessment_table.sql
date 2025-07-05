@@ -6,6 +6,6 @@ CREATE TABLE assessment (
     description VARCHAR(255) NOT NULL,
     details VARCHAR(255) NOT NULL,
     status ENUM('AVAILABLE', 'UNAVAILABLE') NOT NULL,
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL
+    created_at DATETIME(6) NOT NULL,
+    updated_at DATETIME(6) NOT NULL
 );

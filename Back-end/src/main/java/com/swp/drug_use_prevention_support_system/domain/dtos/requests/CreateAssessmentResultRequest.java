@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+
 
 @Data
 @NoArgsConstructor
@@ -28,7 +28,7 @@ public class CreateAssessmentResultRequest {
     String suggestedAction;
 
     @NotBlank(message = "Completed Time is required")
-    LocalDateTime completedTime;
+    String completedTime;
 
     @NotNull(message = "Assessment type is required")
     AssessmentType assessmentType;

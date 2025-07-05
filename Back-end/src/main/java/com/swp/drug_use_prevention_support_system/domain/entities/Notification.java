@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -27,13 +27,13 @@ public class Notification {
     String description;
     @Enumerated(EnumType.STRING)
     NotificationStatus status;
-    LocalDateTime createdAt;
+    Instant createdAt;
 
     @ManyToMany(mappedBy = "notifications")
     List<User> users = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = Instant.now();
     }
 }

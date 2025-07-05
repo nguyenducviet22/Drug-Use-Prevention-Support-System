@@ -4,7 +4,7 @@ import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+
 import java.util.UUID;
 
 @Data
@@ -21,7 +21,7 @@ public class LessonResponse {
     String content;
     String resource;
     CourseStatus status;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    String createdAt;
+    String updatedAt;
     ModuleResponse module;
 }

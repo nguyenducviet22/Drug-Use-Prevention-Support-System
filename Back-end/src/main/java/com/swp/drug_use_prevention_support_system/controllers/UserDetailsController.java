@@ -78,7 +78,7 @@ public class UserDetailsController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/status/{id}")
     public ResponseEntity<ApiResponse<UserDetailsResponse>> deleteUserDetails(@PathVariable UUID id) {
         UserDetailsResponse response = userDetailsService.deleteUserDetails(id);
         ApiResponse<UserDetailsResponse> apiResponse = ApiResponse.<UserDetailsResponse>builder()

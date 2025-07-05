@@ -9,10 +9,7 @@ import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.YearMonth;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,85 +24,86 @@ public class ReportService {
     private final AppointmentService appointmentService;
 
     public List<ReportResponse> getLineChartData(ReportRequest request) {
-        LocalDate reportStartDate;
-        LocalDate reportEndDate;
+        LocalDate reportStartedAtLocal;
+        LocalDate reportEndedAtLocal;
 
         LocalDate now = LocalDate.now();
         int currentYear = now.getYear();
 
-        // Bước 1: Xác định khoảng thời gian tổng thể của báo cáo
         String filterType = request.getFilterType().toUpperCase();
 
         if ("CUSTOM".equals(filterType)) {
-            // Xử lý bộ lọc tùy chỉnh
-            if (request.getStartDate() == null || request.getEndDate() == null) {
-                // Trả về danh sách rỗng nếu không có ngày
+            if (request.getStartedMonth() == null || request.getEndedMonth() == null) {
                 return new ArrayList<>();
             }
             // Chuyển đổi chuỗi ISO sang LocalDate
-            reportStartDate = ZonedDateTime.parse(request.getStartDate()).toLocalDate();
-            reportEndDate = ZonedDateTime.parse(request.getEndDate()).toLocalDate();
+            reportStartedAtLocal = ZonedDateTime.parse(request.getStartedMonth()).toLocalDate();
+            reportEndedAtLocal = ZonedDateTime.parse(request.getEndedMonth()).toLocalDate();
         } else {
             switch (filterType) {
                 case "Q1":
-                    reportStartDate = LocalDate.of(currentYear, Month.JANUARY, 1);
-                    reportEndDate = LocalDate.of(currentYear, Month.MARCH, 31);
+                    reportStartedAtLocal = LocalDate.of(currentYear, Month.JANUARY, 1);
+                    reportEndedAtLocal = LocalDate.of(currentYear, Month.MARCH, 31);
                     break;
                 case "Q2":
-                    reportStartDate = LocalDate.of(currentYear, Month.APRIL, 1);
-                    reportEndDate = LocalDate.of(currentYear, Month.JUNE, 30);
+                    reportStartedAtLocal = LocalDate.of(currentYear, Month.APRIL, 1);
+                    reportEndedAtLocal = LocalDate.of(currentYear, Month.JUNE, 30);
                     break;
                 case "Q3":
-                    reportStartDate = LocalDate.of(currentYear, Month.JULY, 1);
-                    reportEndDate = LocalDate.of(currentYear, Month.SEPTEMBER, 30);
+                    reportStartedAtLocal = LocalDate.of(currentYear, Month.JULY, 1);
+                    reportEndedAtLocal = LocalDate.of(currentYear, Month.SEPTEMBER, 30);
                     break;
                 case "Q4":
-                    reportStartDate = LocalDate.of(currentYear, Month.OCTOBER, 1);
-                    reportEndDate = LocalDate.of(currentYear, Month.DECEMBER, 31);
+                    reportStartedAtLocal = LocalDate.of(currentYear, Month.OCTOBER, 1);
+                    reportEndedAtLocal = LocalDate.of(currentYear, Month.DECEMBER, 31);
                     break;
                 case "FIRST_HALF":
-                    reportStartDate = LocalDate.of(currentYear, Month.JANUARY, 1);
-                    reportEndDate = LocalDate.of(currentYear, Month.JUNE, 30);
+                    reportStartedAtLocal = LocalDate.of(currentYear, Month.JANUARY, 1);
+                    reportEndedAtLocal = LocalDate.of(currentYear, Month.JUNE, 30);
                     break;
                 case "LAST_HALF":
-                    reportStartDate = LocalDate.of(currentYear, Month.JULY, 1);
-                    reportEndDate = LocalDate.of(currentYear, Month.DECEMBER, 31);
+                    reportStartedAtLocal = LocalDate.of(currentYear, Month.JULY, 1);
+                    reportEndedAtLocal = LocalDate.of(currentYear, Month.DECEMBER, 31);
                     break;
                 case "THIS_YEAR":
-                    reportStartDate = LocalDate.of(currentYear, 1, 1);
-                    reportEndDate = LocalDate.of(currentYear, 12, 31);
+                    reportStartedAtLocal = LocalDate.of(currentYear, 1, 1);
+                    reportEndedAtLocal = LocalDate.of(currentYear, 12, 31);
                     break;
                 case "ALL":
                 default:
-                    reportStartDate = LocalDate.of(2024, 1, 1);
-                    reportEndDate = now;
+                    reportStartedAtLocal = LocalDate.of(2024, 1, 1);
+                    reportEndedAtLocal = now;
                     break;
             }
         }
 
-        // Bước 2: Lặp qua từng tháng trong khoảng thời gian đã xác định
+        // Lặp qua từng tháng trong khoảng thời gian đã xác định
         List<ReportResponse> reportData = new ArrayList<>();
-        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM yy");
-        YearMonth startMonth = YearMonth.from(reportStartDate);
-        YearMonth endMonth = YearMonth.from(reportEndDate);
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("MMM yyyy"); // Added year for clarity
+        YearMonth startMonth = YearMonth.from(reportStartedAtLocal);
+        YearMonth endMonth = YearMonth.from(reportEndedAtLocal);
+
+        ZoneId appZone = ZoneId.systemDefault();
 
         for (YearMonth currentMonth = startMonth; !currentMonth.isAfter(endMonth); currentMonth = currentMonth.plusMonths(1)) {
-            LocalDate monthStart = currentMonth.atDay(1);
-            LocalDate monthEnd = currentMonth.atEndOfMonth();
+            LocalDate monthStartLocal = currentMonth.atDay(1);
+            LocalDate monthEndLocal = currentMonth.atEndOfMonth();
 
-            // Bước 3: Tính toán số liệu cho từng tháng
+            Instant monthStartInstant = monthStartLocal.atStartOfDay(appZone).toInstant();
+            Instant monthEndInstant = monthEndLocal.atTime(LocalTime.MAX).atZone(appZone).toInstant();
+
             ReportResponse dataPoint = new ReportResponse();
-            dataPoint.setDate(monthStart); // Dùng ngày đầu tháng làm đại diện
-            dataPoint.setMonth(monthStart.format(monthFormatter));
+            dataPoint.setDate(monthStartLocal); // Still use LocalDate for response if preferred for display
+            dataPoint.setMonth(monthStartLocal.format(monthFormatter));
 
-            dataPoint.setTotalMembers(userService.getAllUsersByDateDuration(monthStart, monthEnd).size());
-            dataPoint.setStaffMembers(userService.getUsersByRoleAndDateDuration(Role.STAFF, monthStart, monthEnd).size());
-            dataPoint.setConsultants(userService.getUsersByRoleAndDateDuration(Role.CONSULTANT, monthStart, monthEnd).size());
-            dataPoint.setMonthlyConsultations(appointmentService.getAllAppointmentsByDateDuration(monthStart, monthEnd).size());
-            dataPoint.setActiveCourses(courseService.getCoursesByStatusAndDateDuration(CourseStatus.AVAILABLE, monthStart, monthEnd).size());
-            dataPoint.setBlogs(blogService.getBlogsByStatusAndDateDuration(BlogStatus.PUBLISHED, monthStart, monthEnd).size());
+            dataPoint.setTotalMembers(userService.getAllUsersByDateDuration(monthStartInstant, monthEndInstant).size());
+            dataPoint.setStaffMembers(userService.getUsersByRoleAndDateDuration(Role.STAFF, monthStartInstant, monthEndInstant).size());
+            dataPoint.setConsultants(userService.getUsersByRoleAndDateDuration(Role.CONSULTANT, monthStartInstant, monthEndInstant).size());
+            dataPoint.setMonthlyConsultations(appointmentService.getAllAppointmentsByDateDuration(monthStartInstant, monthEndInstant).size());
+            dataPoint.setActiveCourses(courseService.getCoursesByStatusAndDateDuration(CourseStatus.AVAILABLE, monthStartInstant, monthEndInstant).size());
+            dataPoint.setBlogs(blogService.getBlogsByStatusAndDateDuration(BlogStatus.PUBLISHED, monthStartInstant, monthEndInstant).size());
             dataPoint.setEvents(0);
-            dataPoint.setCourses(courseService.getAllCoursesByDateDuration(monthStart, monthEnd).size());
+            dataPoint.setCourses(courseService.getAllCoursesByDateDuration(monthStartInstant, monthEndInstant).size());
 
             reportData.add(dataPoint);
         }
@@ -114,10 +112,17 @@ public class ReportService {
 
     public ReportResponse getStatCardData() {
         ReportResponse statCardData = new ReportResponse();
+
+        ZoneId appZone = ZoneId.systemDefault();
+        LocalDate now = LocalDate.now();
+        Instant startOfMonthInstant = now.withDayOfMonth(1).atStartOfDay(appZone).toInstant();
+        Instant currentMomentInstant = Instant.now();
+        Instant endOfTodayInstant = now.atTime(LocalTime.MAX).atZone(appZone).toInstant();
+
         statCardData.setTotalMembers(userService.getUsersByStatus(UserStatus.ACTIVE).size());
         statCardData.setStaffMembers(userService.getUsersByStatusAndRole(UserStatus.ACTIVE, Role.STAFF).size());
         statCardData.setConsultants(userService.getUsersByStatusAndRole(UserStatus.ACTIVE, Role.CONSULTANT).size());
-        statCardData.setMonthlyConsultations(appointmentService.getAllAppointmentsByDateDuration(LocalDate.now().withDayOfMonth(1), LocalDate.now()).size());
+        statCardData.setMonthlyConsultations(appointmentService.getAllAppointmentsByDateDuration(startOfMonthInstant, endOfTodayInstant).size());
         statCardData.setActiveCourses(courseService.getCoursesByStatus(CourseStatus.AVAILABLE).size());
         statCardData.setBlogs(blogService.getBlogsByStatus(BlogStatus.PUBLISHED).size());
         statCardData.setCourses(courseService.getCoursesByStatus(CourseStatus.AVAILABLE).size());

@@ -37,14 +37,14 @@ public class ModuleService {
     }
 
     public List<ModuleResponse> getAllModulesForCourse(UUID courseID) {
-        List<Module> modules = getAllModulesByCourseID(courseID);
+        List<Module> modules = getAllModulesByCourseID(courseID, CourseStatus.AVAILABLE);
         return modules.stream()
                 .map(module -> moduleMapper.toDto(module))
                 .toList();
     }
 
-    public List<Module> getAllModulesByCourseID(UUID courseID) {
-        return moduleRepository.findByCourseCourseID(courseID);
+    public List<Module> getAllModulesByCourseID(UUID courseID, CourseStatus status) {
+        return moduleRepository.findByCourseCourseIDAndStatus(courseID, status);
     }
 
     public Module getModelEntity(UUID moduleID) {
@@ -65,7 +65,7 @@ public class ModuleService {
     }
 
     public List<ModuleResponse> updateModulesStatus(UUID courseID, DeleteModulesRequest request) {
-        List<UUID> existingModuleIDs = getAllModulesByCourseID(courseID).stream()
+        List<UUID> existingModuleIDs = getAllModulesByCourseID(courseID, CourseStatus.AVAILABLE).stream()
                 .map(Module::getModuleID).toList();
         List<UUID> requestedModuleIDs = request.getModuleIds();
         List<Module> modules = new ArrayList<>();

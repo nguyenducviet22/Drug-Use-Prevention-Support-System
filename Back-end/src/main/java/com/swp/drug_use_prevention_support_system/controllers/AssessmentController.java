@@ -4,6 +4,7 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateAss
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateAssessmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AssessmentResponse;
+import com.swp.drug_use_prevention_support_system.domain.enums.AssessmentType;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.services.AssessmentService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
@@ -57,6 +58,16 @@ public class AssessmentController {
         return ResponseEntity.ok(apiResponse);
     }
 
+    @GetMapping("/type/{type}")
+    public ResponseEntity<ApiResponse<AssessmentResponse>> getAssessment(@PathVariable AssessmentType type) {
+        AssessmentResponse response = assessmentService.getAssessmentByType(type);
+        ApiResponse<AssessmentResponse> apiResponse = ApiResponse.<AssessmentResponse>builder()
+                .data(response)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<AssessmentResponse>> updateAssessment(@PathVariable UUID id,
                                                                             @RequestBody UpdateAssessmentRequest request) {
@@ -76,7 +87,7 @@ public class AssessmentController {
     }
 
     @PostMapping(value = "/import", consumes = "multipart/form-data")
-    public ResponseEntity<String> importUserDetails(@RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<String> importAssessments(@RequestParam("file") MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("File is empty!");
         }

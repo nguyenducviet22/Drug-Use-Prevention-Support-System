@@ -20,7 +20,7 @@ public class EmailService {
 
     public void sendEmail(MailBody mailBody) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message);
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setTo(mailBody.to());
         helper.setFrom(email);
         helper.setSubject(mailBody.subject());

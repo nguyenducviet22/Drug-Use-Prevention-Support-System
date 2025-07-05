@@ -1,17 +1,22 @@
 package com.swp.drug_use_prevention_support_system.services;
 
+import com.swp.drug_use_prevention_support_system.domain.MailBody;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateAppointmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateAppointmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AppointmentResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.Appointment;
+import com.swp.drug_use_prevention_support_system.domain.entities.Availability;
 import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.domain.enums.AppointmentStatus;
 import com.swp.drug_use_prevention_support_system.mappers.AppointmentMapper;
 import com.swp.drug_use_prevention_support_system.repositories.AppointmentRepository;
+import com.swp.drug_use_prevention_support_system.repositories.AvailabilityRepository;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -26,24 +31,27 @@ public class AppointmentService {
     private final AppointmentMapper appointmentMapper;
     private final UserService userService;
     private final GoogleCalendarService googleCalendarService;
+    private final AvailabilityService availabilityService;
+    private final AvailabilityRepository availabilityRepository;
     private final ZoneId VIETNAM_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
+    private final EmailService emailService;
 
     @PostAuthorize("returnObject.member.username == authentication.name")
     public AppointmentResponse createAppointment(CreateAppointmentRequest request) throws GeneralSecurityException, IOException {
-        // Chuyển đổi Instant (UTC) sang giờ địa phương Việt Nam để lưu hoặc xử lý
-        Instant utcTime = request.getAppointmentDateTime();
-
         Appointment appointment = appointmentMapper.toEntity(request);
         String link = googleCalendarService.createGGMeetAppointment(request);
         appointment.setLink(link);
-        appointment.setAppointmentDateTime(utcTime);
+        Instant appointmentDateTime = Instant.parse(request.getAppointmentDateTime());
+        appointment.setAppointmentDateTime(appointmentDateTime);
         appointment.setStatus(AppointmentStatus.SCHEDULED);
         String loginUsername = userService.getLoginUsername();
         User loginUser = userService.getUserEntity(loginUsername);
         appointment.setMember(loginUser);
-        User consultant = userService.getUserEntity(request.getConsultantID());
+        String consultantUsername = request.getConsultantID();
+        User consultant = userService.getUserEntity(consultantUsername);
         appointment.setConsultant(consultant);
         appointmentRepository.save(appointment);
+        availabilityService.confirmConsultantScheduledSlots(consultantUsername, appointmentDateTime, AppointmentStatus.CONFIRMED);
         return appointmentMapper.toDto(appointment);
     }
 
@@ -53,7 +61,12 @@ public class AppointmentService {
     }
 
     public List<AppointmentResponse> getMemberAppointments(String username) {
-        List<Appointment> appointments = appointmentRepository.findByMemberUsername(username);
+        List<Appointment> appointments = appointmentRepository.findByMemberUsernameOrderByAppointmentDateTimeAsc(username);
+        return appointments.stream().map(appointmentMapper::toDto).toList();
+    }
+
+    public List<AppointmentResponse> getConsultantAppointments(String username) {
+        List<Appointment> appointments = appointmentRepository.findByConsultantUsername(username);
         return appointments.stream().map(appointmentMapper::toDto).toList();
     }
 
@@ -68,38 +81,34 @@ public class AppointmentService {
     }
 
     public AppointmentResponse updateAppointment(UUID id, UpdateAppointmentRequest request) {
-        // Chuyển đổi Instant (UTC) sang giờ địa phương Việt Nam để lưu hoặc xử lý
-        Instant utcTime = request.getAppointmentDateTime();
-
         Appointment appointment = getAppointmentEntity(id);
-        appointment.setAppointmentDateTime(utcTime);
+        appointment.setAppointmentDateTime(Instant.parse(request.getAppointmentDateTime()));
         appointment.setNotes(request.getNotes());
-        appointment.setAppointmentDateTime(request.getAppointmentDateTime());
         appointment.setStatus(request.getStatus());
-        User consultant = userService.getUserEntity(request.getConsultantID());
-        appointment.setConsultant(consultant);
         appointmentRepository.save(appointment);
         return appointmentMapper.toDto(appointment);
     }
 
-    public List<AppointmentResponse> getMyTodayAppointments(String username) {
+    public List<AppointmentResponse> getMemberTodayAppointments(String username) {
         ZoneId zone = ZoneId.systemDefault();
         Instant startOfDay = LocalDate.now().atStartOfDay(zone).toInstant();
         Instant endOfDay = LocalDate.now().plusDays(1).atStartOfDay(zone).toInstant();
         List<Appointment> appointments = appointmentRepository
-                .findByMemberUsernameAndAppointmentDateTimeBetween(username, startOfDay, endOfDay);
+                .findByMemberUsernameAndAppointmentDateTimeBetweenOrderByAppointmentDateTimeDesc(username, startOfDay, endOfDay);
         return appointments.stream().map(appointmentMapper::toDto).toList();
     }
 
-    public List<AppointmentResponse> getAllAppointmentsByDateDuration(LocalDate startDate, LocalDate endDate) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
-        List<Appointment> appointments = appointmentRepository.findByCreatedAtBetween(startDateTime, endDateTime);
+    public List<AppointmentResponse> getConsultantTodayAppointments(String username) {
+        ZoneId zone = ZoneId.systemDefault();
+        Instant startOfDay = LocalDate.now().atStartOfDay(zone).toInstant();
+        Instant endOfDay = LocalDate.now().plusDays(1).atStartOfDay(zone).toInstant();
+        List<Appointment> appointments = appointmentRepository
+                .findByConsultantUsernameAndAppointmentDateTimeBetweenOrderByAppointmentDateTimeDesc(username, startOfDay, endOfDay);
         return appointments.stream().map(appointmentMapper::toDto).toList();
     }
 
-    public List<AppointmentResponse> getConsultantAppointments(String username) {
-        List<Appointment> appointments = appointmentRepository.findByConsultantUsername(username);
+    public List<AppointmentResponse> getAllAppointmentsByDateDuration(Instant startedAt, Instant endedAt) {
+        List<Appointment> appointments = appointmentRepository.findByCreatedAtBetween(startedAt, endedAt);
         return appointments.stream().map(appointmentMapper::toDto).toList();
     }
 
@@ -109,5 +118,75 @@ public class AppointmentService {
 
     public long countTotalMembersOfConsultant(String username) {
         return appointmentRepository.countDistinctMembersByConsultantUsername(username);
+    }
+
+    private List<Appointment> getByMemberUsernameAndAppointmentDateTimeBetween(String username,
+                                                                               Instant from,
+                                                                               Instant to) {
+        return appointmentRepository.findByMemberUsernameAndAppointmentDateTimeBetween(username, from, to);
+    }
+
+    public List<LocalDateTime> getMemberBookedAppointmentByStatus(String username,
+                                                                  String fromDateString,
+                                                                  String toDateString,
+                                                                  AppointmentStatus status) {
+        // Parse the input strings as LocalDate first
+        LocalDate fromLocalDate = LocalDate.parse(fromDateString);
+        LocalDate toLocalDate = LocalDate.parse(toDateString);
+
+        // Convert LocalDate to Instant for the database query range
+        Instant fromInstant = fromLocalDate.atStartOfDay(VIETNAM_ZONE).toInstant();
+        Instant toInstant = toLocalDate.atTime(LocalTime.MAX).atZone(VIETNAM_ZONE).toInstant();
+
+        List<Appointment> scheduledSlots = getByMemberUsernameAndAppointmentDateTimeBetween(username, fromInstant, toInstant);
+
+        return scheduledSlots.stream()
+                .filter(appointment -> appointment.getStatus().equals(status))
+                .map(appointment -> LocalDateTime.ofInstant(appointment.getAppointmentDateTime(), VIETNAM_ZONE))
+                .toList();
+    }
+
+    @Transactional
+    public AppointmentResponse cancelMemberScheduledAppointment(AppointmentStatus status,
+                                                                UpdateAppointmentRequest request) throws MessagingException {
+        String loginUsername = userService.getLoginUsername();
+        Instant slotToCancel = Instant.parse(request.getAppointmentDateTime());
+
+        Appointment appointment = getMemberAppointmentEntityByAppointmentDateTime(loginUsername, slotToCancel);
+        if (appointment != null) {
+            if (status.equals(AppointmentStatus.CANCELLED)) {
+                appointment.setStatus(AppointmentStatus.CANCELLED);
+                String reason = request.getNotes();
+                appointment.setNotes(reason);
+                appointmentRepository.save(appointment);
+                Availability availability = availabilityService.getConsultantAvailabilityEntityByAvailabilityDateTime(appointment.getConsultant().getUsername(), slotToCancel);
+                if (availability != null) {
+                    availability.setStatus(AppointmentStatus.CANCELLED);
+                    availabilityRepository.save(availability);
+
+                    // Notify the member and the consultant
+                    User member = appointment.getMember();
+                    String memberEmail = member.getEmail();
+                    User consultant = appointment.getConsultant();
+                    String consultantEmail = consultant.getEmail();
+                    String[] recipients = {memberEmail, consultantEmail};
+                    MailBody mailBody = MailBody.builder()
+                            .to(recipients)
+                            .subject("Appointment Canceled by Member")
+                            .content(reason)
+                            .build();
+                    emailService.sendEmail(mailBody);
+                }
+                return appointmentMapper.toDto(appointment);
+            } else {
+                throw new RuntimeException("This status does not exist in AppointmentStatus");
+            }
+        } else {
+            throw new EntityNotFoundException("This appointment does not exist to cancel");
+        }
+    }
+
+    private Appointment getMemberAppointmentEntityByAppointmentDateTime(String username, Instant time) {
+        return appointmentRepository.findByMemberUsernameAndAppointmentDateTime(username, time);
     }
 }

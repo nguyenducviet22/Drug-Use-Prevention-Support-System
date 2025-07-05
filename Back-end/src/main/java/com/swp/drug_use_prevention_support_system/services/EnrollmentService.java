@@ -14,7 +14,8 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,8 +36,8 @@ public class EnrollmentService {
         Course course = courseService.getCourseEntity(request.getCourseID());
         enrollment.setMember(loginUser);
         enrollment.setCourse(course);
-        enrollment.setStartDate(LocalDate.now());
-        enrollment.setEndDate(LocalDate.now().plusWeeks(2));
+        enrollment.setStartedAt(Instant.now());
+        enrollment.setEndedAt(Instant.now().plus(2, ChronoUnit.WEEKS));
         enrollment.setStatus(EnrollmentStatus.LEARNING);
         enrollmentRepository.save(enrollment);
         return enrollmentMapper.toDto(enrollment);
