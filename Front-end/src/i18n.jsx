@@ -7,6 +7,7 @@ import homeEn from './locales/en/home.json';
 import appointmentBookingEn from './locales/en/appointmentBooking.json';
 import assessmentListEn from './locales/en/assessmentList.json';
 import assessmentResultEn from './locales/en/assessmentResult.json';
+import crafftQuestionnaireEn from './locales/en/crafftQuestionnaire.json';
 import availabilityBookingEn from './locales/en/availabilityBooking.json';
 import blogCreationEn from './locales/en/blogCreation.json';
 import blogDetailsEn from './locales/en/blogDetails.json';
@@ -43,6 +44,7 @@ import homeVi from './locales/vi/home.json';
 import appointmentBookingVi from './locales/vi/appointmentBooking.json';
 import assessmentListVi from './locales/vi/assessmentList.json';
 import assessmentResultVi from './locales/vi/assessmentResult.json';
+import crafftQuestionnaireVi from './locales/vi/crafftQuestionnaire.json';
 import availabilityBookingVi from './locales/vi/availabilityBooking.json';
 import blogCreationVi from './locales/vi/blogCreation.json';
 import blogDetailsVi from './locales/vi/blogDetails.json';
@@ -86,6 +88,7 @@ i18n
         appointmentBooking: appointmentBookingEn,
         assessmentList: assessmentListEn,
         assessmentResult: assessmentResultEn,
+        crafftQuestionnaire: crafftQuestionnaireEn,
         availabilityBooking: availabilityBookingEn,
         blogCreation: blogCreationEn,
         blogDetails: blogDetailsEn,
@@ -122,6 +125,7 @@ i18n
         appointmentBooking: appointmentBookingVi,
         assessmentList: assessmentListVi,
         assessmentResult: assessmentResultVi,
+        crafftQuestionnaire: crafftQuestionnaireVi,
         availabilityBooking: availabilityBookingVi,
         blogCreation: blogCreationVi,
         blogDetails: blogDetailsVi,
@@ -156,7 +160,7 @@ i18n
     },
     // Ensure 'userDetails' is added to the `ns` array
     ns: [
-      'home', 'appointmentBooking', 'assessmentList', 'assessmentResult',
+      'home', 'appointmentBooking', 'assessmentList', 'assessmentResult', 'crafftQuestionnaire',
       'availabilityBooking', 'blogCreation', 'blogDetails', 'blogList',
       'courseCreation', 'courseDetails', 'courseLesson', 'courseList',
       'lessonCreation', 'loginPage', 'moduleCreation', 'myProfile',

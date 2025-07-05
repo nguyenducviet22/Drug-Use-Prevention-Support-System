@@ -23,6 +23,7 @@ import LessonCreation from '../pages/lesson/LessonCreation'
 
 import AssessmentList from '../pages/assessment/AssessmentList'
 import AssessmentResult from '../pages/assessment/AssessmentResult'
+import CRAFFT from '../pages/assessment/CRAFFT';
 
 import AppointmentBooking from '../pages/appointment/AppointmentBooking'
 import AvailabilityBooking from '../pages/availability/AvailabilityBooking'
@@ -64,6 +65,7 @@ export default function AppRoute() {
 
                 <Route path="/assessment" element={<AssessmentList />} />
                 <Route path="/assessment-result/:id" element={<AssessmentResult />} />
+                <Route path="/assessment/crafft" element={<CRAFFT />} />
 
                 <Route path="/appointment" element={<AppointmentBooking />} />
                 <Route path="/availability" element={<AvailabilityBooking />} />

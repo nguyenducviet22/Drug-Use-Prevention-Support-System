@@ -40,7 +40,6 @@ public class EventService {
     private final UserService userService;
 
     //CRUDs for Events
-
     @PreAuthorize("hasAnyRole('MANAGER')")
     public EventResponse createEvent(CreateEventRequest eventRequest) {
         Event newEvent = eventMapper.toEntity(eventRequest);
@@ -195,7 +194,8 @@ public class EventService {
                 .map(EventUser::getStatus)
                 .map(eventUserStatus -> switch (eventUserStatus) {
                     case REGISTERED -> EventUserStatus.REGISTERED;
-                    case CANCELLED  -> EventUserStatus.CANCELLED;
+                    case NOT_REGISTERED  -> EventUserStatus.NOT_REGISTERED;
+                    case CANCELLED -> EventUserStatus.CANCELLED;
                     default -> throw new IllegalStateException("Unknown status: " + eventUser.get().getStatus());
                 })
                 .orElse(EventUserStatus.NOT_REGISTERED);
