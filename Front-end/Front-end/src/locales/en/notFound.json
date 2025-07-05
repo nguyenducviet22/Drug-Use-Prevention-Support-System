@@ -1,0 +1,8 @@
+{
+    "title": "Page Not Found",
+    "message": "The page you're looking for doesn't exist.",
+    "backText": "Go Home",
+    "accessDeniedTitle": "Access Denied",
+    "accessDeniedMessage": "You do not have permission to view this page.",
+    "backToLogin": "Back to Login"
+}

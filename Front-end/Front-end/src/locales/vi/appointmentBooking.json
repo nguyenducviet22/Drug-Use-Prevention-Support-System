@@ -1,0 +1,75 @@
+{
+    "backButton": "Quay lại",
+    "header": {
+        "title": "Đặt Lịch Tư Vấn",
+        "subtitle": "Hẹn lịch cùng chuyên gia phòng ngừa ma túy được chứng nhận của chúng tôi"
+    },
+    "consultantSelection": {
+        "dropdownPlaceholder": "Chọn chuyên gia",
+        "cardTitle": "Chuyên gia tư vấn"
+    },
+    "calendarSection": {
+        "title": "Khung Giờ Có Sẵn",
+        "placeholderText": "Vui lòng chọn chuyên gia để xem lịch hẹn khả dụng",
+        "placeholderIconAlt": "Biểu tượng lịch",
+        "eventTitles": {
+            "available": "Còn trống",
+            "selected": "Đã chọn",
+            "pastUnavailable": "Đã qua / Không khả dụng",
+            "pastScheduled": "Lịch đã qua",
+            "scheduled": "Đã đặt",
+            "cancelled": "Đã hủy"
+        },
+        "infoMessages": {
+            "unavailableSlot": "Khung giờ này không thể đặt (có thể đã qua hoặc đã được đặt trước).",
+            "pastAppointmentError": "Không thể đặt lịch trong quá khứ. Vui lòng chọn khung giờ sắp tới.",
+            "slotPassedError": "Khung giờ đã chọn đã qua. Vui lòng chọn khung giờ khác."
+        },
+        "toastMessages": {
+            "fetchConsultantsError": "Không thể tải lịch tư vấn của chuyên gia.",
+            "selectConsultantTimeSlot": "Vui lòng chọn chuyên gia và khung giờ.",
+            "bookingSuccess": "Đặt lịch thành công",
+            "bookingError": "Lỗi khi đặt lịch: {message}",
+            "generalBookingError": "Đã xảy ra lỗi khi đặt lịch. Vui lòng thử lại."
+        }
+    },
+    "appointmentInformation": {
+        "cardTitle": "Thông Tin Cuộc Hẹn",
+        "consultantLabel": "Chuyên gia:",
+        "dateLabel": "Ngày:",
+        "timeLabel": "Giờ:",
+        "noteLabel": "Ghi chú (Không bắt buộc)",
+        "notePlaceholder": "Hãy chia sẻ vấn đề bạn muốn được tư vấn hoặc bất kỳ điều gì liên quan...",
+        "submitButton": "Gửi"
+    },
+    "confirmationModal": {
+        "title": "Xác Nhận Lịch Hẹn",
+        "consultantLabel": "Chuyên gia:",
+        "dateTimeLabel": "Ngày & Giờ:",
+        "noteLabel": "Ghi chú:",
+        "confirmButton": "Xác nhận",
+        "confirmingButton": "Đang xác nhận...",
+        "cancelButton": "Hủy bỏ"
+    },
+    "cancellationModal": {
+        "title": "Hủy Cuộc Hẹn",
+        "message": "Bạn có chắc muốn hủy cuộc hẹn này không?",
+        "dateLabel": "Thời gian cuộc hẹn:",
+        "reasonLabel": "Lý do hủy (Không bắt buộc):",
+        "reasonPlaceholder": "Ví dụ: Thay đổi kế hoạch, sự cố bất ngờ...",
+        "confirmCancellationButton": "Xác nhận Hủy",
+        "cancellingButton": "Đang hủy...",
+        "doNotCancelButton": "Không hủy"
+    },
+    "toasts": {
+        "scheduledSlotInfo": "Khung giờ này đã được đặt. Bạn có thể nhấp để hủy.",
+        "cancelledSlotInfo": "Khung giờ này đã bị hủy và không thể đặt.",
+        "unavailableSlotInfo": "Khung giờ này không khả dụng.",
+        "slotUnselected": "Đã bỏ chọn khung giờ.",
+        "slotSelected": "Đã chọn khung giờ.",
+        "cancellationSuccess": "Cuộc hẹn đã được hủy thành công.",
+        "cancellationError": "Không thể hủy cuộc hẹn: {message}",
+        "unknownCancellationError": "Đã xảy ra lỗi không mong muốn trong quá trình hủy. Vui lòng thử lại.",
+        "cannotCancelPastSlot": "Không thể hủy cuộc hẹn đã qua."
+    }
+}

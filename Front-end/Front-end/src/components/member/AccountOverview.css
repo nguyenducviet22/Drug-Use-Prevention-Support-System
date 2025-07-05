@@ -1,0 +1,177 @@
+/* Account Overview Component Styles */
+
+.account-overview {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Account Card Styles */
+.account-card {
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.account-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.account-card .card-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.account-card .card-header h5 {
+  font-weight: 600;
+  color: #212529;
+}
+
+.account-card .card-body {
+  padding: 1.5rem;
+}
+
+/* Account Content Styles */
+.account-label {
+  color: #6c757d;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.account-value {
+  color: #212529;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Password Field Styles */
+.password-field {
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle {
+  color: #6c757d;
+  transition: color 0.2s ease;
+  text-decoration: none;
+}
+
+.password-toggle:hover {
+  color: #0984e3;
+}
+
+.password-toggle:focus {
+  box-shadow: none;
+  color: #0984e3;
+}
+
+.change-password-btn {
+  background-color: #74b9ff;
+  border: none;
+  padding: 0.375rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-radius: 0.375rem;
+}
+
+.change-password-btn:hover {
+  background-color: #0984e3;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(9, 132, 227, 0.3);
+}
+
+.change-password-btn:focus {
+  background-color: #0984e3;
+  box-shadow: 0 0 0 0.2rem rgba(9, 132, 227, 0.25);
+}
+
+/* Google Icon Styles */
+.google-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Link Button Styles */
+.btn-outline-primary {
+  border-color: #0984e3;
+  color: #0984e3;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0984e3;
+  border-color: #0984e3;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.btn-outline-primary:focus {
+  background-color: #0984e3;
+  border-color: #0984e3;
+  color: white;
+  box-shadow: 0 0 0 0.2rem rgba(9, 132, 227, 0.25);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .account-label {
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+  }
+
+  .account-value {
+    font-size: 0.9rem;
+  }
+
+  .account-card .card-body {
+    padding: 1rem;
+  }
+
+  .account-card .card-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .change-password-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .account-card .card-header h5 {
+    font-size: 1rem;
+  }
+
+  .account-card .card-body {
+    padding: 0.75rem;
+  }
+
+  .account-label,
+  .account-value {
+    font-size: 0.85rem;
+  }
+
+  .password-field {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .password-toggle {
+    margin-top: 0.5rem;
+    margin-left: 0;
+  }
+}

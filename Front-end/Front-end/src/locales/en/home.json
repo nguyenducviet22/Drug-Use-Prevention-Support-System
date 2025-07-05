@@ -1,0 +1,18 @@
+{
+  "heroSection": {
+    "title": "Welcome to ReNewMe",
+    "subtitle": "Drug Use Prevention Support System - Protect yourself, protect the community"
+  },
+  "loggedInNavigation": {
+    "meTab": "ME",
+    "exploreTab": "EXPLORE"
+  },
+  "loggedOutSection": {
+    "smallTestText": "Take if you're new",
+    "smallTestButton": "Small Test",
+    "exploreNowTitle": "EXPLORE NOW"
+  },
+  "chatButton": {
+    "ariaLabel": "Open chat support"
+  }
+}
