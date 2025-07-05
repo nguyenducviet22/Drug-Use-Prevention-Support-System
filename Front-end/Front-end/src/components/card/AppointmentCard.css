@@ -1,0 +1,72 @@
+/* Appointment Card Styles */
+.appointment-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.appointment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-header-custom {
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+  border: none;
+}
+
+.appointment-info {
+  border: 1px solid #e9ecef;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background-color: #f8f9fa;
+  margin-bottom: 1rem;
+}
+
+.appointment-time {
+  border-top: 1px solid #e9ecef;
+  padding-top: 0.75rem;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+.btn-custom.btn-primary-custom {
+  background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.btn-custom.btn-primary-custom:hover {
+  background: linear-gradient(135deg, #0770c7 0%, #5fa8ff 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
+}
+
+.bg-primary {
+  background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%) !important;
+}
+
+.bg-warning {
+  background: linear-gradient(135deg, #ffc107 0%, #ffeb3b 100%) !important;
+}
+
+.text-dark {
+  color: #343a40 !important;
+}
+
+.text-primary {
+  color: #007bff !important;
+}
+
+/* Responsive adjustments (optional) */
+@media (max-width: 576px) {
+  .card-header-custom h5 {
+    font-size: 1rem;
+  }
+}

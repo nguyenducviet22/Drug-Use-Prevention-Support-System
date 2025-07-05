@@ -1,0 +1,31 @@
+{
+  "backButton": "Quay Lại",
+  "courseDetails": {
+    "courseNamePlaceholder": "Tên Khóa Học",
+    "descriptionPlaceholder": "Mô Tả",
+    "ageGroupSelect": "Chọn Nhóm Tuổi",
+    "ageGroupDefault": "MỌI ĐỐI TƯỢNG",
+    "imageUploadText": "Nhấn để tải ảnh lên",
+    "createButton": "Tạo Khóa Học Mới",
+    "saveButton": "Lưu Thông Tin Khóa Học"
+  },
+  "modulesSection": {
+    "addModuleButton": "Thêm Module Mới",
+    "markUnavailableButton": "Đánh Dấu Không Khả Dụng",
+    "noModules": "Chưa có module nào. Hãy thêm module để bắt đầu!",
+    "unavailableBadge": "Không khả dụng",
+    "confirmUnavailable": "Bạn có chắc chắn muốn đánh dấu {{count}} module là không khả dụng?",
+    "toastMessages": {
+      "fetchError": "Không thể tải dữ liệu trong quá trình tạo khóa học",
+      "createSuccess": "Tạo khóa học thành công! Bạn có thể thêm module ngay bây giờ.",
+      "createError": "Tạo khóa học thất bại. Vui lòng thử lại.",
+      "saveSuccess": "Lưu thông tin khóa học thành công!",
+      "saveError": "Lưu khóa học thất bại. Vui lòng thử lại.",
+      "noCourseIdForModule": "Vui lòng tạo hoặc lưu khóa học trước khi thêm module.",
+      "selectModulesInfo": "Vui lòng chọn ít nhất một module để đánh dấu không khả dụng.",
+      "updateModulesStatusSuccess": "Đã đánh dấu các module được chọn là không khả dụng!",
+      "updateModulesStatusError": "Không thể cập nhật trạng thái không khả dụng. Đang khôi phục thay đổi.",
+      "unexpectedError": "Đã xảy ra lỗi không mong muốn khi cập nhật trạng thái module."
+    }
+  }
+}
