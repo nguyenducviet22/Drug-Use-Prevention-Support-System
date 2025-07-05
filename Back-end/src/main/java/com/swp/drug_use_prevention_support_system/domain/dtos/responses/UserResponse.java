@@ -7,9 +7,7 @@ import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-
-
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +19,7 @@ public class UserResponse {
     String username;
     String email;
     String fullName;
-    Date dob;
+    LocalDate dob;
     Gender gender;
     String phoneNumber;
     String job;

@@ -14,6 +14,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateQualificationRequest {
 
+    @NotBlank(message = "Name is required")
+    String name;
+
     @NotBlank(message = "Image URL is required")
     String img;
 
@@ -26,6 +29,4 @@ public class UpdateQualificationRequest {
     @NotNull(message = "Year is required")
     @Min(value = 1900, message = "Year must be valid")
     Integer year;
-
-    String description;
 }

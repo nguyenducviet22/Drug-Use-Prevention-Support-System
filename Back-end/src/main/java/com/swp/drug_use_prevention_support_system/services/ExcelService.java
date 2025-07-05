@@ -133,21 +133,21 @@ public class ExcelService {
             if (row == null || isRowEmpty(row)) continue;
 
             try {
-                String img = getCellValue(row.getCell(0));
-                Degree degree = Degree.valueOf(getCellValue(row.getCell(1)));
-                String institution = getCellValue(row.getCell(2));
-                Integer year = Integer.valueOf(getCellValue(row.getCell(3)));
-                String description = getCellValue(row.getCell(4));
+                String name = getCellValue(row.getCell(0));
+                String img = getCellValue(row.getCell(1));
+                Degree degree = Degree.valueOf(getCellValue(row.getCell(2)));
+                String institution = getCellValue(row.getCell(3));
+                Integer year = Integer.valueOf(getCellValue(row.getCell(4)));
                 CourseStatus status = CourseStatus.valueOf(getCellValue(row.getCell(5)).toUpperCase());
                 String consultantUsername = getCellValue(row.getCell(6));
                 User consultant = userService.getUserEntity(consultantUsername);
 
                 Qualification qualification = Qualification.builder()
+                        .name(name)
                         .img(img)
                         .degree(degree)
                         .institution(institution)
                         .year(year)
-                        .description(description)
                         .status(status)
                         .consultant(consultant)
                         .build();

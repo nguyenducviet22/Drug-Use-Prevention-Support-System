@@ -135,8 +135,8 @@ public class BlogService {
     }
 
     public List<BlogResponse> getBlogsByAgeGroup(AgeGroup ageGroup) {
-        List<Blog> blogs = blogRepository.findByAgeGroupOrderByCreatedAtDesc(ageGroup);
-        List<Blog> blogsForEveryone = blogRepository.findByAgeGroupOrderByCreatedAtDesc(AgeGroup.EVERYONE);
+        List<Blog> blogs = blogRepository.findByAgeGroupAndBlogStatusOrderByCreatedAtDesc(ageGroup, BlogStatus.PUBLISHED);
+        List<Blog> blogsForEveryone = blogRepository.findByAgeGroupAndBlogStatusOrderByCreatedAtDesc(AgeGroup.EVERYONE, BlogStatus.PUBLISHED);
         List<Blog> combinedBlogs = new ArrayList<>(blogs);
         combinedBlogs.addAll(blogsForEveryone);
         return combinedBlogs.stream()

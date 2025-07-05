@@ -75,7 +75,7 @@ public class CourseService {
     }
 
     public List<CourseResponse> getCoursesByAgeGroup(AgeGroup ageGroup) {
-        List<Course> courses = courseRepository.findByAgeGroupOrderByCreatedAtDesc(ageGroup);
+        List<Course> courses = courseRepository.findByAgeGroupAndStatusOrderByCreatedAtDesc(ageGroup, CourseStatus.AVAILABLE);
         return courses.stream()
                 .map(course -> courseMapper.toDto(course))
                 .toList();

@@ -7,7 +7,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
-import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -22,12 +21,12 @@ public class Qualification {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "qualification_id")
     UUID qualificationID;
+    String name;
     String img;
     @Enumerated(EnumType.STRING)
     Degree degree;
     String institution;
     Integer year;
-    String description;
     @Enumerated(EnumType.STRING)
     CourseStatus status;
     Instant createdAt;

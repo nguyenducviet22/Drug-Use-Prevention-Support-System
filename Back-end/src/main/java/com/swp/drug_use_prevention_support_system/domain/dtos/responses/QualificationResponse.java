@@ -16,11 +16,11 @@ import java.util.UUID;
 public class QualificationResponse {
 
     UUID qualificationID;
+    String name;
     String img;
     Degree degree;
     String institution;
     Integer year;
-    String description;
     CourseStatus status;
     String createdAt;
     String updatedAt;

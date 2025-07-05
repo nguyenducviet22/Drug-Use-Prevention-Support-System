@@ -4,7 +4,6 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateQua
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateQualificationRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.QualificationResponse;
-import com.swp.drug_use_prevention_support_system.domain.enums.BlogType;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.Degree;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
@@ -80,7 +79,7 @@ public class QualificationController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/status/{id}")
     public ResponseEntity<ApiResponse<QualificationResponse>> deleteQualification(@PathVariable UUID id) {
         QualificationResponse response = qualificationService.deleteQualification(id);
         ApiResponse<QualificationResponse> apiResponse = ApiResponse.<QualificationResponse>builder()

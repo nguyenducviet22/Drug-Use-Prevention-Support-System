@@ -94,7 +94,7 @@ public class AppointmentService {
         Instant startOfDay = LocalDate.now().atStartOfDay(zone).toInstant();
         Instant endOfDay = LocalDate.now().plusDays(1).atStartOfDay(zone).toInstant();
         List<Appointment> appointments = appointmentRepository
-                .findByMemberUsernameAndAppointmentDateTimeBetween(username, startOfDay, endOfDay);
+                .findByMemberUsernameAndAppointmentDateTimeBetweenOrderByAppointmentDateTimeDesc(username, startOfDay, endOfDay);
         return appointments.stream().map(appointmentMapper::toDto).toList();
     }
 
@@ -103,7 +103,7 @@ public class AppointmentService {
         Instant startOfDay = LocalDate.now().atStartOfDay(zone).toInstant();
         Instant endOfDay = LocalDate.now().plusDays(1).atStartOfDay(zone).toInstant();
         List<Appointment> appointments = appointmentRepository
-                .findByConsultantUsernameAndAppointmentDateTimeBetween(username, startOfDay, endOfDay);
+                .findByConsultantUsernameAndAppointmentDateTimeBetweenOrderByAppointmentDateTimeDesc(username, startOfDay, endOfDay);
         return appointments.stream().map(appointmentMapper::toDto).toList();
     }
 

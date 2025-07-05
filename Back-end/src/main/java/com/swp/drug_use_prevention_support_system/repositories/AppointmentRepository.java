@@ -30,4 +30,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     Appointment findByConsultantUsernameAndAppointmentDateTime(String username, Instant time);
 
     Appointment findByMemberUsernameAndAppointmentDateTime(String username, Instant time);
+
+    List<Appointment> findByMemberUsernameAndAppointmentDateTimeBetweenOrderByAppointmentDateTimeDesc(String username, Instant startOfDay, Instant endOfDay);
+
+    List<Appointment> findByConsultantUsernameAndAppointmentDateTimeBetweenOrderByAppointmentDateTimeDesc(String username, Instant startOfDay, Instant endOfDay);
 }

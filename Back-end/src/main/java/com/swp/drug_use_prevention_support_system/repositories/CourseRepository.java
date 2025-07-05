@@ -14,11 +14,11 @@ import java.util.UUID;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, UUID> {
 
-    List<Course> findByAgeGroupOrderByCreatedAtDesc(AgeGroup ageGroup);
-
     List<Course> findByStatusOrderByCreatedAtDesc(CourseStatus status);
 
     List<Course> findByStatusAndCreatedAtBetween(CourseStatus status, Instant start, Instant end);
 
     List<Course> findByCreatedAtBetween(Instant start, Instant end);
+
+    List<Course> findByAgeGroupAndStatusOrderByCreatedAtDesc(AgeGroup ageGroup, CourseStatus courseStatus);
 }
