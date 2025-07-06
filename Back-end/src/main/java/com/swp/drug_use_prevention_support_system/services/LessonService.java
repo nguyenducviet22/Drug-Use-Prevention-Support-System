@@ -38,6 +38,10 @@ public class LessonService {
         return lessonMapper.toDto(lesson);
     }
 
+    public List<LessonResponse> getLessons() {
+        return lessonRepository.findAll().stream().map(lessonMapper::toDto).toList();
+    }
+
     public List<Lesson> getLessonsByModuleID(UUID moduleID, CourseStatus status) {
         return lessonRepository.findByModuleModuleIDAndStatus(moduleID, status);
     }

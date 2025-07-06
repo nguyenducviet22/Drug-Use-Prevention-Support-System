@@ -4,7 +4,7 @@ CREATE TABLE event (
     duration INT,
     quantity INT,
     description TEXT,
-    img VARCHAR(255),
+    image VARCHAR(255),
     status ENUM('NOT_STARTED', 'ONGOING', 'EXPIRED', 'CANCELLED') NOT NULL,
     age_group ENUM('ADOLESCENT', 'ADULT', 'SENIOR', 'EVERYONE') NOT NULL,
     started_at DATETIME(6),

@@ -29,7 +29,7 @@ public class Event {
     Integer duration;
     Integer quantity;
     String description;
-    String img;
+    String image;
     @Enumerated(EnumType.STRING)
     EventStatus status;
     @Enumerated(EnumType.STRING)

@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateAssessmentRequest {
 
-    String img;
+    String image;
 
     @NotBlank(message = "Assessment type is required")
     AssessmentType assessmentType;

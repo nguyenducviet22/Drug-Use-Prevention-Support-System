@@ -19,7 +19,7 @@ public class CourseResponse {
     String courseName;
     Integer quantity;
     Integer duration;
-    String img;
+    String image;
     String description;
     AgeGroup ageGroup;
     CourseStatus status;

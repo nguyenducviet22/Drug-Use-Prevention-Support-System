@@ -22,7 +22,7 @@ public class Qualification {
     @Column(name = "qualification_id")
     UUID qualificationID;
     String name;
-    String img;
+    String image;
     @Enumerated(EnumType.STRING)
     Degree degree;
     String institution;

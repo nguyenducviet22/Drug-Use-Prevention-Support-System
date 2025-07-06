@@ -37,7 +37,7 @@ public class EnrollmentService {
         enrollment.setMember(loginUser);
         enrollment.setCourse(course);
         enrollment.setStartedAt(Instant.now());
-        enrollment.setEndedAt(Instant.now().plus(2, ChronoUnit.WEEKS));
+        enrollment.setEndedAt(Instant.now().plus(14, ChronoUnit.DAYS));
         enrollment.setStatus(EnrollmentStatus.LEARNING);
         enrollmentRepository.save(enrollment);
         return enrollmentMapper.toDto(enrollment);

@@ -24,7 +24,7 @@ public class Assessment {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "assessment_id")
     UUID assessmentID;
-    String img;
+    String image;
     @Enumerated(EnumType.STRING)
     AssessmentType assessmentType;
     String linkTest;

@@ -26,7 +26,7 @@ public class UpdateEventRequest {
 
     String description;
 
-    String img;
+    String image;
 
     @NotNull(message = "Status is required")
     EventStatus status;

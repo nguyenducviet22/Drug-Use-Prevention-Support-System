@@ -17,7 +17,7 @@ public class QualificationResponse {
 
     UUID qualificationID;
     String name;
-    String img;
+    String image;
     Degree degree;
     String institution;
     Integer year;

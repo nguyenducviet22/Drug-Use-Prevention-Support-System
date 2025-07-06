@@ -17,8 +17,7 @@ public class UpdateQualificationRequest {
     @NotBlank(message = "Name is required")
     String name;
 
-    @NotBlank(message = "Image URL is required")
-    String img;
+    String image;
 
     @NotNull(message = "Degree is required")
     Degree degree;

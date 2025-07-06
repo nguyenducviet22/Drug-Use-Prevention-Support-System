@@ -2,7 +2,7 @@ CREATE TABLE blog (
     blog_id BINARY(16) NOT NULL PRIMARY KEY,
     blog_name VARCHAR(255) NOT NULL,
     rate INT,
-    img VARCHAR(255),
+    image VARCHAR(255),
     description TEXT  NOT NULL,
     content TEXT NOT NULL,
     reading_time INT NOT NULL,

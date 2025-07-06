@@ -2,10 +2,8 @@ package com.swp.drug_use_prevention_support_system.controllers;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateAppointmentRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateAppointmentRequest;
-import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateAvailabilityRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AppointmentResponse;
-import com.swp.drug_use_prevention_support_system.domain.dtos.responses.AvailabilityResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CheckResponse;
 import com.swp.drug_use_prevention_support_system.domain.enums.AppointmentStatus;
 import com.swp.drug_use_prevention_support_system.services.AppointmentService;

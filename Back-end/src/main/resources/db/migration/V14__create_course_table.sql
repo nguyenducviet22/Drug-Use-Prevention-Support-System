@@ -3,7 +3,7 @@ CREATE TABLE course (
     course_name VARCHAR(255) NOT NULL,
     quantity INT,
     duration INT,
-    img VARCHAR(255),
+    image VARCHAR(255),
     description TEXT,
     age_group ENUM('ADOLESCENT', 'ADULT', 'SENIOR', 'EVERYONE') NOT NULL,
     status ENUM('PENDING', 'AVAILABLE', 'UNAVAILABLE') NOT NULL,
