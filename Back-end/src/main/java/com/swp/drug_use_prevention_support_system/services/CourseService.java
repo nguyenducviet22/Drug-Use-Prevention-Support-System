@@ -59,7 +59,7 @@ public class CourseService {
         course.setCourseName(request.getCourseName());
         course.setDuration(request.getDuration());
         course.setQuantity(request.getQuantity());
-        course.setImg(request.getImg());
+        course.setImage(request.getImage());
         course.setDescription(request.getDescription());
         course.setAgeGroup(request.getAgeGroup());
         courseRepository.save(course);

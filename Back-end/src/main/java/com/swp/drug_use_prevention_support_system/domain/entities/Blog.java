@@ -25,7 +25,7 @@ public class Blog {
     UUID blogID;
     String blogName;
     Integer rate;
-    String img;
+    String image;
     String description;
     String content;
     Integer readingTime;

@@ -27,7 +27,7 @@ public class Course {
     String courseName;
     Integer quantity;
     Integer duration;
-    String img;
+    String image;
     String description;
     @Enumerated(EnumType.STRING)
     AgeGroup ageGroup;

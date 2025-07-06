@@ -1,6 +1,6 @@
 CREATE TABLE assessment (
     assessment_id BINARY(16) NOT NULL PRIMARY KEY,
-    img VARCHAR(255),
+    image VARCHAR(255),
     assessment_type ENUM('ASSIST', 'CRAFFT') NOT NULL,
     link_test VARCHAR(255) NOT NULL,
     description VARCHAR(255) NOT NULL,

@@ -66,7 +66,7 @@ public class AppointmentService {
     }
 
     public List<AppointmentResponse> getConsultantAppointments(String username) {
-        List<Appointment> appointments = appointmentRepository.findByConsultantUsername(username);
+        List<Appointment> appointments = appointmentRepository.findByConsultantUsernameOrderByAppointmentDateTimeAsc(username);
         return appointments.stream().map(appointmentMapper::toDto).toList();
     }
 

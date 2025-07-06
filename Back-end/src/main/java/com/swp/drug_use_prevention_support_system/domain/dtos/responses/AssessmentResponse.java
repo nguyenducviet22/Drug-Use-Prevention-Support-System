@@ -16,7 +16,7 @@ import java.util.UUID;
 public class AssessmentResponse {
 
     UUID assessmentID;
-    String img;
+    String image;
     AssessmentType assessmentType;
     String linkTest;
     String description;

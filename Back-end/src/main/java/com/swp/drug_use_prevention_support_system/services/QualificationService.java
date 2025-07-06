@@ -65,7 +65,7 @@ public class QualificationService {
     public QualificationResponse updateQualification(UUID qualificationID, UpdateQualificationRequest request) {
         Qualification qualification = getQualificationEntity(qualificationID);
         qualification.setName(request.getName());
-        qualification.setImg(request.getImg());
+        qualification.setImage(request.getImage());
         qualification.setDegree(request.getDegree());
         qualification.setInstitution(request.getInstitution());
         qualification.setYear(request.getYear());

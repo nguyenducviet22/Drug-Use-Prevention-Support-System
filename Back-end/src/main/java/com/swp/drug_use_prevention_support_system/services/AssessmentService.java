@@ -61,7 +61,7 @@ public class AssessmentService {
     @PreAuthorize("hasRole('STAFF')")
     public AssessmentResponse updateAssessment(UUID assessmentID, UpdateAssessmentRequest request) {
         Assessment assessment = getAssessmentEntity(assessmentID);
-        assessment.setImg(request.getImg());
+        assessment.setImage(request.getImage());
         assessment.setAssessmentType(request.getAssessmentType());
         assessment.setLinkTest(request.getLinkTest());
         assessment.setDescription(request.getDescription());

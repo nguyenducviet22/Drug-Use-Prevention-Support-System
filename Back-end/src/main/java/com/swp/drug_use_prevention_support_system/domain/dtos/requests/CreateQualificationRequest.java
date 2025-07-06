@@ -18,9 +18,7 @@ public class CreateQualificationRequest {
     @NotBlank(message = "Name is required")
     String name;
 
-    @NotBlank(message = "Image URL is required")
-    @Size(max = 255, message = "Image URL must be at most 255 characters")
-    String img;
+    String image;
 
     @NotNull(message = "Degree is required")
     Degree degree;
