@@ -21,34 +21,34 @@ body {
   transform: translateY(-1px);
 }
 
-/* Medical blue primary color scheme */
+/* Medical blue primary color scheme - lighter */
 .form-check-input:checked {
-  background-color: #2563eb;
-  border-color: #2563eb;
+  background-color: #60a5fa;
+  border-color: #60a5fa;
 }
 
 .form-check-input:focus {
-  border-color: #60a5fa;
-  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
   border: none;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 2px 8px rgba(96, 165, 250, 0.3);
   font-weight: 600;
   padding: 12px 24px;
   border-radius: 8px;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
   transform: translateY(-1px);
 }
 
 .btn-primary:focus {
-  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25);
 }
 
 .btn-outline-secondary {
@@ -64,16 +64,16 @@ body {
 }
 
 .text-primary {
-  color: #2563eb !important;
+  color: #60a5fa !important;
 }
 
 a.text-primary:hover {
-  color: #1d4ed8 !important;
+  color: #3b82f6 !important;
 }
 
-/* Medical form styling */
+/* Medical form styling - lighter */
 .medical-header {
-  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
   border-radius: 12px 12px 0 0;
   padding: 24px;
   color: white;
@@ -106,7 +106,7 @@ a.text-primary:hover {
 }
 
 .medical-section-header {
-  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
   padding: 16px 24px;
   border-bottom: 1px solid rgba(59, 130, 246, 0.1);
 }
@@ -124,8 +124,8 @@ a.text-primary:hover {
 }
 
 .form-control:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
   outline: none;
 }
 
@@ -154,11 +154,11 @@ a.text-primary:hover {
   border-radius: 8px;
 }
 
-/* Medical icons and accents */
+/* Medical icons and accents - lighter */
 .medical-accent {
   width: 4px;
   height: 100%;
-  background: linear-gradient(180deg, #2563eb 0%, #1e40af 100%);
+  background: linear-gradient(180deg, #60a5fa 0%, #3b82f6 100%);
   position: absolute;
   left: 0;
   top: 0;
@@ -218,9 +218,9 @@ a.text-primary:hover {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Medical professional styling touches */
+/* Medical professional styling touches - lighter */
 .medical-badge {
-  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
   color: white;
   padding: 4px 12px;
   border-radius: 20px;

@@ -174,7 +174,7 @@ const CrafftQuestionnaire = () => {
           {/* Part A */}
           <div className="medical-section">
             <div className="medical-section-header">
-              <h3 className="h4 fw-bold mb-0" style={{ color: "#1e40af" }}>
+              <h3 className="h4 fw-bold mb-0" style={{ color: "#60a5fa" }}>
                 {t("partA")}
               </h3>
             </div>
@@ -188,12 +188,12 @@ const CrafftQuestionnaire = () => {
                 >
                   <p className="mb-2" style={{ color: "#374151" }}>
   <Trans i18nKey="noteAllZero" ns="crafftQuestionnaire">
-    If you answer <strong style={{ color: "#1e40af" }}>"0 days"</strong> (no use) to <strong>all</strong> of the <strong>PART A QUESTIONS</strong>, please proceed to answer <strong>only the first question</strong> in Part B ("Car").
+    If you answer <strong style={{ color: "#60a5fa" }}>"0 days"</strong> (no use) to <strong>all</strong> of the <strong>PART A QUESTIONS</strong>, please proceed to answer <strong>only the first question</strong> in Part B ("Car").
   </Trans>
 </p>
 <p className="mb-0" style={{ color: "#374151" }}>
   <Trans i18nKey="noteAnyMore" ns="crafftQuestionnaire">
-    If you answer <strong style={{ color: "#1e40af" }}>1 day or more</strong> to <strong>any</strong> of the <strong>PART A QUESTIONS</strong>, please continue to answer <strong>all 6 CRAFFT questions</strong> in Part B (<strong>Car, Relax, Alone, Forget, Family/Friends, Trouble</strong>).
+    If you answer <strong style={{ color: "#60a5fa" }}>1 day or more</strong> to <strong>any</strong> of the <strong>PART A QUESTIONS</strong>, please continue to answer <strong>all 6 CRAFFT questions</strong> in Part B (<strong>Car, Relax, Alone, Forget, Family/Friends, Trouble</strong>).
   </Trans>
 </p>
                 </div>
@@ -204,7 +204,7 @@ const CrafftQuestionnaire = () => {
                 <Form.Label className="fw-semibold">
                   <Trans i18nKey="question1" ns="crafftQuestionnaire">
                     1. During the
-                    <strong style={{ color: "#1e40af" }}>PAST 12 MONTHS</strong>
+                    <strong style={{ color: "#60a5fa" }}>PAST 12 MONTHS</strong>
                     , on how many days did you drink more than a few sips of
                     beer, wine, or any drink containing alcohol?
                   </Trans>
@@ -230,7 +230,7 @@ const CrafftQuestionnaire = () => {
                 <Form.Label className="fw-semibold">
                   <Trans i18nKey="question2" ns="crafftQuestionnaire">
                     2. During the
-                    <strong style={{ color: "#1e40af" }}>PAST 12 MONTHS</strong>
+                    <strong style={{ color: "#60a5fa" }}>PAST 12 MONTHS</strong>
                     , on how many days did you use any marijuana (cannabis,
                     weed, oil, wax, or hash by smoking, vaping, dabbing, or in
                     edibles) or "synthetic marijuana" (like "K2," "Spice")?
@@ -257,7 +257,7 @@ const CrafftQuestionnaire = () => {
                 <Form.Label className="fw-semibold">
                   <Trans i18nKey="question3" ns="crafftQuestionnaire">
                     3. During the
-                    <strong style={{ color: "#1e40af" }}>PAST 12 MONTHS</strong>
+                    <strong style={{ color: "#60a5fa" }}>PAST 12 MONTHS</strong>
                     , on how many days did you use anything else to get high
                     (like other illegal drugs, pills, prescription or
                     over-the-counter medications, and things that you sniff,
@@ -285,7 +285,7 @@ const CrafftQuestionnaire = () => {
                 <Form.Label className="fw-semibold">
                   <Trans i18nKey="question4" ns="crafftQuestionnaire">
                     4. During the
-                    <strong style={{ color: "#1e40af" }}>PAST 12 MONTHS</strong>
+                    <strong style={{ color: "#60a5fa" }}>PAST 12 MONTHS</strong>
                     , on how many days did you use a vaping device containing
                     nicotine and/or flavors, or use any tobacco products?
                   </Trans>
@@ -312,7 +312,7 @@ const CrafftQuestionnaire = () => {
           {/* Part B */}
           <div className="medical-section">
             <div className="medical-section-header">
-              <h3 className="h4 fw-bold mb-0" style={{ color: "#1e40af" }}>
+              <h3 className="h4 fw-bold mb-0" style={{ color: "#60a5fa" }}>
                 {t("partB")}
               </h3>
             </div>
@@ -326,12 +326,12 @@ const CrafftQuestionnaire = () => {
                 >
 <p className="mb-2" style={{ color: "#374151" }}>
   <Trans i18nKey="noteAllZero" ns="crafftQuestionnaire">
-    If you answer <strong style={{ color: "#1e40af" }}>"0 days"</strong> (no use) to <strong>all</strong> of the <strong>PART A QUESTIONS</strong>, please proceed to answer <strong>only the first question</strong> in Part B ("Car").
+    If you answer <strong style={{ color: "#60a5fa" }}>"0 days"</strong> (no use) to <strong>all</strong> of the <strong>PART A QUESTIONS</strong>, please proceed to answer <strong>only the first question</strong> in Part B ("Car").
   </Trans>
 </p>
 <p className="mb-0" style={{ color: "#374151" }}>
   <Trans i18nKey="noteAnyMore" ns="crafftQuestionnaire">
-    If you answer <strong style={{ color: "#1e40af" }}>1 day or more</strong> to <strong>any</strong> of the <strong>PART A QUESTIONS</strong>, please continue to answer <strong>all 6 CRAFFT questions</strong> in Part B (<strong>Car, Relax, Alone, Forget, Family/Friends, Trouble</strong>).
+    If you answer <strong style={{ color: "#60a5fa" }}>1 day or more</strong> to <strong>any</strong> of the <strong>PART A QUESTIONS</strong>, please continue to answer <strong>all 6 CRAFFT questions</strong> in Part B (<strong>Car, Relax, Alone, Forget, Family/Friends, Trouble</strong>).
   </Trans>
 </p>
                 </div>
@@ -348,7 +348,7 @@ const CrafftQuestionnaire = () => {
               >
 <Form.Label className="fw-semibold">
   <Trans i18nKey="car" ns="crafftQuestionnaire">
-    1. Have you ever ridden in a <strong style={{ color: "#1e40af" }}>CAR</strong> driven by someone (including yourself) who was "high" or had been using alcohol or drugs?
+    1. Have you ever ridden in a <strong style={{ color: "#60a5fa" }}>CAR</strong> driven by someone (including yourself) who was "high" or had been using alcohol or drugs?
   </Trans>
   <span className="required-asterisk">*</span>
 </Form.Label>
@@ -393,7 +393,7 @@ const CrafftQuestionnaire = () => {
                   >
                     <Form.Label className="fw-semibold">
   <Trans i18nKey="relax" ns="crafftQuestionnaire">
-    2. Do you ever use alcohol or drugs to <strong style={{ color: "#1e40af" }}>RELAX</strong>, feel better about yourself, or fit in?
+    2. Do you ever use alcohol or drugs to <strong style={{ color: "#60a5fa" }}>RELAX</strong>, feel better about yourself, or fit in?
   </Trans>
   <span className="required-asterisk">*</span>
 </Form.Label>
@@ -438,7 +438,7 @@ const CrafftQuestionnaire = () => {
                   >
                     <Form.Label className="fw-semibold">
   <Trans i18nKey="alone" ns="crafftQuestionnaire">
-    3. Do you ever use alcohol or drugs while you are by yourself, or <strong style={{ color: "#1e40af" }}>ALONE</strong>?
+    3. Do you ever use alcohol or drugs while you are by yourself, or <strong style={{ color: "#60a5fa" }}>ALONE</strong>?
   </Trans>
   <span className="required-asterisk">*</span>
 </Form.Label>
@@ -483,7 +483,7 @@ const CrafftQuestionnaire = () => {
                   >
                     <Form.Label className="fw-semibold">
   <Trans i18nKey="forget" ns="crafftQuestionnaire">
-    4. Do you ever <strong style={{ color: "#1e40af" }}>FORGET</strong> things you did while using alcohol or drugs?
+    4. Do you ever <strong style={{ color: "#60a5fa" }}>FORGET</strong> things you did while using alcohol or drugs?
   </Trans>
   <span className="required-asterisk">*</span>
 </Form.Label>
@@ -528,7 +528,7 @@ const CrafftQuestionnaire = () => {
                   >
 <Form.Label className="fw-semibold">
   <Trans i18nKey="family" ns="crafftQuestionnaire">
-    5. Do your <strong style={{ color: "#1e40af" }}>FAMILY or FRIENDS</strong> ever tell you that you should cut down on your drinking or drug use?
+    5. Do your <strong style={{ color: "#60a5fa" }}>FAMILY or FRIENDS</strong> ever tell you that you should cut down on your drinking or drug use?
   </Trans>
   <span className="required-asterisk">*</span>
 </Form.Label>
@@ -573,7 +573,7 @@ const CrafftQuestionnaire = () => {
                   >
 <Form.Label className="fw-semibold">
   <Trans i18nKey="trouble" ns="crafftQuestionnaire">
-    6. Have you ever gotten into <strong style={{ color: "#1e40af" }}>TROUBLE</strong> while you were using alcohol or drugs?
+    6. Have you ever gotten into <strong style={{ color: "#60a5fa" }}>TROUBLE</strong> while you were using alcohol or drugs?
   </Trans>
   <span className="required-asterisk">*</span>
 </Form.Label>
