@@ -59,6 +59,21 @@
   line-height: 1.4;
 }
 
+.min-width-btn
+{
+  min-width: 100px;
+}
+
+.btn-full {
+  font-weight: 600;
+  background-color: #f8f9fa !important;
+  border-color: #ced4da !important;
+  color: #6c757d !important;
+  opacity: 1 !important;
+  cursor: default;
+  pointer-events: none;
+}
+
 /* Course Card Styles */
 .course-card {
   transition: transform 0.2s ease, box-shadow 0.2s ease;

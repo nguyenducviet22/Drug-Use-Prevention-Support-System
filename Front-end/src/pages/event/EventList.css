@@ -1,6 +1,7 @@
 .event-list-page {
   min-height: 100vh;
   background-color: #f8f9fa;
+  padding-bottom: 4px;
 }
 
 .page-header {
@@ -13,6 +14,37 @@
   background-color: #007bff;
   margin-top: 10px;
 }
+
+/* Tabs container */
+.custom-tabs .nav-tabs {
+  border-bottom: none;
+  justify-content: center;
+  background: linear-gradient(to right, #dff1ff, #e6f4ff);
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 132, 255, 0.1);
+}
+
+/* Each tab */
+.custom-tabs .nav-tabs .nav-link {
+  border: none;
+  background: transparent;
+  color: #0d6efd;
+  font-weight: 500;
+  border-radius: 30px;
+  padding: 8px 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Active tab */
+.custom-tabs .nav-tabs .nav-link.active {
+  background-color: #0d6efd;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(13, 110, 253, 0.2);
+}
+
+
 
 /* Event Card Styles */
 .event-card {

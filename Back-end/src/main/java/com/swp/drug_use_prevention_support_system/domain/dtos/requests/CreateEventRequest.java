@@ -2,11 +2,12 @@ package com.swp.drug_use_prevention_support_system.domain.dtos.requests;
 
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.EventStatus;
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -17,6 +18,8 @@ public class CreateEventRequest {
 
     @NotBlank(message = "Event name must not be blank")
     String eventName;
+
+    String subTitle;
 
     @Positive(message = "Duration must be a positive number")
     Integer duration;
@@ -36,9 +39,19 @@ public class CreateEventRequest {
 
     @NotNull(message = "Start date is required")
     @FutureOrPresent(message = "Start date must be today or in the future")
-    String startedAt;
+    LocalDateTime startDate;
 
     @NotNull(message = "End date is required")
     @FutureOrPresent(message = "End date must be today or in the future")
-    String endedAt;
+    LocalDateTime endDate;
+
+    @NotNull(message = "Location is required")
+    String location;
+
+    @PositiveOrZero(message = "Fee cannot be negative")
+    @NotNull(message = "Fee is required")
+    Double fee;
+
+    @NotNull(message = "Event Details is required")
+    String details;
 }

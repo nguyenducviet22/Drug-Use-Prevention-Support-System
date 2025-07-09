@@ -29,9 +29,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_POST_ENDPOINTS = {"/auth/login", "/auth/introspect", "/auth/logout", "/auth/refresh", "/api/user", "/api/password/**"};
+    private final String[] PUBLIC_POST_ENDPOINTS = {"/auth/login", "/auth/introspect", "/auth/logout", "/auth/refresh", "/api/user", "/api/assessment/crafft/submit","/api/password/**"};
 
-    private final String[] PUBLIC_GET_ENDPOINTS = {"/api/blog/**", "/api/course/**", "/api/enrollment/course-list/**", "/api/assessment/**", "/api/assessment-result/risk-level"};
+    private final String[] PUBLIC_GET_ENDPOINTS = {"/api/blog/**", "/api/course/**", "/api/enrollment/course-list/**", "/api/assessment/**", "/api/assessment-result/risk-level", "/api/event", "/api/event/**"};
 
     private final String[] SWAGGER_ENDPOINTS = {"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**"};
 

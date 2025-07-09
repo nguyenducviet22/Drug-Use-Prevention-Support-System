@@ -58,4 +58,58 @@ public class GlobalExceptionHandler {
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse> handleResourceNotFound(ResourceNotFoundException ex) {
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AgeGroupMismatchException.class)
+    public ResponseEntity<ApiResponse> handleAgeGroupMismatch(AgeGroupMismatchException ex) {
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AlreadyRegisteredException.class)
+    public ResponseEntity<ApiResponse> handleAlreadyRegistered(AlreadyRegisteredException ex) {
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .message(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(EventFullException.class)
+    public ResponseEntity<ApiResponse> handleEventFull(EventFullException ex) {
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CancellationNotAllowedException.class)
+    public ResponseEntity<ApiResponse> handleCancellationNotAllowed(CancellationNotAllowedException ex) {
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EventCancellationBlockedException.class)
+    public ResponseEntity<ApiResponse> handleBlockedCancellation(EventCancellationBlockedException ex) {
+        ApiResponse apiResponse = ApiResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .message(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
 }

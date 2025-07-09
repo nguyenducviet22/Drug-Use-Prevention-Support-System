@@ -1,4 +1,13 @@
 {
-    "joinNowButton": "Join Now",
-    "detailsButton": "Details"
+  "joinNowButton": "Join Now",
+  "detailsButton": "Details",
+  "joinedButton": "Joined",
+  "unavailableButton": "Unavailable",
+  "expiredButton": "Expired",
+  "cancelledButton": "Cancelled",
+  "fullButton": "Full",
+  "cancelButton": "Cancel",
+  "cancellingButton": "Cancelling...",
+  "cancelSuccess": "Cancelled successfully!",
+  "cancelFailed": "Cancel failed!"
 }

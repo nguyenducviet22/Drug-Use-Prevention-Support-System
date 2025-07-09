@@ -2,6 +2,7 @@ package com.swp.drug_use_prevention_support_system.domain.entities;
 
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.EventStatus;
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -26,24 +27,32 @@ public class Event {
     @Column(name = "event_id")
     UUID eventID;
     String eventName;
+    String subTitle;
     Integer duration;
     Integer quantity;
     String description;
     String image;
     @Enumerated(EnumType.STRING)
     EventStatus status;
+    LocalDateTime startDate;
+    LocalDateTime endDate;
     @Enumerated(EnumType.STRING)
     AgeGroup ageGroup;
-    Instant startedAt;
-    Instant endedAt;
-    Instant createdAt;
-    Instant updatedAt;
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
+    String location;
+    Double fee;
+    String details;
 
     @ManyToMany(mappedBy = "events")
     List<User> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "event")
     List<Survey> surveys = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "created_by_staff", nullable = false, updatable = false)
+    User createdByStaff;
 
     @PrePersist
     protected void onCreate() {

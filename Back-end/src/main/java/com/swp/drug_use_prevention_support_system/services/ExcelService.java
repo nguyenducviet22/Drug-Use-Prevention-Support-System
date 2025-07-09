@@ -407,6 +407,7 @@ public class ExcelService {
 
                 Event event = Event.builder()
                         .eventName(name)
+                        .subTitle(subTitle)
                         .duration(duration)
                         .quantity(quantity)
                         .description(description)
@@ -430,7 +431,7 @@ public class ExcelService {
             case STRING -> cell.getStringCellValue().trim();
             case NUMERIC -> {
                 if (DateUtil.isCellDateFormatted(cell)) {
-                    yield cell.getLocalDateTimeCellValue().toLocalDate().toString();
+                    yield cell.getLocalDateTimeCellValue().toString();
                 } else {
                     yield String.valueOf((long) cell.getNumericCellValue());
                 }

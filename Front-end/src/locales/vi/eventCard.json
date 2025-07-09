@@ -1,4 +1,13 @@
 {
   "joinNowButton": "Tham gia ngay",
-  "detailsButton": "Xem chi tiết"
+  "detailsButton": "Xem chi tiết",
+  "joinedButton": "Đã tham gia",
+  "unavailableButton": "Không khả dụng",
+  "expiredButton": "Đã kết thúc",
+  "cancelledButton": "Đã hủy",
+  "fullButton": "Đã đầy",
+  "cancelButton": "Hủy",
+  "cancellingButton": "Đang hủy...",
+  "cancelSuccess": "Hủy thành công!",
+  "cancelFailed": "Hủy thất bại!"
 }

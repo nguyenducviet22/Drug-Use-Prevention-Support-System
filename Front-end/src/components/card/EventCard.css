@@ -21,13 +21,18 @@
 .event-image-section {
   flex: 0 0 35%;
   position: relative;
+  margin: auto;
 }
 
 .event-image {
-  width: 100%;
+  width: 95%;
   height: 100%;
   object-fit: cover;
   display: block;
+  margin-left: 12px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
 }
 
 /* Content Section */
@@ -83,6 +88,10 @@
   gap: 1rem;
 }
 
+.min-width-btn {
+  min-width: 100px;
+}
+
 .btn-join-now,
 .btn-details {
   border-radius: 9999px;
@@ -97,11 +106,38 @@
 .btn-join-now {
   background-color: #3b82f6;
   color: white;
+  min-width: 125px;
+}
+
+button.btn-join-now.btn-joined {
+  background-color: #6c757d !important; /* Bootstrap secondary / gray */
+  color: white !important;
+  border: none;
+  cursor: not-allowed;
+}
+
+button.btn-join-now.btn-full {
+  background-color: #f8d7da !important; /* soft red-pink background */
+  color: #721c24 !important; /* deep red text */
+  border: none;
+  cursor: not-allowed;
 }
 
 .btn-join-now:hover {
   background-color: #2563eb;
   color: white;
+}
+
+.btn.btn-expired:disabled {
+  color: #0c5460 !important;
+  background-color: #e0f3ff !important; /* xanh nhạt */
+  border-color: #b8e2f2 !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+  cursor: default;
+  font-weight: 600;
+  min-width: 100px;
+  text-transform: uppercase;
 }
 
 .btn-details {
@@ -112,6 +148,11 @@
 .btn-details:hover {
   background-color: #d1d5db;
   color: #4b5563;
+}
+
+.btn-cancel {
+  font-weight: 600;
+  border-radius: 30px;
 }
 
 /* Responsive Design */
