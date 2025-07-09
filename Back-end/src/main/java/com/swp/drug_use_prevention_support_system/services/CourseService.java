@@ -4,6 +4,8 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateCou
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateCourseRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CourseResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.Course;
+import com.swp.drug_use_prevention_support_system.domain.entities.Module;
+import com.swp.drug_use_prevention_support_system.domain.entities.Lesson;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
@@ -26,12 +28,15 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
     private final EnrollmentRepository enrollmentRepository;
+    private final ModuleService moduleService;
+    private final LessonService lessonService;
 
     @PreAuthorize("hasRole('STAFF')")
     public CourseResponse createCourse(CreateCourseRequest request) {
         Course course = courseMapper.toEntity(request);
         course.setCourseID(UUID.randomUUID());
         course.setStatus(CourseStatus.UNAVAILABLE);
+        course.setDuration(0);
         courseRepository.save(course);
         return courseMapper.toDto(course);
     }
@@ -57,7 +62,7 @@ public class CourseService {
     public CourseResponse updateCourse(UUID courseId, UpdateCourseRequest request) {
         Course course = getCourseEntity(courseId);
         course.setCourseName(request.getCourseName());
-        course.setDuration(request.getDuration());
+        course.setDuration(calculateCourseDuration(request.getCourseID()));
         course.setQuantity(request.getQuantity());
         course.setImage(request.getImage());
         course.setDescription(request.getDescription());
@@ -107,5 +112,19 @@ public class CourseService {
         return courses.stream()
                 .map(course -> courseMapper.toDto(course))
                 .toList();
+    }
+
+    public Integer calculateCourseDuration(UUID courseID) {
+        List<com.swp.drug_use_prevention_support_system.domain.entities.Module> modules = moduleService.getAllModulesByCourseID(courseID, CourseStatus.AVAILABLE);
+
+        int totalDuration = 0;
+
+        for (Module module : modules) {
+            List<Lesson> lessons = lessonService.getLessonsByModuleID(module.getModuleID(), CourseStatus.AVAILABLE);
+            for (Lesson lesson : lessons) {
+                totalDuration += lesson.getDuration();
+            }
+        }
+        return totalDuration;
     }
 }

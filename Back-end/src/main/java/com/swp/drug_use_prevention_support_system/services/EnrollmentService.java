@@ -76,7 +76,7 @@ public class EnrollmentService {
         return enrollmentMapper.toDto(enrollment);
     }
 
-    @PreAuthorize("hasRole('MEMBER')")
+    @PreAuthorize("hasAnyRole('STAFF', 'MEMBER')")
     public EnrollmentResponse getEnrollmentByUsernameAndCourseID(UUID courseID, String username) {
         Enrollment enrollment = enrollmentRepository.findByMemberUsernameAndCourseCourseID(username, courseID);
 //        if (enrollment == null) {

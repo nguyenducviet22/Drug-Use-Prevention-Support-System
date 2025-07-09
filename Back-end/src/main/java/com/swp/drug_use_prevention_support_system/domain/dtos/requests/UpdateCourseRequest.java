@@ -5,12 +5,17 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateCourseRequest {
+
+    @NotNull(message = "Course ID is required")
+    UUID courseID;
 
     @NotBlank(message = "Course name is required")
     @Size(max = 255, message = "Course name must be at most 255 characters")
