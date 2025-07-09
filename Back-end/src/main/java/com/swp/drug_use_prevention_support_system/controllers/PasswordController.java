@@ -1,5 +1,6 @@
 package com.swp.drug_use_prevention_support_system.controllers;
 
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.ForgotPasswordRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.ResetPasswordRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ForgotPasswordResponse;
@@ -21,8 +22,8 @@ public class PasswordController {
     private final PasswordService passwordService;
 
     @PostMapping("/forgot")
-    public ResponseEntity<ApiResponse<ForgotPasswordResponse>> forgotPassword() throws MessagingException {
-        ForgotPasswordResponse response = passwordService.generateOtp();
+    public ResponseEntity<ApiResponse<ForgotPasswordResponse>> forgotPassword(@RequestBody ForgotPasswordRequest request) throws MessagingException {
+        ForgotPasswordResponse response = passwordService.generateOtp(request);
         passwordService.sendOtpEmail(response.getEmail(), response.getOtp());
         ApiResponse<ForgotPasswordResponse> apiResponse = ApiResponse.<ForgotPasswordResponse>builder()
                 .status(HttpStatus.OK.value())

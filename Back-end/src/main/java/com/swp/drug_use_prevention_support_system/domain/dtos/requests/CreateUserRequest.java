@@ -21,9 +21,10 @@ public class CreateUserRequest {
     @Pattern(regexp = "^[\\w\\s-]+$", message = "Username can only contain letters, numbers, spaces, and hyphens!")
     String username;
 
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,255}$", message = "Password must be at least 8 characters with uppercase, lowercase, number, and special character")
     @NotBlank(message = "Password is required")
-    @Size(min = 8, max = 255, message = "Password must be at least 8 characters")
-    String password;
+    @Size(min = 8, max = 255, message = "Password must be between 8 and 255 characters")
+    private String password;
 
     String confirm;
 

@@ -153,9 +153,8 @@ public class UserService {
         return members.stream().map(user -> userMapper.toDto(user)).toList();
     }
 
-    public boolean changePassword(String newPassword) {
-        String loginUsername = getLoginUsername();
-        User user = getUserEntity(loginUsername);
+    public boolean changePassword(String username, String newPassword) {
+        User user = getUserEntity(username);
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         return true;

@@ -1,10 +1,10 @@
 package com.swp.drug_use_prevention_support_system.services;
 
 import com.swp.drug_use_prevention_support_system.domain.MailBody;
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.ForgotPasswordRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.ResetPasswordRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ForgotPasswordResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.Password;
-import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.mappers.PasswordMapper;
 import com.swp.drug_use_prevention_support_system.repositories.PasswordRepository;
 import jakarta.mail.MessagingException;
@@ -28,10 +28,8 @@ public class PasswordService {
     private static final int OTP_EXPIRATION_MINUTES = 10;
 
     @Transactional
-    public ForgotPasswordResponse generateOtp() {
-        String loginUsername = userService.getLoginUsername();
-        User user = userService.getUserEntity(loginUsername);
-        String email = user.getEmail();
+    public ForgotPasswordResponse generateOtp(ForgotPasswordRequest request) {
+        String email = request.getEmail();
         String otp = String.valueOf(new Random().nextInt(100_000, 999_999));
         Instant expiryTime = Instant.now().plus(OTP_EXPIRATION_MINUTES, ChronoUnit.MINUTES);
 
@@ -58,15 +56,13 @@ public class PasswordService {
     }
 
     public boolean verifyOtp(ResetPasswordRequest request) {
-        String loginUsername = userService.getLoginUsername();
-        User user = userService.getUserEntity(loginUsername);
-        String email = user.getEmail();
+        String email = request.getEmail();
         String otp = request.getOtp();
         Password password = passwordRepository.findByEmailAndOtp(email, otp);
 
         if (password.getExpiryTime().isBefore(Instant.now())){
             return false;
         }
-        return userService.changePassword(request.getNewPassword());
+        return userService.changePassword(request.getUsername(), request.getNewPassword());
     }
 }
