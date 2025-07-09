@@ -84,24 +84,24 @@ public class EventService {
         return events.stream().map(eventMapper::toDto).toList();
     }
 
-    @PreAuthorize("hasAnyRole('STAFF', 'MANAGER')")
-    public EventResponse updateEvent(UUID eventId, UpdateEventRequest request) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new EntityNotFoundException("Event does not exist with ID: " + eventId));
-
-        event.setEventName(request.getEventName());
-        event.setDuration(request.getDuration());
-        event.setQuantity(request.getQuantity());
-        event.setDescription(request.getDescription());
-        event.setImg(request.getImg());
-        event.setStatus(request.getStatus());
-        event.setStartDate(request.getStartDate());
-        event.setEndDate(request.getEndDate());
-        event.setAgeGroup(request.getAgeGroup());
-
-        eventRepository.save(event);
-        return eventMapper.toDto(event);
-    }
+//    @PreAuthorize("hasAnyRole('STAFF', 'MANAGER')")
+//    public EventResponse updateEvent(UUID eventId, UpdateEventRequest request) {
+//        Event event = eventRepository.findById(eventId)
+//                .orElseThrow(() -> new EntityNotFoundException("Event does not exist with ID: " + eventId));
+//
+//        event.setEventName(request.getEventName());
+//        event.setDuration(request.getDuration());
+//        event.setQuantity(request.getQuantity());
+//        event.setDescription(request.getDescription());
+//        event.setImg(request.getImg());
+//        event.setStatus(request.getStatus());
+//        event.setStartDate(request.getStartDate());
+//        event.setEndDate(request.getEndDate());
+//        event.setAgeGroup(request.getAgeGroup());
+//
+//        eventRepository.save(event);
+//        return eventMapper.toDto(event);
+//    }
 
     @PreAuthorize("hasAnyRole('MANAGER')")
     public EventResponse updateEventStatus(UUID eventId, EventStatus status) {

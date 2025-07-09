@@ -86,18 +86,18 @@ public class EventController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<EventResponse>> updateEvent(
-            @PathVariable UUID id,
-            @Valid @RequestBody UpdateEventRequest request) {
-
-        EventResponse response = eventService.updateEvent(id, request);
-        ApiResponse<EventResponse> apiResponse = ApiResponse.<EventResponse>builder()
-                .data(response)
-                .status(HttpStatus.OK.value())
-                .build();
-        return ResponseEntity.ok(apiResponse);
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<ApiResponse<EventResponse>> updateEvent(
+//            @PathVariable UUID id,
+//            @Valid @RequestBody UpdateEventRequest request) {
+//
+//        EventResponse response = eventService.updateEvent(id, request);
+//        ApiResponse<EventResponse> apiResponse = ApiResponse.<EventResponse>builder()
+//                .data(response)
+//                .status(HttpStatus.OK.value())
+//                .build();
+//        return ResponseEntity.ok(apiResponse);
+//    }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<EventResponse>> updateEventStatus(@PathVariable UUID id,

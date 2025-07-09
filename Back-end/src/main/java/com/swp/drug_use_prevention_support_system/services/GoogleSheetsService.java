@@ -83,7 +83,9 @@ public class GoogleSheetsService {
                     Integer score = (row.get(0) != null) ? Integer.valueOf(row.get(0).toString()) : null;
                     RiskLevel level = (row.get(1) != null) ? RiskLevel.valueOf(row.get(1).toString()) : null;
                     String action = (row.get(2) != null) ? row.get(2).toString() : null;
-                    Instant completed = (row.get(3) != null) ? LocalDateTime.parse(row.get(3).toString(), DATETIME_FORMATTER).toInstant(ZoneOffset.UTC) : null;
+                    LocalDateTime completed = (row.get(3) != null)
+                            ? LocalDateTime.parse(row.get(3).toString(), DATETIME_FORMATTER)
+                            : null;
                     String email = (row.get(4) != null) ? row.get(4).toString() : null;
 
                     User user = null;

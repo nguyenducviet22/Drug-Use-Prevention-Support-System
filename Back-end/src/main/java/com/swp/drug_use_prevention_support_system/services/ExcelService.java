@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -402,9 +404,18 @@ public class ExcelService {
                 String description = getCellValue(row.getCell(3));
                 String img = getCellValue(row.getCell(4));
                 EventStatus status = EventStatus.valueOf(getCellValue(row.getCell(5)).toUpperCase());
-                Instant startedAt = Instant.parse(getCellValue(row.getCell(6)));
-                Instant endedAt = Instant.parse(getCellValue(row.getCell(7)));
 
+                ZoneId zone = ZoneId.systemDefault();
+                LocalDateTime startDate = LocalDateTime.ofInstant(Instant.parse(getCellValue(row.getCell(6))), zone);
+                LocalDateTime endDate = LocalDateTime.ofInstant(Instant.parse(getCellValue(row.getCell(7))), zone);
+
+                String subTitle = getCellValue(row.getCell(8));
+                String location = getCellValue(row.getCell(9));
+                Double fee = Double.valueOf(getCellValue(row.getCell(10)));
+                String details = getCellValue(row.getCell(11));
+                AgeGroup ageGroup = AgeGroup.valueOf(getCellValue(row.getCell(12)).toUpperCase());
+
+                // Tạm thời chưa gán createdByStaff nếu không có thông tin trong Excel
                 Event event = Event.builder()
                         .eventName(name)
                         .subTitle(subTitle)
@@ -413,14 +424,20 @@ public class ExcelService {
                         .description(description)
                         .image(img)
                         .status(status)
-                        .startedAt(startedAt)
-                        .endedAt(endedAt)
+                        .startDate(startDate)
+                        .endDate(endDate)
+                        .location(location)
+                        .fee(fee)
+                        .details(details)
+                        .ageGroup(ageGroup)
                         .build();
+
                 events.add(event);
             } catch (Exception e) {
                 throw new RuntimeException("Error Excel import Events at line " + (i + 1) + ": " + e.getMessage(), e);
             }
         }
+
         eventRepository.saveAll(events);
         workbook.close();
     }

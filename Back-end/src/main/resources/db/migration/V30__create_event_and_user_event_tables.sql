@@ -5,7 +5,7 @@ CREATE TABLE event (
     duration INT,
     quantity INT,
     description TEXT,
-    img VARCHAR(255),
+    image VARCHAR(255),
     status ENUM('NOT_STARTED', 'ONGOING', 'EXPIRED', 'CANCELLED', 'DRAFT') NOT NULL,
     start_date DATETIME,
     end_date DATETIME,

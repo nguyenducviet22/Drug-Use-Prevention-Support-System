@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -25,7 +26,7 @@ public class AssessmentResult {
     @Enumerated(EnumType.STRING)
     RiskLevel riskLevel;
     String suggestedAction;
-    Instant completedTime;
+    LocalDateTime completedTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "username", nullable = false)
