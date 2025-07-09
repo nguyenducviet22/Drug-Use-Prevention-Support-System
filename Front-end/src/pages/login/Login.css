@@ -1,132 +1,194 @@
-/* Login Page Styles */
 .login-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-  padding: 2rem 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px; /* Add some padding for smaller screens */
 }
 
 .login-card {
-  min-height: 600px;
-  border-radius: 1rem !important;
-  overflow: hidden;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 100%; /* Ensure card takes full height of its column */
+    max-height: 800px; /* Limit max height for very tall screens */
 }
 
 .login-brand-section {
-  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-  padding: 3rem 2rem;
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    padding: 40px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+
+.brand-logo svg {
+    margin-bottom: 20px;
 }
 
 .brand-title {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
 }
 
 .brand-subtitle {
-  font-size: 1.1rem;
-  opacity: 0.9;
-  line-height: 1.5;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    opacity: 0.9;
 }
 
 .login-form-section {
-  background: white;
-  padding: 2rem;
+    padding: 40px;
+    background-color: #ffffff;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
 }
 
 .login-tabs .btn {
-  border-radius: 0.5rem;
-  font-weight: 500;
-  padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.login-tabs .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.login-tabs .btn-outline-secondary {
+    color: #6c757d;
+    border-color: #dee2e6;
+}
+
+.login-tabs .btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    color: #007bff;
+    border-color: #007bff;
 }
 
 .google-login-btn {
-  border: 2px solid #e9ecef;
-  color: #6c757d;
-  font-weight: 500;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  transition: all 0.2s ease;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
 }
 
-.google-login-btn:hover {
-  border-color: #dc3545;
-  background-color: #fff5f5;
-  color: #dc3545;
+.google-login-btn svg {
+    margin-right: 10px;
 }
 
 .divider {
-  position: relative;
-  text-align: center;
-  margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #adb5bd;
+    margin: 20px 0;
 }
 
-.divider::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: #e9ecef;
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.divider:not(:empty)::before {
+    margin-right: .25em;
+}
+
+.divider:not(:empty)::after {
+    margin-left: .25em;
 }
 
 .divider-text {
-  background: white;
-  padding: 0 1rem;
-  font-size: 0.9rem;
+    padding: 0 10px;
+    background-color: #ffffff;
+    position: relative;
+    z-index: 1;
 }
 
 .form-control-custom {
-  border: 2px solid #e9ecef;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  transition: all 0.2s ease;
+    border-radius: 10px;
+    padding: 12px 15px;
+    border: 1px solid #ced4da;
+    box-shadow: none !important; /* Remove default focus shadow */
 }
 
-.form-control-custom:focus {
-  border-color: #0984e3;
-  box-shadow: 0 0 0 0.2rem rgba(9, 132, 227, 0.25);
+/* Styles for form controls when they are part of an InputGroup with a toggle */
+.form-control-custom-with-toggle {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding: 12px 15px;
+    border: 1px solid #ced4da;
+    box-shadow: none !important; /* Remove default focus shadow */
+}
+
+.password-toggle-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-left: none;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
 }
 
 .login-submit-btn {
-  background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.75rem;
-  font-weight: 600;
-  font-size: 1.1rem;
-  transition: all 0.2s ease;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
 }
 
-.login-submit-btn:hover {
-  background: linear-gradient(135deg, #0770c7 0%, #5fa8ff 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
-}
-
-/* Responsive Design for Login */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-  .login-page {
-    padding: 1rem 0;
-  }
+    .login-card {
+        height: auto;
+    }
 
-  .login-card {
-    min-height: auto;
-  }
+    .login-brand-section {
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 20px;
+        padding: 30px;
+    }
 
-  .login-brand-section {
-    padding: 2rem 1rem;
-  }
+    .login-form-section {
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 20px;
+        padding: 30px;
+    }
 
-  .brand-title {
-    font-size: 2rem;
-  }
+    .brand-title {
+        font-size: 2rem;
+    }
 
-  .brand-subtitle {
-    font-size: 1rem;
-  }
+    .brand-subtitle {
+        font-size: 1rem;
+    }
+}
 
-  .login-form-section {
-    padding: 1.5rem;
-  }
+@media (max-width: 576px) {
+    .login-form-section, .login-brand-section {
+        padding: 20px;
+    }
+
+    .brand-title {
+        font-size: 1.8rem;
+    }
+
+    .brand-subtitle {
+        font-size: 0.9rem;
+    }
 }

@@ -1,7 +1,6 @@
 {
     "backButton": "Back",
     "sidebar": {
-        "readingTimeTitle": "Reading Time",
         "minutes": "{{duration}} mins",
         "courseLabel": "Course:",
         "descriptionLabel": "Description:"

@@ -270,7 +270,7 @@ const CourseDetails = () => {
               <div className="feature">
                 <div className="feature-value">
                   <Clock size={18} className="feature-icon" />
-                  <span>{t("features.minutes", { duration: moduleDuration })}</span> 
+                  <span>{t("features.minutes", { duration: course.duration })}</span> 
                 </div>
                 <div className="feature-description">&nbsp;</div>
               </div>

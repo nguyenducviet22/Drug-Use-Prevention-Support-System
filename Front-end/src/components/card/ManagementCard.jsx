@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, Badge, Button } from 'react-bootstrap';
+import { PlusCircle } from 'lucide-react'; // Import PlusCircle icon
 
 const ManagementCard = ({
     title,
@@ -13,7 +14,8 @@ const ManagementCard = ({
     counts,
     dataType,
     onApprove,
-    onView
+    onView,
+    onAdd // Add the new onAdd prop
 }) => {
 
     const TabButton = ({ active, onClick, children, count }) => (
@@ -60,7 +62,7 @@ const ManagementCard = ({
                             </Card.Text>
                         </div>
                         <div className="d-flex align-items-center gap-2 flex-shrink-0">
-                            {item.blogID && item.blogStatus === 'PENDING' && (
+                            {item.blogID && item.blogStatus === 'PENDING' && item.member.role !== 'STAFF' && (
                                 <Button
                                     size="sm"
                                     variant="success"
@@ -110,6 +112,11 @@ const ManagementCard = ({
                         <IconComponent size={20} />
                     </div>
                     <Card.Title className="mb-0 h5">{title}</Card.Title>
+                    {onAdd && ( // Render Add button if onAdd prop is provided
+                        <Button variant="outline-success" size="sm" onClick={onAdd} className="ms-auto">
+                            <PlusCircle size={16} className="me-1" /> Add
+                        </Button>
+                    )}
                 </div>
 
                 {/* --- Phần Tabs --- */}

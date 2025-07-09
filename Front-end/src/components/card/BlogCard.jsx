@@ -10,7 +10,7 @@ const BlogCard = ({ blog, status, onReadClick }) => {
     <Card
       className="blog-card mb-4"
       style={{
-        backgroundImage: `url(${blog.img})`,
+        backgroundImage: `url(${blog.image})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -27,7 +27,7 @@ const BlogCard = ({ blog, status, onReadClick }) => {
               </span>
               <span className="meta-info">
                 <Calendar size={16} className="meta-icon" />
-                {blog.createdAt}
+                {new Date(blog.createdAt).toLocaleDateString()} - {new Date(blog.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
               <span className="meta-info ms-3">
                 <User size={16} className="meta-icon" />
@@ -41,9 +41,12 @@ const BlogCard = ({ blog, status, onReadClick }) => {
           <p className="blog-excerpt mb-4">{blog.description}</p>
 
           {status !== 'draft' && (
-            <Button variant="primary" className="read-button" onClick={() => onReadClick(blog.blogID)}>
-              {t("readButton")}
-            </Button>
+            <div className="d-flex justify-content-end mt-2">
+              <Button variant="primary" className="read-button"
+                onClick={() => onReadClick(blog.blogID)}>
+                {t("readButton")}
+              </Button>
+            </div>
           )}
         </div>
       </div>

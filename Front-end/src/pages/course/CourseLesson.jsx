@@ -75,7 +75,6 @@ const CourseLesson = () => {
     return allCompleted;
   }, [lessonByModuleID]);
 
-
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
@@ -109,7 +108,7 @@ const CourseLesson = () => {
 
         const allLessonsFlat = lessonsArray.flat()
         const totalDuration = allLessonsFlat.reduce((sum, lesson) => {
-          return sum + (lesson.lessonDuration || 0)
+          return sum + (lesson.duration || 0)
         }, 0)
         setModuleDuration(totalDuration)
 
@@ -240,7 +239,7 @@ const CourseLesson = () => {
       // Fetch the specific progress for this lesson and enrollment
       const progressResponse = await getProgress(`http://localhost:8080/api/progress?enrollmentID=${enrollmentID}&lessonID=${lessonID}`);
 
-      if (progressResponse) {
+      if (progressResponse.data) {
         setCurrentLessonProgress(progressResponse);
       } else {
         const newProgress = await postProgress({ enrollmentID, lessonID }, {}, "http://localhost:8080/api/progress");
@@ -269,7 +268,6 @@ const CourseLesson = () => {
   // Check overall loading state
   const isLoadingData = loadingCourseDetails || loadingModules || loadingLessons || loadingAllProgress;
   const hasError = errorCourseDetails || errorModules || errorLessons || errorAllProgress;
-
 
   // Show loading spinner if any initial data is loading
   if (isLoadingData) {
@@ -301,25 +299,19 @@ const CourseLesson = () => {
           {/* Sidebar */}
           <Col lg={3} className="sidebar-col">
             <div className="lesson-sidebar">
-              <BackButton label={t("backButton")} /> 
+              <BackButton label={t("backButton")} />
               {/* Course Info */}
               <div className="course-info">
                 <div className="reading-time">
-                  <h6 className="reading-time-title">{t("sidebar.readingTimeTitle")}</h6> 
                   <div className="time-info">
                     <Clock size={20} className="time-icon" />
-                    <span>{t("sidebar.minutes", { duration: moduleDuration })}</span> 
+                    <span>{t("sidebar.minutes", { duration: moduleDuration })}</span>
                   </div>
                 </div>
 
                 <div className="learning-objective">
-                  <span className="objective-label">{t("sidebar.courseLabel")} </span> 
+                  <span className="objective-label">{t("sidebar.courseLabel")} </span>
                   <span className="objective-text">{course?.courseName}</span>
-                </div>
-
-                <div className="learning-objective">
-                  <span className="objective-label">{t("sidebar.descriptionLabel")} </span> 
-                  <span className="objective-text">{course?.description}</span>
                 </div>
               </div>
 
@@ -338,7 +330,7 @@ const CourseLesson = () => {
                         <ChevronRight size={16} className="module-icon" />
                       )}
                       <span className="module-title">
-                        {t("lessonNavigation.moduleTitle", { index: index + 1, moduleName: module.moduleName })} 
+                        {t("lessonNavigation.moduleTitle", { index: index + 1, moduleName: module.moduleName })}
                       </span>
                     </button>
 
@@ -374,22 +366,10 @@ const CourseLesson = () => {
                 <div className="content-section">
                   <h2 className="section-title">{selectedLesson.lessonName}</h2>
                   <div className="section-content">
-                    {selectedLesson.lessonContent?.map((section, index) => (
-                      <div key={index}>
-                        {section.sectionTitle && (
-                          <h3 className="section-subtitle">{section.sectionTitle}</h3>
-                        )}
-                        {section.sectionText && (
-                          <p className="content-paragraph">{section.sectionText}</p>
-                        )}
-                        {section.sectionCategories && (
-                          <p>Categories: {section.sectionCategories.join(', ')}</p>
-                        )}
-                        {section.sectionResources && (
-                          <p>Resources: {section.sectionResources.map((resource, i) => <a key={i} href={resource} target="_blank" rel="noopener noreferrer">{resource}</a>)}</p>
-                        )}
-                      </div>
-                    ))}
+                    <p className="content-paragraph"
+                      dangerouslySetInnerHTML={{ __html: selectedLesson.content }}
+                    />
+                    <p>Resources: <a href={selectedLesson.resource} target="_blank" rel="noopener noreferrer">{selectedLesson.resource}</a></p>
                   </div>
 
                   {/* Mark as Read Button */}
@@ -412,7 +392,7 @@ const CourseLesson = () => {
                   </div>
                 </div>
               ) : (
-                <div className="text-muted text-center py-4">{t("mainContent.selectLessonPrompt")}</div> 
+                <div className="text-muted text-center py-4">{t("mainContent.selectLessonPrompt")}</div>
               )}
             </div>
           </Col>

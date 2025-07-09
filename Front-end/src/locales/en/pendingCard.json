@@ -1,0 +1,8 @@
+{
+  "pendingCount": "{{count}} pending",
+  "noTitle": "No Title",
+  "recently": "recently",
+  "by": "By {{author}}",
+  "approve": "Approve",
+  "view": "View"
+}

@@ -61,14 +61,14 @@ const HomeExplore = () => {
         setEveryoneBlogs(data);
         setRandomBlogs(getRandomItems(data, 2));
       })
-      .catch(() => {});
+      .catch(() => { });
 
     getEveryoneCourses()
       .then((data) => {
         setEveryoneCourses(data);
         setRandomCourses(getRandomItems(data, 3));
       })
-      .catch(() => {});
+      .catch(() => { });
   }, [getEveryoneBlogs, getEveryoneCourses]);
 
   console.log(everyoneBlogs);
@@ -76,6 +76,10 @@ const HomeExplore = () => {
 
   const handleReadMore = (blogId) => {
     navigate(`/blogs/${blogId}`);
+  };
+
+  const handleCoursesClick = (courseID) => {
+    navigate(`/courses/${courseID}`);
   };
 
   if (loadingEveryoneBlogs || loadingEveryoneCourses) {
@@ -199,7 +203,9 @@ const HomeExplore = () => {
           <Row>
             {randomCourses.map((course) => (
               <Col md={4} key={course.courseID} className="mb-4">
-                <CourseCard course={course} />
+                <CourseCard course={course}
+                  onEnrollClick={handleCoursesClick}
+                  onDetailsClick={handleCoursesClick} />
               </Col>
             ))}
           </Row>

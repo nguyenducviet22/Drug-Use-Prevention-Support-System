@@ -7,7 +7,7 @@ const RecommendationCard = ({ recommendation, type, onViewClick }) => {
         <Card style={{ width: '18rem', cursor: 'pointer' }} onClick={() => onViewClick(recommendation.id)}>
             <Card.Img
                 variant="top"
-                src={recommendation.img}
+                src={recommendation.image}
                 alt={recommendation[`${type}Name`]}
                 className="card-img-fixed"
             />

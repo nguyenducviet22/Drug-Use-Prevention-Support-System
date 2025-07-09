@@ -1,16 +1,20 @@
 import { useState } from "react"
-import { Container, Row, Col, Card, Form, Button } from "react-bootstrap"
+import { Container, Row, Col, Card, Form, Button, InputGroup } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import "./Login.css"
 import { useAuth } from "../../hooks/useAuth"
 import BackButton from "../../components/BackButton"
 import { toast } from "react-toastify"
 import { useTranslation } from "react-i18next"; // Import useTranslation
+import { Eye, EyeOff } from "lucide-react"
 
 export default function Login() {
   const { t } = useTranslation("loginPage"); // Khai báo useTranslation
 
   const { login, register, authLoading, error } = useAuth();
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
+  const [showRegisterConfirmPassword, setShowRegisterConfirmPassword] = useState(false);
 
   const API_GOOGLE_LOGIN_URL = 'http://localhost:8080/oauth2/authorization/google';
 
@@ -155,7 +159,6 @@ export default function Login() {
                     {/* Login Form */}
                     {activeTab === "login" && (
                       <Form onSubmit={handleLoginSubmit}>
-                        {error && <div className="text-danger mt-2">{error}</div>}
                         <Form.Group className="mb-3">
                           <Form.Label className="fw-semibold text-dark">{t("loginForm.usernameLabel")}</Form.Label>
                           <Form.Control
@@ -171,15 +174,20 @@ export default function Login() {
 
                         <Form.Group className="mb-3">
                           <Form.Label className="fw-semibold text-dark">{t("loginForm.passwordLabel")}</Form.Label>
-                          <Form.Control
-                            type="password"
-                            name="password"
-                            placeholder={t("loginForm.passwordPlaceholder")}
-                            value={loginData.password}
-                            onChange={handleLoginChange}
-                            className="form-control-custom"
-                            required
-                          />
+                          <InputGroup>
+                            <Form.Control
+                              type={showLoginPassword ? "text" : "password"}
+                              name="password"
+                              placeholder={t("loginForm.passwordPlaceholder")}
+                              value={loginData.password}
+                              onChange={handleLoginChange}
+                              className="form-control-custom-with-toggle"
+                              required
+                            />
+                            <InputGroup.Text className="password-toggle-btn" onClick={() => setShowLoginPassword(!showLoginPassword)}>
+                              {showLoginPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </InputGroup.Text>
+                          </InputGroup>
                         </Form.Group>
 
                         <Form.Group className="mb-4">
@@ -223,28 +231,38 @@ export default function Login() {
 
                         <Form.Group className="mb-3">
                           <Form.Label className="fw-semibold text-dark">{t("registerForm.passwordLabel")}</Form.Label>
-                          <Form.Control
-                            type="password"
-                            name="password"
-                            placeholder={t("registerForm.passwordPlaceholder")}
-                            value={registerData.password}
-                            onChange={handleRegisterChange}
-                            className="form-control-custom"
-                            required
-                          />
+                          <InputGroup>
+                            <Form.Control
+                              type={showRegisterPassword ? "text" : "password"}
+                              name="password"
+                              placeholder={t("registerForm.passwordPlaceholder")}
+                              value={registerData.password}
+                              onChange={handleRegisterChange}
+                              className="form-control-custom-with-toggle"
+                              required
+                            />
+                            <InputGroup.Text className="password-toggle-btn" onClick={() => setShowRegisterPassword(!showRegisterPassword)}>
+                              {showRegisterPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </InputGroup.Text>
+                          </InputGroup>
                         </Form.Group>
 
                         <Form.Group className="mb-4">
                           <Form.Label className="fw-semibold text-dark">{t("registerForm.confirmPasswordLabel")}</Form.Label>
-                          <Form.Control
-                            type="password"
-                            name="confirmPassword"
-                            placeholder={t("registerForm.confirmPasswordPlaceholder")}
-                            value={registerData.confirmPassword}
-                            onChange={handleRegisterChange}
-                            className="form-control-custom"
-                            required
-                          />
+                          <InputGroup>
+                            <Form.Control
+                              type={showRegisterConfirmPassword ? "text" : "password"}
+                              name="confirmPassword"
+                              placeholder={t("registerForm.confirmPasswordPlaceholder")}
+                              value={registerData.confirmPassword}
+                              onChange={handleRegisterChange}
+                              className="form-control-custom-with-toggle"
+                              required
+                            />
+                            <InputGroup.Text className="password-toggle-btn" onClick={() => setShowRegisterConfirmPassword(!showRegisterConfirmPassword)}>
+                              {showRegisterConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </InputGroup.Text>
+                          </InputGroup>
                         </Form.Group>
 
                         <Button type="submit" variant="primary" className="w-100 login-submit-btn mb-3">

@@ -1,4 +1,5 @@
 {
+    "backButton": "Quay lại",
     "header": {
         "title": "Đặt Lịch Tư Vấn",
         "subtitle": "Hẹn lịch cùng chuyên gia phòng ngừa ma túy được chứng nhận của chúng tôi"
@@ -14,7 +15,10 @@
         "eventTitles": {
             "available": "Còn trống",
             "selected": "Đã chọn",
-            "pastUnavailable": "Đã qua / Không khả dụng"
+            "pastUnavailable": "Đã qua / Không khả dụng",
+            "pastScheduled": "Lịch đã qua",
+            "scheduled": "Đã đặt",
+            "cancelled": "Đã hủy"
         },
         "infoMessages": {
             "unavailableSlot": "Khung giờ này không thể đặt (có thể đã qua hoặc đã được đặt trước).",
@@ -43,6 +47,29 @@
         "consultantLabel": "Chuyên gia:",
         "dateTimeLabel": "Ngày & Giờ:",
         "noteLabel": "Ghi chú:",
-        "confirmButton": "Xác nhận"
+        "confirmButton": "Xác nhận",
+        "confirmingButton": "Đang xác nhận...",
+        "cancelButton": "Hủy bỏ"
+    },
+    "cancellationModal": {
+        "title": "Hủy Cuộc Hẹn",
+        "message": "Bạn có chắc muốn hủy cuộc hẹn này không?",
+        "dateLabel": "Thời gian cuộc hẹn:",
+        "reasonLabel": "Lý do hủy (Không bắt buộc):",
+        "reasonPlaceholder": "Ví dụ: Thay đổi kế hoạch, sự cố bất ngờ...",
+        "confirmCancellationButton": "Xác nhận Hủy",
+        "cancellingButton": "Đang hủy...",
+        "doNotCancelButton": "Không hủy"
+    },
+    "toasts": {
+        "scheduledSlotInfo": "Khung giờ này đã được đặt. Bạn có thể nhấp để hủy.",
+        "cancelledSlotInfo": "Khung giờ này đã bị hủy và không thể đặt.",
+        "unavailableSlotInfo": "Khung giờ này không khả dụng.",
+        "slotUnselected": "Đã bỏ chọn khung giờ.",
+        "slotSelected": "Đã chọn khung giờ.",
+        "cancellationSuccess": "Cuộc hẹn đã được hủy thành công.",
+        "cancellationError": "Không thể hủy cuộc hẹn: {message}",
+        "unknownCancellationError": "Đã xảy ra lỗi không mong muốn trong quá trình hủy. Vui lòng thử lại.",
+        "cannotCancelPastSlot": "Không thể hủy cuộc hẹn đã qua."
     }
 }

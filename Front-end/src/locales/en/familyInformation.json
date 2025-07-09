@@ -21,5 +21,35 @@
         "Daughter": "Daughter",
         "Spouse": "Spouse",
         "Other": "Other"
-    }
+    },
+    "modal": {
+        "addMemberTitle": "Add New Family Member",
+        "editMemberTitle": "Edit Family Member",
+        "cancelButton": "Cancel",
+        "saveChangesButton": "Save Changes",
+        "addMemberButton": "Add Member"
+    },
+    "form": {
+        "fullNameLabel": "Full Name",
+        "fullNamePlaceholder": "Enter full name",
+        "phoneNumberLabel": "Phone Number",
+        "phoneNumberPlaceholder": "Enter phone number",
+        "relationshipLabel": "Relationship",
+        "selectRelationshipPlaceholder": "Select a relationship",
+        "addressLabel": "Address",
+        "addressPlaceholder": "Enter address",
+        "validation": {
+            "allFieldsRequired": "All fields are required."
+        },
+        "success": {
+            "memberAdded": "Family member added successfully!",
+            "memberUpdated": "Family member updated successfully!",
+            "memberDeleted": "Family member deleted successfully!"
+        },
+        "error": {
+            "submitFailed": "Failed to save family member: {{message}}",
+            "deleteFailed": "Failed to delete family member: {{message}}"
+        }
+    },
+    "deleteConfirm": "Are you sure you want to delete this family member?"
 }
