@@ -133,10 +133,10 @@ const EventDetails = () => {
     registerLabel = t("expired");
     registerVariant = "custom-expired";
     registerDisabled = true;
-  } else if (userStatus === "CANCELLED") {
-    registerLabel = t("cancelled");
-    registerVariant = "outline-dark";
-    registerDisabled = true;
+  } else if (userStatus === "NOT_REGISTERED") {
+    registerLabel = t("register");
+    registerVariant = "primary";
+    registerDisabled = false;
   } else if (statusInfo?.full) {
     registerLabel = t("full");
     registerVariant = "outline-danger";
