@@ -3,24 +3,21 @@ import "./RecommendationCard.css";
 
 const RecommendationCard = ({ recommendation, type, onViewClick }) => {
   return (
-    <Card
-      className="recommendation-card"
-      onClick={() => onViewClick(recommendation[`${type}ID`])}
-    >
-      <Card.Img
-        variant="top"
-        src={recommendation.img}
-        alt={recommendation[`${type}Name`]}
-        className="recommendation-image"
-      />
-      <Card.Body className="d-flex flex-column">
-        <Card.Title className="recommendation-title">
-          {recommendation[`${type}Name`]}
-        </Card.Title>
-        <Card.Text className="flex-grow-1">{recommendation.description}</Card.Text>
-      </Card.Body>
-    </Card>
-  );
+        <Card style={{ width: '18rem', cursor: 'pointer' }} onClick={() => onViewClick(recommendation.id)}>
+            <Card.Img
+                variant="top"
+                src={recommendation.image}
+                alt={recommendation[`${type}Name`]}
+                className="card-img-fixed"
+            />
+            <Card.Body>
+                <Card.Title>{recommendation[`${type}Name`]}</Card.Title>
+                <Card.Text>
+                    {recommendation.description}
+                </Card.Text>
+            </Card.Body>
+        </Card>
+    )
 };
 
-export default RecommendationCard;
+export default RecommendationCard

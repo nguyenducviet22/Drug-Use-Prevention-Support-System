@@ -41,7 +41,7 @@ function HomeManager() {
         const statData = await getStat("http://localhost:8080/api/report")
         setStat(statData)
 
-        const pendingCoursesData = await getPendingCourses("http://localhost:8080/api/course/status/PENDING");
+        const pendingCoursesData = await getPendingCourses("http://localhost:8080/api/course/status/UNAVAILABLE");
         setPendingCourses(pendingCoursesData || []);
 
         if (user) {

@@ -48,6 +48,7 @@ import qualificationsEn from './locales/en/qualifications.json';
 //import userDetailsEn from './locales/en/userDetails.json'; // Import new file
 import eventDetailsEn from './locales/en/eventDetails.json';
 import eventListEn from './locales/en/eventList.json';
+import forgotResetPasswordEn from './locales/en/forgotResetPassword.json'; // Import the new namespace
 
 // Nếu có tiếng Việt
 import homeVi from './locales/vi/home.json';
@@ -76,7 +77,7 @@ import eventCardVi from './locales/vi/eventCard.json';
 import familyInformationVi from './locales/vi/familyInformation.json';
 import footerVi from './locales/vi/footer.json';
 import homeExploreVi from './locales/vi/homeExplore.json';
-import homeMeVí from './locales/vi/homeMe.json';
+import homeMeVi from './locales/vi/homeMe.json'; // Corrected typo here
 import navbarVi from './locales/vi/navbar.json';
 import paginationVi from './locales/vi/pagination.json';
 import recommendationVi from './locales/vi/recommendation.json';
@@ -95,6 +96,7 @@ import qualificationsVi from './locales/vi/qualifications.json';
 //import userDetailsVi from './locales/vi/userDetails.json'; // Import new file
 import eventDetailsVi from './locales/vi/eventDetails.json';
 import eventListVi from './locales/vi/eventList.json';
+import forgotResetPasswordVi from './locales/vi/forgotResetPassword.json'; // Import the new namespace
 
 i18n
   .use(LanguageDetector)
@@ -149,6 +151,7 @@ i18n
         //userDetails: userDetailsEn, // Add new namespace
         eventDetails: eventDetailsEn,
         eventList: eventListEn,
+        forgotResetPassword: forgotResetPasswordEn // Add the new namespace here
       },
       vi: {
         home: homeVi,
@@ -177,7 +180,7 @@ i18n
         familyInformation: familyInformationVi,
         footer: footerVi,
         homeExplore: homeExploreVi,
-        homeMe: homeMeVí,
+        homeMe: homeMeVi,
         navbar: navbarVi,
         pagination: paginationVi,
         recommendation: recommendationVi,
@@ -196,9 +199,9 @@ i18n
         //userDetails: userDetailsVi, // Add new namespace
         eventDetails: eventDetailsVi,
         eventList: eventListVi,
+        forgotResetPassword: forgotResetPasswordVi
       }
     },
-    // Ensure 'analyticsPreview' is added to the `ns` array
     ns: [
       'home', 'appointmentBooking', 'assessmentList', 'assessmentResult', 'crafftQuestionnaire',
       'availabilityBooking', 'blogCreation', 'blogDetails', 'blogList',
@@ -212,7 +215,8 @@ i18n
       'statusCard', 'pendingCard', 'analyticsPreview', 'appointmentCard',
       'qualifications', // Add new namespace
       // 'recommendation', 'reports', 'searchFilter', 'userDetails', 
-      'eventDetails', 'eventList'
+      'eventDetails', 'eventList',
+      'qualifications', 'forgotResetPassword' // Added the new namespace here
     ],
     defaultNS: 'home',
     interpolation: {

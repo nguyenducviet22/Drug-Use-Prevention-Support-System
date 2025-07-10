@@ -1,31 +1,49 @@
 {
-  "backButton": "Quay Lại",
+  "backButton": "Hủy",
   "courseDetails": {
-    "courseNamePlaceholder": "Tên Khóa Học",
-    "descriptionPlaceholder": "Mô Tả",
-    "ageGroupSelect": "Chọn Nhóm Tuổi",
-    "ageGroupDefault": "MỌI ĐỐI TƯỢNG",
-    "imageUploadText": "Nhấn để tải ảnh lên",
-    "createButton": "Tạo Khóa Học Mới",
-    "saveButton": "Lưu Thông Tin Khóa Học"
+    "courseNamePlaceholder": "Nhập tên khóa học",
+    "descriptionPlaceholder": "Nhập mô tả khóa học",
+    "ageGroupSelect": "Chọn nhóm tuổi",
+    "createButton": "Tạo khóa học",
+    "saveButton": "Lưu khóa học",
+    "validation": {
+      "courseNameRequired": "Vui lòng nhập tên khóa học.",
+      "descriptionRequired": "Vui lòng nhập mô tả khóa học.",
+      "ageGroupRequired": "Vui lòng chọn một nhóm tuổi.",
+      "imageRequired": "Vui lòng tải lên một hình ảnh cho khóa học."
+    },
+    "toastMessages": {
+      "imageUploading": "Ảnh đang được tải lên, vui lòng đợi..."
+    }
+  },
+  "form": {
+    "imageUpload": {
+      "altText": "Ảnh xem trước khóa học",
+      "clickToUpload": "Nhấp để tải ảnh lên",
+      "clickToChange": "Nhấp để thay đổi ảnh",
+      "uploading": "Đang tải ảnh lên...",
+      "error": "Tải ảnh lên thất bại: {{error}}"
+    }
   },
   "modulesSection": {
-    "addModuleButton": "Thêm Module Mới",
-    "markUnavailableButton": "Đánh Dấu Không Khả Dụng",
-    "noModules": "Chưa có module nào. Hãy thêm module để bắt đầu!",
+    "addModuleButton": "Thêm Module",
+    "markUnavailableButton": "Đánh dấu đã chọn không khả dụng",
+    "noModules": "Không tìm thấy module nào. Nhấp vào 'Thêm Module' để tạo.",
     "unavailableBadge": "Không khả dụng",
-    "confirmUnavailable": "Bạn có chắc chắn muốn đánh dấu {{count}} module là không khả dụng?",
     "toastMessages": {
-      "fetchError": "Không thể tải dữ liệu trong quá trình tạo khóa học",
-      "createSuccess": "Tạo khóa học thành công! Bạn có thể thêm module ngay bây giờ.",
-      "createError": "Tạo khóa học thất bại. Vui lòng thử lại.",
-      "saveSuccess": "Lưu thông tin khóa học thành công!",
-      "saveError": "Lưu khóa học thất bại. Vui lòng thử lại.",
-      "noCourseIdForModule": "Vui lòng tạo hoặc lưu khóa học trước khi thêm module.",
+      "fetchError": "Lấy dữ liệu thất bại. Vui lòng thử lại.",
+      "createSuccess": "Khóa học đã được tạo thành công!",
+      "createError": "Không thể tạo khóa học. Vui lòng thử lại.",
+      "saveSuccess": "Khóa học đã được lưu thành công!",
+      "saveError": "Không thể lưu khóa học. Vui lòng thử lại.",
+      "noCourseIdForModule": "Vui lòng tạo/lưu khóa học trước để thêm module.",
       "selectModulesInfo": "Vui lòng chọn ít nhất một module để đánh dấu không khả dụng.",
-      "updateModulesStatusSuccess": "Đã đánh dấu các module được chọn là không khả dụng!",
-      "updateModulesStatusError": "Không thể cập nhật trạng thái không khả dụng. Đang khôi phục thay đổi.",
-      "unexpectedError": "Đã xảy ra lỗi không mong muốn khi cập nhật trạng thái module."
-    }
+      "confirmUnavailable": "Bạn có chắc chắn muốn đánh dấu {{count}} module đã chọn là không khả dụng không?",
+      "updateModulesStatusSuccess": "Trạng thái module đã được cập nhật thành công!",
+      "updateModulesStatusError": "Không thể cập nhật trạng thái module. Vui lòng thử lại.",
+      "unexpectedError": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại."
+    },
+    "confirmButton": "Xác nhận",
+    "cancelButton": "Hủy"
   }
 }

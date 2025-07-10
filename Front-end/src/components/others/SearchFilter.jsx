@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { Row, Col, Form, Button } from "react-bootstrap";
-import { Search } from "lucide-react";
-import "./SearchFilter.css";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useState } from "react"
+import { Row, Col, Form } from "react-bootstrap"
+import { Search } from "lucide-react"
+import "./SearchFilter.css"
+import { useTranslation } from "react-i18next" // Import useTranslation
 
 const SearchFilter = ({
   searchTerm = "",
@@ -12,12 +12,10 @@ const SearchFilter = ({
   selectedType = "",
   onSearchChange,
   onAgeGroupChange,
-  onTopicChange,
   onDurationChange,
   onTypeChange,
   onSearch,
   ageGroupOptions = [],
-  topicOptions = [],
   durationOptions = [],
   typeOptions = [],
   placeholder = "", // Placeholder will be handled by translation
@@ -87,23 +85,6 @@ const SearchFilter = ({
             </Form.Select>
           </Col>
 
-          {/* Uncomment and translate if topic filter is enabled */}
-          {/* <Col md={4} className="mb-3 mb-md-0">
-            <Form.Select
-              value={selectedTopic}
-              onChange={(e) => onTopicChange && onTopicChange(e.target.value)}
-              size="lg"
-              className="filter-select"
-            >
-              <option value="">{t("chooseTopic")}</option>
-              {topicOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {t(`topicOptions.${option.value}`, option.label)}
-                </option>
-              ))}
-            </Form.Select>
-          </Col> */}
-
           <Col md={4} className="mb-3 mb-md-0">
             <Form.Select
               value={selectedType}
@@ -142,13 +123,6 @@ const SearchFilter = ({
             </Form.Select>
           </Col>
         </Row>
-
-        {/* Uncomment and translate if a dedicated filter button is needed */}
-        {/* <div className="text-center">
-          <Button type="submit" variant="primary" size="lg" className="px-5 search-button">
-            {t("filterButton")}
-          </Button>
-        </div> */}
       </Form>
     </div>
   );

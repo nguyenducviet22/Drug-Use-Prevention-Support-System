@@ -1,7 +1,6 @@
 {
   "backButton": "Quay lại",
   "sidebar": {
-    "readingTimeTitle": "Thời gian đọc",
     "minutes": "{{duration}} phút",
     "courseLabel": "Khóa học:",
     "descriptionLabel": "Mô tả:"

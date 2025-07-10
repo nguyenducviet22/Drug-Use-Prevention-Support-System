@@ -6,7 +6,6 @@ import { useEffect, useState } from "react"
 import { Briefcase, Calendar, Edit3, MapPin, Phone, Save, User, Users, X } from "lucide-react"
 import useFetch from "../../hooks/useFetch"
 import { format, parseISO } from 'date-fns'
-import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 
 const UserDetails = () => {

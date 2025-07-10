@@ -1,5 +1,5 @@
 import { Button, Card } from "react-bootstrap";
-import { Clock, User, Calendar } from "lucide-react";
+import { Clock, Calendar } from "lucide-react";
 import "./CourseCard.css";
 import { useTranslation } from "react-i18next"; // Import useTranslation
 
@@ -20,7 +20,7 @@ const CourseCard = ({ course, onEnrollClick, onDetailsClick, onContinueClick, st
     <Card
       className="course-card mb-4"
       style={{
-        backgroundImage: `url(${course.img})`,
+        backgroundImage: `url(${course.image})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -49,11 +49,7 @@ const CourseCard = ({ course, onEnrollClick, onDetailsClick, onContinueClick, st
           <div className="course-details">
             <div className="detail-item">
               <Calendar size={14} className="detail-icon" />
-              <span className="detail-text">{course.createdAt}</span>
-            </div>
-            <div className="detail-item">
-              <User size={14} className="detail-icon" />
-              <span className="detail-text">{course.author}</span>
+              <span className="detail-text">{new Date(course.createdAt).toLocaleDateString()}</span>
             </div>
           </div>
 

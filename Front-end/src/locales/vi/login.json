@@ -9,7 +9,7 @@
     "login": "Đăng nhập",
     "register": "Đăng ký"
   },
-  "googleLoginButton": "Đăng nhập bằng Google",
+  "googleLoginButton": "Tiếp tục với Google",
   "dividerText": "hoặc",
   "loginForm": {
     "usernameLabel": "Tên người dùng",

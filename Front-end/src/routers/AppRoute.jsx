@@ -35,6 +35,7 @@ import MyEventList from "../pages/event/MyEventList"
 import HomeStaff from '../pages/home/HomeStaff'
 import HomeManager from '../pages/home/HomeManager'
 import HomeConsultant from '../pages/home/HomeConsultant'
+import ForgotResetPassword from '../pages/password/ForgotResetPassword'
 
 export default function AppRoute() {
     return (
@@ -48,7 +49,9 @@ export default function AppRoute() {
 
                 <Route path="/blogs" element={<BlogList />} />
                 <Route path="/blogs/:id" element={<BlogDetails />} />
+                {/* Tạo blog mới tại /blogs/create */}
                 <Route path="/blogs/create" element={<BlogCreation />} />
+                {/* Chỉnh sửa blog tại /blogs/create/:id */}
                 <Route path="/blogs/create/:id" element={<BlogCreation />} />
 
                 <Route path="/events" element={<EventList />} />
@@ -57,10 +60,11 @@ export default function AppRoute() {
 
                 <Route path="/courses" element={<CourseList />} />
                 <Route path="/courses/:id" element={<CourseDetails />} />
-                <Route path="/courses/lesson/:id" element={<CourseLesson />} />
+                {/* Tạo khóa học mới tại /courses/create */}
                 <Route path="/courses/create" element={<CourseCreation />} />
                 <Route path="/courses/:courseID/module/create" element={<ModuleCreation />} />
                 <Route path="/courses/:courseID/module/:moduleID/lesson/create" element={<LessonCreation />} />
+                {/* Cập nhật khóa học tại /courses/:courseID/update */}
                 <Route path="/courses/:courseID/update" element={<CourseCreation />} />
                 <Route path="/courses/:courseID/module/:moduleID/update" element={<ModuleCreation />} />
                 <Route path="/courses/:courseID/module/:moduleID/lesson/:lessonID/update" element={<LessonCreation />} />
@@ -76,6 +80,8 @@ export default function AppRoute() {
             </Route>
             <Route path='/login' element={<Login />} />
             <Route path="/profile" element={<MyProfile />} />
+            <Route path="/courses/lesson/:id" element={<CourseLesson />} />
+            <Route path="/forgot-password" element={<ForgotResetPassword />} />
         </Routes>
     )
 }
