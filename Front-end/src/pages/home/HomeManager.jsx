@@ -89,7 +89,7 @@ function HomeManager() {
   const handleApprove = async (id, type) => {
     try {
       if (type === 'blog') {
-        await putApproveStaffBlog({}, {}, `http://localhost:8080/api/blog/staff-list/${id}/status/PUBLISHED`);
+        await putApproveStaffBlog({}, {}, `http://localhost:8080/api/blog/${id}/PUBLISHED`);
         setStaffPendingBlogs(prevBlogs => prevBlogs.filter(blog => blog.blogID !== id));
       } else if (type === 'course') {
         await putApproveCourse({}, {}, `http://localhost:8080/api/course/${id}/AVAILABLE`);
@@ -100,6 +100,23 @@ function HomeManager() {
     } catch (error) {
       console.error(`Error approving ${type} with ID ${id}:`, error);
       toast.error(t('failedToApprove', { type: type, id: id }));
+    }
+  };
+
+  const handleReject = async (id, type) => {
+    try {
+      if (type === 'blog') {
+        await putApproveStaffBlog({}, {}, `http://localhost:8080/api/blog/${id}/REJECTED`);
+        setStaffPendingBlogs(prevBlogs => prevBlogs.filter(blog => blog.blogID !== id));
+      } else if (type === 'course') {
+        await putApproveCourse({}, {}, `http://localhost:8080/api/course/${id}/REJECTED`);
+        setPendingCourses(prevCourses => prevCourses.filter(course => course.courseID !== id));
+      }
+
+      toast.success(t('successfullyRejected', { type: type, id: id }));
+    } catch (error) {
+      console.error(`Error rejecting ${type} with ID ${id}:`, error);
+      toast.error(t('failedToReject', { type: type, id: id }));
     }
   };
 
@@ -202,6 +219,7 @@ function HomeManager() {
               items={currentBlogItems}
               onView={(id) => handleView(id, 'blog')}
               onApprove={(id) => handleApprove(id, 'blog')}
+              onReject={(id) => handleReject(id, 'blog')}
             />
             {totalBlogPages > 1 && (
               <Pagination
@@ -219,6 +237,7 @@ function HomeManager() {
               items={currentCourseItems}
               onView={(id) => handleView(id, 'course')}
               onApprove={(id) => handleApprove(id, 'course')}
+              onReject={(id) => handleReject(id, 'course')}
             />
             {totalCoursePages > 1 && (
               <Pagination

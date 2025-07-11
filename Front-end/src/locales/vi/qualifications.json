@@ -1,41 +1,47 @@
 {
-  "qualificationsTitle": "Trình độ của chuyên gia tư vấn",
-  "addQualificationButton": "Thêm trình độ",
+  "qualificationsTitle": "Trình độ chuyên môn của tư vấn viên",
+  "addQualificationButton": "Thêm Trình độ",
   "noQualificationsAdded": "Chưa có trình độ nào được thêm. Hãy thêm cái đầu tiên của bạn!",
   "qualificationNumber": "Trình độ #{{number}}",
   "viewButton": "Xem",
-  "editQualificationModalTitle": "Chỉnh sửa trình độ",
-  "addQualificationModalTitle": "Thêm trình độ mới",
+  "editQualificationModalTitle": "Chỉnh sửa Trình độ",
+  "addQualificationModalTitle": "Thêm Trình độ mới",
   "form": {
     "qualificationName": "Tên trình độ",
-    "qualificationNamePlaceholder": "Ví dụ: Chuyên gia tư vấn lạm dụng chất được chứng nhận",
+    "qualificationNamePlaceholder": "Ví dụ: Chuyên viên tư vấn lạm dụng chất được chứng nhận",
     "yearAchieved": "Năm đạt được",
     "yearAchievedPlaceholder": "Ví dụ: 2019",
     "degreeType": "Loại bằng cấp",
     "selectDegreeType": "Chọn loại bằng cấp",
-    "institution": "Tổ chức",
-    "institutionPlaceholder": "Ví dụ: Đại học Cộng đồng Virginia",
+    "institution": "Tổ chức/Trường học",
+    "institutionPlaceholder": "Ví dụ: Đại học Virginia Commonwealth",
     "certificateImage": "Ảnh chứng chỉ",
-    "clickToUpload": "Nhấp để tải lên chứng chỉ",
-    "clickToChange": "Nhấp để thay đổi"
+    "imageUpload": {
+      "clickToUpload": "Nhấp để tải ảnh chứng chỉ lên",
+      "clickToChange": "Nhấp để thay đổi",
+      "altText": "Xem trước ảnh chứng chỉ",
+      "uploading": "Đang tải ảnh lên...",
+      "uploadError": "Lỗi khi tải ảnh lên: {{error}}"
+    }
   },
   "cancelButton": "Hủy",
-  "updateQualificationButton": "Cập nhật trình độ",
-  "addQualificationButtonModal": "Thêm trình độ",
+  "updateQualificationButton": "Cập nhật Trình độ",
+  "addQualificationButtonModal": "Thêm Trình độ",
   "confirm": {
     "deleteQualification": "Bạn có chắc chắn muốn xóa trình độ này không?"
   },
   "messages": {
-    "addSuccess": "Thêm trình độ thành công!",
-    "updateSuccess": "Cập nhật trình độ thành công!",
+    "addSuccess": "Trình độ đã được thêm thành công!",
+    "updateSuccess": "Trình độ đã được cập nhật thành công!",
     "deleteSuccess": "Trình độ đã được xóa thành công!"
   },
   "errors": {
-    "fetchQualifications": "Đã xảy ra lỗi khi tải dữ liệu trình độ.",
-    "fileSizeExceeded": "Kích thước hình ảnh không được vượt quá 5MB.",
-    "fillAllFields": "Vui lòng điền đầy đủ các trường bắt buộc.",
+    "fetchQualifications": "Đã xảy ra lỗi khi tải dữ liệu trình độ chuyên môn.",
+    "fileSizeExceeded": "Kích thước ảnh không được vượt quá 5MB.",
+    "fillAllFields": "Vui lòng điền đầy đủ tất cả các trường bắt buộc.",
     "addQualification": "Đã xảy ra lỗi khi thêm trình độ. Vui lòng thử lại.",
     "updateQualification": "Đã xảy ra lỗi khi cập nhật trình độ. Vui lòng thử lại.",
-    "deleteQualification": "Đã xảy ra lỗi khi xóa trình độ. Vui lòng thử lại."
+    "deleteQualification": "Đã xảy ra lỗi khi xóa trình độ. Vui lòng thử lại.",
+    "imageUpload": "Tải ảnh lên không thành công. Vui lòng thử lại."
   }
 }

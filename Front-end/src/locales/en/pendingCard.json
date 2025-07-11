@@ -4,5 +4,6 @@
   "recently": "recently",
   "by": "By {{author}}",
   "approve": "Approve",
+  "reject": "Reject",
   "view": "View"
 }

@@ -16,8 +16,13 @@
     "institution": "Institution",
     "institutionPlaceholder": "e.g., Virginia Commonwealth University",
     "certificateImage": "Certificate Image",
-    "clickToUpload": "Click to upload certificate",
-    "clickToChange": "Click to change"
+    "imageUpload": {
+      "clickToUpload": "Click to upload certificate",
+      "clickToChange": "Click to change",
+      "altText": "Certificate image preview",
+      "uploading": "Uploading image...",
+      "uploadError": "Error uploading image: {{error}}"
+    }
   },
   "cancelButton": "Cancel",
   "updateQualificationButton": "Update Qualification",
@@ -36,6 +41,7 @@
     "fillAllFields": "Please fill in all required fields.",
     "addQualification": "An error occurred while adding the qualification. Please try again.",
     "updateQualification": "An error occurred while updating the qualification. Please try again.",
-    "deleteQualification": "An error occurred while deleting the qualification. Please try again."
+    "deleteQualification": "An error occurred while deleting the qualification. Please try again.",
+    "imageUpload": "Failed to upload image. Please try again."
   }
 }

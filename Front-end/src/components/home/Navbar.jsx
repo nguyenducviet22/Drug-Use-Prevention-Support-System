@@ -17,6 +17,8 @@ export default function Navbar() {
   let homePath = "/"; // default
   if (role === "STAFF") homePath = "/staff";
   else if (role === "MANAGER") homePath = "/manager";
+  else if (role === "CONSULTANT") homePath = "/consultant";
+  else if (role === "ADMIN") homePath = "/admin";
 
   const navItems = [
     { name: t("home"), path: homePath },

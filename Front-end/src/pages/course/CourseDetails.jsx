@@ -264,7 +264,6 @@ const CourseDetails = () => {
                   <BookOpen size={18} className="feature-icon" />
                   <span>{t("features.modules", { count: moduleCount })}</span> 
                 </div>
-                <div className="feature-description">{course.description}</div>
               </div>
 
               <div className="feature">
@@ -278,7 +277,7 @@ const CourseDetails = () => {
               <div className="feature">
                 <div className="feature-value">
                   <Calendar size={18} className="feature-icon" />
-                  <span>{course.createdAt}</span>
+                  <span>{new Date(course.createdAt).toLocaleDateString()} </span>
                 </div>
               </div>
             </div>
