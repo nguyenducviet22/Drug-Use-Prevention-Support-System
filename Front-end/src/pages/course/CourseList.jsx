@@ -23,13 +23,24 @@ const CourseList = () => {
   const itemsPerPage = 6 // Show 6 courses per page (2 rows of 3)
   const navigate = useNavigate()
 
-  const { error: errorCourses, loading: loadingCourses, get: getcourses } = useFetch("http://localhost:8080/api/course");
-  const { error: errorAgeGroup, loading: loadingAgeGroups, get: getAgeGroups } = useFetch("http://localhost:8080/api/course/age-group");
+  const { error: errorCourses, loading: loadingCourses, get: getcourses } = useFetch();
+  const { error: errorAgeGroup, loading: loadingAgeGroups, get: getAgeGroups } = useFetch();
 
   useEffect(() => {
-    getcourses().then(setCourses).catch(() => { });
-    getAgeGroups().then(setAgeGroups).catch(() => { });
+    const fetchData = async () => {
+      try {
+        const coursesData = await getcourses("http://localhost:8080/api/course/status/AVAILABLE")
+        setCourses(coursesData)
+        const ageGroupsData = await getAgeGroups("http://localhost:8080/api/course/age-group")
+        setAgeGroups(ageGroupsData)
+      } catch (error) {
+        console.error("Fetch error in CourseList:", error);
+      }
+    }
+    fetchData()
   }, [getcourses, getAgeGroups]);
+  console.log(courses);
+  console.log(ageGroups);
 
   // Filter options
   const ageGroupOptions = ageGroups.map(ageGroup => ({

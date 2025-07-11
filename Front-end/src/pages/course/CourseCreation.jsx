@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
-import { Container, Row, Col, Form, Button, Card } from "react-bootstrap";
-import { Upload, Plus, Save, Edit3, X } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { Container, Row, Col, Form, Button, Card, Alert } from "react-bootstrap";
+import { Upload, Plus, Save, Edit3, X, ImageIcon } from "lucide-react"; // Import ImageIcon
 import "./CourseCreation.css";
 import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
+import useUpload from "../../hooks/useUpload";
 import { toast } from "react-toastify";
 import BackButton from "../../components/BackButton";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 
 const CourseCreation = () => {
-  const { t } = useTranslation("courseCreation"); // Khai báo useTranslation
+  const { t } = useTranslation("courseCreation");
 
   const { courseID: paramCourseID } = useParams();
   const [courseID, setCourseID] = useState(paramCourseID || "");
@@ -18,6 +19,15 @@ const CourseCreation = () => {
 
   const [selectedModuleIds, setSelectedModuleIds] = useState([]);
   const [ageGroups, setAgeGroups] = useState([]);
+  const fileInputRef = useRef(null);
+
+  const {
+    imageUrl: uploadedImageUrl,
+    uploading: isUploadingImage,
+    uploadError: imageUploadError,
+    uploadImage,
+    setImageUrl: setUploadedImageUrl,
+  } = useUpload();
 
   const { error: errorAgeGroup, loading: loadingAgeGroups, get: getAgeGroups } = useFetch();
   const { loading: loadingPostCourse, error: errorPostCourse, post: postNewCourse } = useFetch();
@@ -33,6 +43,8 @@ const CourseCreation = () => {
     image: null,
   });
 
+  const [imagePreview, setImagePreview] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -42,9 +54,10 @@ const CourseCreation = () => {
         if (courseID) {
           const courseData = await getCourse(`http://localhost:8080/api/course/${courseID}`);
           setFormData(courseData);
-
-          const moduleData = await getModules(`http://localhost:8080/api/course/${courseID}/modules`);
-          setModules(moduleData);
+          if (courseData.image) {
+            setImagePreview(courseData.image);
+            setUploadedImageUrl(courseData.image);
+          }
         }
       } catch (err) {
         console.error("Fetch error in CourseCreation:", err);
@@ -53,17 +66,48 @@ const CourseCreation = () => {
     };
 
     fetchData();
-  }, [getAgeGroups, getCourse, getModules, courseID, t]); // Thêm t vào dependency array
+  }, [getAgeGroups, getCourse, getModules, courseID, t, setUploadedImageUrl]);
 
   console.log("modules", modules);
+  console.log("uploadedImageUrl", uploadedImageUrl);
+
+  const validateCourseForm = () => {
+    if (!formData.courseName.trim()) {
+      toast.error(t("courseDetails.validation.courseNameRequired"));
+      return false;
+    }
+    if (!formData.description.trim()) {
+      toast.error(t("courseDetails.validation.descriptionRequired"));
+      return false;
+    }
+    if (!formData.ageGroup) {
+      toast.error(t("courseDetails.validation.ageGroupRequired"));
+      return false;
+    }
+    if (!courseID && !uploadedImageUrl) {
+      toast.error(t("courseDetails.validation.imageRequired"));
+      return false;
+    }
+    return true;
+  };
 
   const handleCreateCourse = async () => {
+    if (!validateCourseForm()) return;
+    if (isUploadingImage) {
+      toast.info(t("courseDetails.toastMessages.imageUploading"));
+      return;
+    }
+    if (!uploadedImageUrl) {
+      toast.error(t("courseDetails.validation.imageRequired"));
+      return;
+    }
+
     try {
       const courseData = {
         courseName: formData.courseName,
         description: formData.description,
         ageGroup: formData.ageGroup,
-        image: formData.image
+        image: uploadedImageUrl,
       };
       console.log("Course Data", courseData);
 
@@ -82,12 +126,22 @@ const CourseCreation = () => {
   };
 
   const handleSaveCourse = async () => {
+    if (!validateCourseForm()) return;
+    if (isUploadingImage) {
+      toast.info(t("courseDetails.toastMessages.imageUploading"));
+      return;
+    }
+    if (!uploadedImageUrl) {
+      toast.error(t("courseDetails.validation.imageRequired"));
+      return;
+    }
+
     try {
       const courseData = {
         courseName: formData.courseName,
         description: formData.description,
         ageGroup: formData.ageGroup,
-        image: formData.image
+        image: uploadedImageUrl,
       };
       console.log("Course Data to save:", courseData);
 
@@ -111,11 +165,15 @@ const CourseCreation = () => {
     }));
   };
 
-  const handleImageUpload = (event) => {
+  const handleImageSelect = (event) => {
     const file = event.target.files[0];
     if (file) {
-      console.log("Image uploaded:", file.name);
-      // Add actual image upload logic here (e.g., to S3, convert to base64 for direct save)
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+      uploadImage(file);
     }
   };
 
@@ -131,54 +189,62 @@ const CourseCreation = () => {
     navigate(`/courses/${courseID}/module/${moduleID}/update`);
   };
 
-  // New: Function to handle toggling module selection
   const handleToggleModuleSelection = (moduleID) => {
     setSelectedModuleIds((prevSelected) =>
       prevSelected.includes(moduleID)
-        ? prevSelected.filter((id) => id !== moduleID) // Deselect
-        : [...prevSelected, moduleID] // Select
+        ? prevSelected.filter((id) => id !== moduleID)
+        : [...prevSelected, moduleID]
     );
   };
 
-  // New: Function to mark selected modules as unavailable
   const handleMarkSelectedUnavailable = async () => {
     if (selectedModuleIds.length === 0) {
       toast.info(t("modulesSection.toastMessages.selectModulesInfo"));
       return;
     }
 
-    if (!window.confirm(t("modulesSection.toastMessages.confirmUnavailable", { count: selectedModuleIds.length }))) {
-      return;
-    }
+    toast.info(t("modulesSection.toastMessages.confirmUnavailable", { count: selectedModuleIds.length }), {
+      autoClose: false,
+      closeButton: (
+        <div className="d-flex gap-2">
+          <Button variant="danger" size="sm" onClick={async () => {
+            const originalModules = [...modules];
+            setModules((prevModules) =>
+              prevModules.map((mod) =>
+                selectedModuleIds.includes(mod.moduleID)
+                  ? { ...mod, status: "UNAVAILABLE" }
+                  : mod
+              )
+            );
+            toast.dismiss();
 
-    // Optimistically update UI
-    const originalModules = [...modules];
-    setModules((prevModules) =>
-      prevModules.map((mod) =>
-        selectedModuleIds.includes(mod.moduleID)
-          ? { ...mod, status: "UNAVAILABLE" }
-          : mod
-      )
-    );
-
-    try {
-      // The request body should be { moduleIds: [array of UUIDs] }
-      const requestBody = { moduleIds: selectedModuleIds, status: "UNAVAILABLE" };
-      const response = await putModulesStatus(requestBody, {}, `http://localhost:8080/api/module/${courseID}/unavailable`);
-      toast.success(t("modulesSection.toastMessages.updateModulesStatusSuccess"));
-      console.log("Modules set to unavailable:", response);
-      setSelectedModuleIds([]); // Clear selection after successful update
-    } catch (error) {
-      console.error("Failed to update module status:", error);
-      toast.error(t("modulesSection.toastMessages.updateModulesStatusError"));
-      setModules(originalModules); // Revert UI on error
-      if (error.response && error.response.data && error.response.data.message) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error(t("modulesSection.toastMessages.unexpectedError"));
-      }
-    }
+            try {
+              const requestBody = { moduleIds: selectedModuleIds, status: "UNAVAILABLE" };
+              const response = await putModulesStatus(`http://localhost:8080/api/module/${courseID}/unavailable`, requestBody, {});
+              toast.success(t("modulesSection.toastMessages.updateModulesStatusSuccess"));
+              console.log("Modules set to unavailable:", response);
+              setSelectedModuleIds([]);
+            } catch (error) {
+              console.error("Failed to update module status:", error);
+              toast.error(t("modulesSection.toastMessages.updateModulesStatusError"));
+              setModules(originalModules);
+              if (error.response && error.response.data && error.response.data.message) {
+                toast.error(error.response.data.message);
+              } else {
+                toast.error(t("modulesSection.toastMessages.unexpectedError"));
+              }
+            }
+          }}>
+            {t("modulesSection.confirmButton")}
+          </Button>
+          <Button variant="secondary" size="sm" onClick={() => toast.dismiss()}>
+            {t("modulesSection.cancelButton")}
+          </Button>
+        </div>
+      ),
+    });
   };
+
   console.log("Current modules:", modules);
   console.log("Selected module IDs:", selectedModuleIds);
 
@@ -186,7 +252,7 @@ const CourseCreation = () => {
     <Container className="course-creation-container py-5">
       <Row className="justify-content-center">
         <Col lg={10} md={12}>
-          <BackButton label={t("backButton")} /> 
+          <BackButton label={t("backButton")} />
           {/* Course Creation Header */}
           <div className="course-header">
             <Row className="w-100 d-flex justify-content-around align-items-center m-0">
@@ -195,7 +261,7 @@ const CourseCreation = () => {
                   <Form.Group className="mb-3">
                     <Form.Control
                       type="text"
-                      placeholder={t("courseDetails.courseNamePlaceholder")} 
+                      placeholder={t("courseDetails.courseNamePlaceholder")}
                       value={formData.courseName}
                       onChange={(e) => handleInputChange("courseName", e.target.value)}
                       className="course-name-input"
@@ -206,7 +272,7 @@ const CourseCreation = () => {
                     <Form.Control
                       as="textarea"
                       rows={4}
-                      placeholder={t("courseDetails.descriptionPlaceholder")} 
+                      placeholder={t("courseDetails.descriptionPlaceholder")}
                       value={formData.description}
                       onChange={(e) => handleInputChange("description", e.target.value)}
                       className="course-description-input"
@@ -218,7 +284,7 @@ const CourseCreation = () => {
                     onChange={(e) => handleInputChange("ageGroup", e.target.value)}
                     className="mb-4 filter-select-new"
                   >
-                    <option value="">{t("courseDetails.ageGroupSelect")}</option> 
+                    <option value="">{t("courseDetails.ageGroupSelect")}</option>
                     {ageGroups.map((ageGroup) => (
                       <option key={ageGroup} value={ageGroup}>
                         {ageGroup}
@@ -229,33 +295,69 @@ const CourseCreation = () => {
               </Col>
 
               <Col md={6}>
-                <div className="image-upload-section">
-                  <div className="image-upload-area">
-                    <input
-                      type="file"
-                      id="imageUpload"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      className="image-upload-input"
-                    />
-                    <label htmlFor="imageUpload" className="image-upload-label">
-                      <Upload size={24} className="upload-icon" />
-                      <span className="upload-text">{t("courseDetails.imageUploadText")}</span> 
-                    </label>
+                {/* START: Updated Image Upload Section */}
+                <div className="form-section-new mb-4">
+                  <div
+                    className="image-upload-area-new"
+                    onClick={() => fileInputRef.current?.click()}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        fileInputRef.current?.click();
+                      }
+                    }}
+                  >
+                    {(imagePreview || uploadedImageUrl) ? (
+                      <div className="image-preview-new">
+                        <img
+                          src={imagePreview || uploadedImageUrl || "/placeholder.svg"}
+                          alt={t("form.imageUpload.altText")}
+                          className="preview-image-new"
+                        />
+                        <div className="image-overlay-new">
+                          <Upload size={24} />
+                          <span>{t("form.imageUpload.clickToChange")}</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="upload-placeholder-new">
+                        <ImageIcon size={48} className="upload-icon-new" />
+                        <span className="upload-text-new">{t("form.imageUpload.clickToUpload")}</span>
+                      </div>
+                    )}
                   </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageSelect}
+                    className="d-none"
+                  />
+                  {isUploadingImage && <Alert variant="info" className="mt-2">{t("form.imageUpload.uploading")}</Alert>}
+                  {imageUploadError && <Alert variant="danger" className="mt-2">{t("form.imageUpload.error", { error: imageUploadError })}</Alert>}
                 </div>
+                {/* END: Updated Image Upload Section */}
 
                 {/* Create - Save Course Button */}
                 <div className="save-section mt-4">
                   {courseID?.trim() !== "" ? (
-                    <Button className="create-button" onClick={handleSaveCourse}>
+                    <Button
+                      className="create-button"
+                      onClick={handleSaveCourse}
+                      disabled={isUploadingImage || loadingPutCourse}
+                    >
                       <Save size={16} className="me-2" />
-                      {t("courseDetails.saveButton")} 
+                      {t("courseDetails.saveButton")}
                     </Button>
                   ) : (
-                    <Button className="create-button" onClick={handleCreateCourse}>
+                    <Button
+                      className="create-button"
+                      onClick={handleCreateCourse}
+                      disabled={isUploadingImage || loadingPostCourse}
+                    >
                       <Plus size={16} className="me-2" />
-                      {t("courseDetails.createButton")} 
+                      {t("courseDetails.createButton")}
                     </Button>
                   )}
                 </div>
@@ -269,7 +371,7 @@ const CourseCreation = () => {
               <div className="add-module-section mb-4 d-flex justify-content-between align-items-center">
                 <Button className="add-module-btn" onClick={handleAddModule} disabled={!courseID}>
                   <Plus size={16} className="me-1" />
-                  {t("modulesSection.addModuleButton")} 
+                  {t("modulesSection.addModuleButton")}
                 </Button>
 
                 <Button
@@ -277,13 +379,13 @@ const CourseCreation = () => {
                   onClick={handleMarkSelectedUnavailable}
                   disabled={!courseID || selectedModuleIds.length === 0 || loadingPutModulesStatus}
                 >
-                  {t("modulesSection.markUnavailableButton")} ({selectedModuleIds.length}) 
+                  {t("modulesSection.markUnavailableButton")} ({selectedModuleIds.length})
                 </Button>
               </div>
 
               <div className="modules-list">
                 {modules.length === 0 ? (
-                  <p className="text-center text-muted">{t("modulesSection.noModules")}</p> 
+                  <p className="text-center text-muted">{t("modulesSection.noModules")}</p>
                 ) : (
                   modules.map((module) => (
                     <Card
@@ -303,7 +405,7 @@ const CourseCreation = () => {
                           <h5 className="module-title mb-0">
                             {module.moduleName}
                             {module.status === 'UNAVAILABLE' && (
-                              <span className="badge bg-warning text-dark ms-2">{t("modulesSection.unavailableBadge")}</span> 
+                              <span className="badge bg-warning text-dark ms-2">{t("modulesSection.unavailableBadge")}</span>
                             )}
                           </h5>
                         </div>

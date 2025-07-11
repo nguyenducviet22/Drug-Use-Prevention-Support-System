@@ -1,0 +1,33 @@
+{
+  "medicalAssessment": "MEDICAL ASSESSMENT",
+  "title": "CRAFFT+N Questionnaire",
+  "intro": "Please answer all questions honestly; your answers will be kept confidential.",
+  "partA": "PART A - Substance Use Assessment",
+  "partB": "PART B - CRAFFT Screening Questions",
+  "noteAllZero": "If you answer <1>\"0 days\"</1> (no use) to <3>all</3> of the <5>PART A QUESTIONS</5>, please proceed to answer <7>only the first question</7> in Part B (\"Car\").",
+  "noteAnyMore": "If you answer <1>1 day or more</1> to <3>any</3> of the <5>PART A QUESTIONS</5>, please continue to answer <7>all 6 CRAFFT questions</7> in Part B (<9>Car, Relax, Alone, Forget, Family/Friends, Trouble</9>).",
+  "question1": "1. During the <1>PAST 12 MONTHS</1>, on how many days did you drink more than a few sips of beer, wine, or any drink containing alcohol?",
+  "question2": "2. During the <1>PAST 12 MONTHS</1>, on how many days did you use any marijuana (cannabis, weed, oil, wax, or hash by smoking, vaping, dabbing, or in edibles) or \"synthetic marijuana\" (like \"K2,\" \"Spice\")?",
+  "question3": "3. During the <1>PAST 12 MONTHS</1>, on how many days did you use any anything else to get high (like other illegal drugs, pills, prescription or over-the-counter medications, and things that you sniff, huff, vape, or inject)?",
+  "question4": "4. During the <1>PAST 12 MONTHS</1>, on how many days did you use a vaping device containing nicotine and/or flavors, or use any tobacco products?",
+  "question4Note": "Such as e-cigs, mods, pod devices like JUUL, disposable vapes like Puff Bar, vape pens, e-hookahs, cigarettes, cigars, cigarillos, hookahs, chewing tobacco, snuff, snus, dissolvables, or nicotine pouches.",
+  "car": "1. Have you ever ridden in a <1>CAR</1> driven by someone (including yourself) who was \"high\" or had been using alcohol or drugs?",
+  "relax": "2. Do you ever use alcohol or drugs to <1>RELAX</1>, feel better about yourself, or fit in?",
+  "alone": "3. Do you ever use alcohol or drugs while you are by yourself, or <1>ALONE</1>?",
+  "forget": "4. Do you ever <1>FORGET</1> things you did while using alcohol or drugs?",
+  "family": "5. Do your <1>FAMILY or FRIENDS</1> ever tell you that you should cut down on your drinking or drug use?",
+  "trouble": "6. Have you ever gotten into <1>TROUBLE</1> while you were using alcohol or drugs?",
+  "yes": "Yes",
+  "no": "No",
+  "required": "Required",
+  "submit": "Submit Assessment",
+  "submitting": "Submitting...",
+  "toastRequired": "Please fill in all required fields!",
+  "putZeroIfNone": "Put \"0\" if none.",
+  "enterDays": "Enter number of days",
+  "mustBeNonNegativeInteger": "Enter a non-negative integer",
+    "progressIndicator": {
+    "step1": "1",
+    "step2": "2"
+  }
+}

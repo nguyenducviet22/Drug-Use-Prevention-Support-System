@@ -7,6 +7,7 @@ import homeEn from './locales/en/home.json';
 import appointmentBookingEn from './locales/en/appointmentBooking.json';
 import assessmentListEn from './locales/en/assessmentList.json';
 import assessmentResultEn from './locales/en/assessmentResult.json';
+import crafftQuestionnaireEn from './locales/en/crafftQuestionnaire.json';
 import availabilityBookingEn from './locales/en/availabilityBooking.json';
 import blogCreationEn from './locales/en/blogCreation.json';
 import blogDetailsEn from './locales/en/blogDetails.json';
@@ -44,12 +45,17 @@ import pendingCardEn from './locales/en/pendingCard.json';
 import analyticsPreviewEn from './locales/en/analyticsPreview.json';
 import appointmentCardEn from './locales/en/appointmentCard.json';
 import qualificationsEn from './locales/en/qualifications.json';
+//import userDetailsEn from './locales/en/userDetails.json'; // Import new file
+import eventDetailsEn from './locales/en/eventDetails.json';
+import eventListEn from './locales/en/eventList.json';
+import forgotResetPasswordEn from './locales/en/forgotResetPassword.json'; // Import the new namespace
 
 // Nếu có tiếng Việt
 import homeVi from './locales/vi/home.json';
 import appointmentBookingVi from './locales/vi/appointmentBooking.json';
 import assessmentListVi from './locales/vi/assessmentList.json';
 import assessmentResultVi from './locales/vi/assessmentResult.json';
+import crafftQuestionnaireVi from './locales/vi/crafftQuestionnaire.json';
 import availabilityBookingVi from './locales/vi/availabilityBooking.json';
 import blogCreationVi from './locales/vi/blogCreation.json';
 import blogDetailsVi from './locales/vi/blogDetails.json';
@@ -71,7 +77,7 @@ import eventCardVi from './locales/vi/eventCard.json';
 import familyInformationVi from './locales/vi/familyInformation.json';
 import footerVi from './locales/vi/footer.json';
 import homeExploreVi from './locales/vi/homeExplore.json';
-import homeMeVí from './locales/vi/homeMe.json';
+import homeMeVi from './locales/vi/homeMe.json'; // Corrected typo here
 import navbarVi from './locales/vi/navbar.json';
 import paginationVi from './locales/vi/pagination.json';
 import recommendationVi from './locales/vi/recommendation.json';
@@ -87,6 +93,10 @@ import pendingCardVi from './locales/vi/pendingCard.json';
 import analyticsPreviewVi from './locales/vi/analyticsPreview.json';
 import appointmentCardVi from './locales/vi/appointmentCard.json';
 import qualificationsVi from './locales/vi/qualifications.json';
+//import userDetailsVi from './locales/vi/userDetails.json'; // Import new file
+import eventDetailsVi from './locales/vi/eventDetails.json';
+import eventListVi from './locales/vi/eventList.json';
+import forgotResetPasswordVi from './locales/vi/forgotResetPassword.json'; // Import the new namespace
 
 i18n
   .use(LanguageDetector)
@@ -100,6 +110,7 @@ i18n
         appointmentBooking: appointmentBookingEn,
         assessmentList: assessmentListEn,
         assessmentResult: assessmentResultEn,
+        crafftQuestionnaire: crafftQuestionnaireEn,
         availabilityBooking: availabilityBookingEn,
         blogCreation: blogCreationEn,
         blogDetails: blogDetailsEn,
@@ -136,13 +147,18 @@ i18n
         pendingCard: pendingCardEn,
         analyticsPreview: analyticsPreviewEn,
         appointmentCard: appointmentCardEn,
-        qualifications: qualificationsEn
+        qualifications: qualificationsEn,
+        //userDetails: userDetailsEn, // Add new namespace
+        eventDetails: eventDetailsEn,
+        eventList: eventListEn,
+        forgotResetPassword: forgotResetPasswordEn // Add the new namespace here
       },
       vi: {
         home: homeVi,
         appointmentBooking: appointmentBookingVi,
         assessmentList: assessmentListVi,
         assessmentResult: assessmentResultVi,
+        crafftQuestionnaire: crafftQuestionnaireVi,
         availabilityBooking: availabilityBookingVi,
         blogCreation: blogCreationVi,
         blogDetails: blogDetailsVi,
@@ -164,7 +180,7 @@ i18n
         familyInformation: familyInformationVi,
         footer: footerVi,
         homeExplore: homeExploreVi,
-        homeMe: homeMeVí,
+        homeMe: homeMeVi,
         navbar: navbarVi,
         pagination: paginationVi,
         recommendation: recommendationVi,
@@ -179,12 +195,15 @@ i18n
         pendingCard: pendingCardVi,
         analyticsPreview: analyticsPreviewVi,
         appointmentCard: appointmentCardVi,
-        qualifications: qualificationsVi
+        qualifications: qualificationsVi,
+        //userDetails: userDetailsVi, // Add new namespace
+        eventDetails: eventDetailsVi,
+        eventList: eventListVi,
+        forgotResetPassword: forgotResetPasswordVi
       }
     },
-    // Ensure 'analyticsPreview' is added to the `ns` array
     ns: [
-      'home', 'appointmentBooking', 'assessmentList', 'assessmentResult',
+      'home', 'appointmentBooking', 'assessmentList', 'assessmentResult', 'crafftQuestionnaire',
       'availabilityBooking', 'blogCreation', 'blogDetails', 'blogList',
       'courseCreation', 'courseDetails', 'courseLesson', 'courseList',
       'lessonCreation', 'loginPage', 'moduleCreation', 'myProfile',
@@ -194,7 +213,10 @@ i18n
       'recommendation', 'reports', 'searchFilter', 'userDetails',
       'homeManager', 'homeStaff', 'homeConsultant', 'lineChart',
       'statusCard', 'pendingCard', 'analyticsPreview', 'appointmentCard',
-      'qualifications' // Add new namespace
+      'qualifications', // Add new namespace
+      // 'recommendation', 'reports', 'searchFilter', 'userDetails', 
+      'eventDetails', 'eventList',
+      'qualifications', 'forgotResetPassword' // Added the new namespace here
     ],
     defaultNS: 'home',
     interpolation: {

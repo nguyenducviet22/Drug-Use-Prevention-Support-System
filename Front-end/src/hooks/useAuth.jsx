@@ -17,11 +17,12 @@ export const useAuth = () => {
             localStorage.setItem("token", response.data.token);
             const loginAccount = await fetchUser();
             const { role } = loginAccount
-            if (role === null) navigate("/profile");
+            if (role === null) navigate("/");
             if (role === "MEMBER") navigate("/");
             if (role === "STAFF") navigate("/staff");
             if (role === "MANAGER") navigate("/manager");
             if (role === "CONSULTANT") navigate("/consultant");
+            if (role === "ADMIN") navigate("/admin");
             toast.success("Login successfully")
         } catch (error) {
             if (error.response) {

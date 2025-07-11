@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Badge, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next'; // Import useTranslation
 
-const PendingCard = ({ title, count, items, onView, onApprove }) => { // Added onView, onApprove to props
+const PendingCard = ({ title, count, items, onView, onApprove, onReject }) => { // Added onView, onApprove to props
   const { t } = useTranslation("pendingCard"); // Use the new namespace
 
   return (
@@ -33,7 +33,7 @@ const PendingCard = ({ title, count, items, onView, onApprove }) => { // Added o
                       <span>{submittedDate}</span>
                     </div>
                   </div>
-                  <div className="d-flex gap-2">
+                  <div className="d-flex flex-column gap-2">
                     <Button
                       size="sm"
                       variant="success"
@@ -41,6 +41,14 @@ const PendingCard = ({ title, count, items, onView, onApprove }) => { // Added o
                       onClick={() => onApprove && onApprove(id, title.toLowerCase().slice(0, -1))} // Pass ID and type
                     >
                       {t('approve')}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="danger"
+                      className="btn-gradient-danger"
+                      onClick={() => onReject && onReject(id, title.toLowerCase().slice(0, -1))} // Pass ID and type
+                    >
+                      {t('reject')}
                     </Button>
                     <Button
                       size="sm"

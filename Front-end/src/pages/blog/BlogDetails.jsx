@@ -144,7 +144,7 @@ const BlogDetails = () => {
                         {/* Featured Image */}
                         <div className="featured-image-container mb-5">
                             <img
-                                src={blogDetails.img}
+                                src={blogDetails.image}
                                 alt={blogDetails.blogName}
                                 className="featured-image"
                             />

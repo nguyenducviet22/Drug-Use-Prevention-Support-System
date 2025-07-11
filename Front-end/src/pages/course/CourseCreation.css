@@ -3,13 +3,6 @@
   min-height: 100vh;
 }
 
-/* Course Header */
-.course-header {
-  padding: 3rem 2rem;
-  border-radius: 20px 20px 0 0;
-  margin-bottom: 0;
-}
-
 .course-form-section {
   padding-right: 2rem;
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react"
-import { Container, Row, Col, Button, Tab, Nav } from "react-bootstrap"
+import { Container, Row, Col, Button, Tab, Nav, Alert } from "react-bootstrap" // Import Alert
 import BlogCard from "../../components/card/BlogCard"
 import "./BlogList.css"
 import Pagination from "../../components/others/Pagination"
@@ -10,10 +10,10 @@ import LoadingSpinner from "../../components/LoadingSpinner"
 import ErrorMessage from "../../components/ErrorMessage"
 import { useAuth } from "../../hooks/useAuth"
 import { CirclePlus } from "lucide-react"
-import { useTranslation } from "react-i18next" // Import useTranslation
+import { useTranslation } from "react-i18next"
 
 const BlogList = () => {
-  const { t } = useTranslation("blogList") // Khai báo useTranslation với namespace 'blogList'
+  const { t } = useTranslation("blogList")
 
   const { user } = useAuth()
   const [mainTabKey, setMainTabKey] = useState('all');
@@ -23,7 +23,7 @@ const BlogList = () => {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedType, setSelectedType] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage] = useState(3) // Show 3 blog posts per page
+  const [itemsPerPage] = useState(3)
   const navigate = useNavigate()
 
   const { error: errorBlogs, loading: loadingBlogs, get: getBlogs } = useFetch();
@@ -41,7 +41,14 @@ const BlogList = () => {
         setTypes(typesData);
 
         if (mainTabKey === 'all') {
-          const blogsData = await getBlogs("http://localhost:8080/api/blog/status/PUBLISHED");
+          let blogsData;
+          // Check if user is logged in and has an ageGroup
+          if (user && user.ageGroup) {
+            blogsData = await getBlogs(`http://localhost:8080/api/blog/age-group/${user.ageGroup}`);
+          } else {
+            // If user is null or ageGroup is null/empty, fetch for EVERYONE
+            blogsData = await getBlogs(`http://localhost:8080/api/blog/age-group/EVERYONE`);
+          }
           setBlogs(blogsData);
         } else if (mainTabKey === 'myBlogs' && user) {
           let userBlogsData = [];
@@ -153,6 +160,9 @@ const BlogList = () => {
     );
   }
 
+  // Determine if the age group message should be shown
+  const showAgeGroupMessage = mainTabKey === 'all' && user && (!user.ageGroup || user.ageGroup.trim() === '');
+
   return (
     <div className="blog-list-page">
       <Container className="my-5">
@@ -218,6 +228,12 @@ const BlogList = () => {
 
                   <Tab.Content>
                     <Tab.Pane eventKey="all">
+                      {/* Conditional message for ageGroup */}
+                      {showAgeGroupMessage && (
+                        <Alert variant="info" className="mb-4 text-center">
+                          {t("ageGroupMessage")}
+                        </Alert>
+                      )}
                     </Tab.Pane>
                     {user && (
                       <Tab.Pane eventKey="myBlogs">
@@ -319,7 +335,9 @@ const BlogList = () => {
                           {blog.blogName}
                         </a>
                       </h6>
-                      <small className="text-muted d-block mb-2">{blog.createdAt}</small>
+                      <small className="text-muted d-block mb-2">
+                        {new Date(blog.createdAt).toLocaleDateString()} - {new Date(blog.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </small>
                     </div>
                   ))}
                 </div>

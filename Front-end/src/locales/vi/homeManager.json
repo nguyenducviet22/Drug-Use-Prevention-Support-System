@@ -19,5 +19,7 @@
   "manageUsersDescription": "Quản lý thành viên, nhân viên và chuyên gia tư vấn với các công cụ toàn diện",
   "accessDashboard": "Truy cập Bảng điều khiển",
   "successfullyApproved": "Duyệt {{type}} có ID: {{id}} thành công",
-  "failedToApprove": "Duyệt {{type}} có ID: {{id}} thất bại"
+  "failedToApprove": "Duyệt {{type}} có ID: {{id}} thất bại",
+  "successfullyRejected": "Từ chối {{type}} có ID: {{id}} thành công",
+  "failedToReject": "Từ chối {{type}} có ID: {{id}} thất bại"
 }

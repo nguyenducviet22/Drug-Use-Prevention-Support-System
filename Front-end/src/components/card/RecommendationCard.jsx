@@ -1,13 +1,12 @@
-import { Card } from "react-bootstrap"
-import "./RecommendationCard.css"
+import { Card } from "react-bootstrap";
+import "./RecommendationCard.css";
 
 const RecommendationCard = ({ recommendation, type, onViewClick }) => {
-
-    return (
+  return (
         <Card style={{ width: '18rem', cursor: 'pointer' }} onClick={() => onViewClick(recommendation.id)}>
             <Card.Img
                 variant="top"
-                src={recommendation.img}
+                src={recommendation.image}
                 alt={recommendation[`${type}Name`]}
                 className="card-img-fixed"
             />
@@ -19,6 +18,6 @@ const RecommendationCard = ({ recommendation, type, onViewClick }) => {
             </Card.Body>
         </Card>
     )
-}
+};
 
 export default RecommendationCard

@@ -1,0 +1,33 @@
+{
+  "medicalAssessment": "ĐÁNH GIÁ Y TẾ",
+  "title": "Bảng câu hỏi CRAFFT+N",
+  "intro": "Vui lòng trả lời trung thực tất cả các câu hỏi; câu trả lời của bạn sẽ được giữ bí mật.",
+  "partA": "PHẦN A - Đánh giá sử dụng chất",
+  "partB": "PHẦN B - Câu hỏi sàng lọc CRAFFT",
+  "noteAllZero": "Nếu bạn trả lời <1>\"0 ngày\"</1> (không sử dụng) cho <3>tất cả</3> các <5>CÂU HỎI PHẦN A</5>, vui lòng trả lời <7>duy nhất câu hỏi đầu tiên</7> trong Phần B (\"Car\").",
+  "noteAnyMore": "Nếu bạn trả lời <1>1 ngày trở lên</1> cho <3>bất kỳ</3> <5>CÂU HỎI PHẦN A</5> nào, vui lòng tiếp tục trả lời <7>tất cả 6 câu hỏi CRAFFT</7> trong Phần B (<9>Xe hơi, Thư giãn, Một mình, Quên, Gia đình/Bạn bè, Rắc rối</9>).",
+  "question1": "1. Trong <1>12 THÁNG QUA</1>, bạn đã uống rượu bia (hơn vài ngụm) vào bao nhiêu ngày?",
+  "question2": "2. Trong <1>12 THÁNG QUA</1>, bạn đã sử dụng cần sa (cần sa, cỏ, dầu, sáp hoặc hash bằng cách hút, vaping, dabbing hoặc trong đồ ăn) hoặc \"cần sa tổng hợp\" (như \"K2,\" \"Spice\") vào bao nhiêu ngày?",
+  "question3": "3. Trong <1>12 THÁNG QUA</1>, bạn đã sử dụng bất kỳ thứ gì khác để gây phê (như các loại ma túy bất hợp pháp khác, thuốc viên, thuốc kê đơn hoặc thuốc không kê đơn, và những thứ bạn hít, ngửi, vaping hoặc tiêm) vào bao nhiêu ngày?",
+  "question4": "4. Trong <1>12 THÁNG QUA</1>, bạn đã sử dụng thiết bị vaping chứa nicotine và/hoặc hương vị, hoặc sử dụng bất kỳ sản phẩm thuốc lá nào vào bao nhiêu ngày?",
+  "question4Note": "Ví dụ như thuốc lá điện tử, mod, thiết bị pod như JUUL, vape dùng một lần như Puff Bar, bút vape, shisha điện tử, thuốc lá điếu, xì gà, cigarillo, shisha, thuốc lá nhai, thuốc hít, snus, thuốc hòa tan, hoặc túi nicotine.",
+  "car": "1. Bạn đã từng đi trong <1>XE HƠI</1> do ai đó (kể cả chính bạn) lái khi đang \"phê\" hoặc đã sử dụng rượu bia hoặc ma túy chưa?",
+  "relax": "2. Bạn có bao giờ sử dụng rượu bia hoặc ma túy để <1>THƯ GIÃN</1>, cảm thấy tốt hơn về bản thân, hoặc để hòa nhập không?",
+  "alone": "3. Bạn có bao giờ sử dụng rượu bia hoặc ma túy khi bạn ở một mình, hay <1>MỘT MÌNH</1> không?",
+  "forget": "4. Bạn có bao giờ <1>QUÊN</1> những việc bạn đã làm khi sử dụng rượu bia hoặc ma túy không?",
+  "family": "5. Gia đình hoặc <1>BẠN BÈ</1> của bạn có bao giờ nói với bạn rằng bạn nên giảm việc uống rượu bia hoặc sử dụng ma túy không?",
+  "trouble": "6. Bạn đã từng gặp <1>RẮC RỐI</1> khi sử dụng rượu bia hoặc ma túy chưa?",
+  "yes": "Có",
+  "no": "Không",
+  "required": "Bắt buộc",
+  "submit": "Gửi Đánh giá",
+  "submitting": "Đang gửi...",
+  "toastRequired": "Vui lòng điền đầy đủ các trường bắt buộc!",
+  "putZeroIfNone": "Đặt \"0\" nếu không có.",
+  "enterDays": "Nhập số ngày",
+  "mustBeNonNegativeInteger": "Vui lòng nhập số nguyên không âm",
+    "progressIndicator": {
+    "step1": "1",
+    "step2": "2"
+  }
+}

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Row, Col, Form, Button } from "react-bootstrap"
+import { Row, Col, Form } from "react-bootstrap"
 import { Search } from "lucide-react"
 import "./SearchFilter.css"
 import { useTranslation } from "react-i18next" // Import useTranslation
@@ -12,22 +12,20 @@ const SearchFilter = ({
   selectedType = "",
   onSearchChange,
   onAgeGroupChange,
-  onTopicChange,
   onDurationChange,
   onTypeChange,
   onSearch,
   ageGroupOptions = [],
-  topicOptions = [],
   durationOptions = [],
   typeOptions = [],
   placeholder = "", // Placeholder will be handled by translation
   className = "",
 }) => {
-  const { t } = useTranslation("searchFilter") // Initialize useTranslation
-  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm)
+  const { t } = useTranslation("searchFilter"); // Initialize useTranslation
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
 
   const handleSearchSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (onSearch) {
       onSearch({
         searchTerm: localSearchTerm,
@@ -35,17 +33,17 @@ const SearchFilter = ({
         selectedTopic,
         selectedDuration,
         selectedType,
-      })
+      });
     }
-  }
+  };
 
   const handleSearchInputChange = (e) => {
-    const value = e.target.value
-    setLocalSearchTerm(value)
+    const value = e.target.value;
+    setLocalSearchTerm(value);
     if (onSearchChange) {
-      onSearchChange(value)
+      onSearchChange(value);
     }
-  }
+  };
 
   return (
     <div className={`search-filter-container ${className}`}>
@@ -70,36 +68,22 @@ const SearchFilter = ({
           <Col md={4} className="mb-3 mb-md-0">
             <Form.Select
               value={selectedAgeGroup}
-              onChange={(e) => onAgeGroupChange && onAgeGroupChange(e.target.value)}
+              onChange={(e) =>
+                onAgeGroupChange && onAgeGroupChange(e.target.value)
+              }
               size="lg"
               className="filter-select"
             >
-              <option value="">{t("chooseAgeGroup")}</option>
+              {(!selectedAgeGroup || selectedAgeGroup === "__default__") && (
+                <option value="">{t("chooseAgeGroup")}</option>
+              )}
               {ageGroupOptions.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {/* Assuming option.label will be translated externally or is a direct display string */}
-                  {t(`ageGroupOptions.${option.value}`, option.label)}
+                  {option.label}
                 </option>
               ))}
             </Form.Select>
           </Col>
-
-          {/* Uncomment and translate if topic filter is enabled */}
-          {/* <Col md={4} className="mb-3 mb-md-0">
-            <Form.Select
-              value={selectedTopic}
-              onChange={(e) => onTopicChange && onTopicChange(e.target.value)}
-              size="lg"
-              className="filter-select"
-            >
-              <option value="">{t("chooseTopic")}</option>
-              {topicOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {t(`topicOptions.${option.value}`, option.label)}
-                </option>
-              ))}
-            </Form.Select>
-          </Col> */}
 
           <Col md={4} className="mb-3 mb-md-0">
             <Form.Select
@@ -120,29 +104,28 @@ const SearchFilter = ({
           <Col md={4}>
             <Form.Select
               value={selectedDuration}
-              onChange={(e) => onDurationChange && onDurationChange(e.target.value)}
+              onChange={(e) =>
+                onDurationChange && onDurationChange(e.target.value)
+              }
               size="lg"
               className="filter-select"
             >
-              <option value="">{t("duration")}</option>
+              {/* Chỉ render option mặc định nếu selectedDuration là "" hoặc "__default__" và KHÔNG có option "All Durations" */}
+              {(!selectedDuration || selectedDuration === "__default__") &&
+                !durationOptions.some(
+                  (opt) => opt.value === selectedDuration
+                ) && <option value="">{t("duration")}</option>}
               {durationOptions.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {t(`durationOptions.${option.value}`, option.label)}
+                  {option.label}
                 </option>
               ))}
             </Form.Select>
           </Col>
         </Row>
-
-        {/* Uncomment and translate if a dedicated filter button is needed */}
-        {/* <div className="text-center">
-          <Button type="submit" variant="primary" size="lg" className="px-5 search-button">
-            {t("filterButton")}
-          </Button>
-        </div> */}
       </Form>
     </div>
-  )
-}
+  );
+};
 
-export default SearchFilter
+export default SearchFilter;

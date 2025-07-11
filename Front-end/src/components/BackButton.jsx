@@ -10,7 +10,7 @@ const BackButton = ({ label = "Back" }) => {
   };
 
   return (
-    <Button variant="primary" onClick={handleClick} className="d-flex align-items-center gap-2">
+    <Button variant="link" onClick={handleClick} className="d-flex align-items-center gap-2">
       <ArrowLeft size={16} />
       {label}
     </Button>

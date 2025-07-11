@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-import { BookOpen, Calendar, FileText, Play } from 'lucide-react';
+import { BookOpen, Calendar, FileText, Play, PlusCircle } from 'lucide-react';
 import './HomeStaff.css'
 import ManagementCard from '../../components/card/ManagementCard';
 import useFetch from '../../hooks/useFetch';
@@ -8,26 +8,23 @@ import { useAuth } from '../../hooks/useAuth';
 import Pagination from '../../components/others/Pagination';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import { useTranslation } from 'react-i18next';
 
 function HomeStaff() {
-  const { t } = useTranslation('homeStaff'); // Initialize useTranslation with the 'homeStaff' namespace
+  const { t } = useTranslation('homeStaff');
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [itemsPerPage] = useState(4) // Show 4 items per page.
+  const [itemsPerPage] = useState(4)
 
-  // --- State cho các Tab ---
   const [blogActiveTab, setBlogActiveTab] = useState('me');
   const [blogSubTab, setBlogSubTab] = useState('pending');
   const [courseActiveTab, setCourseActiveTab] = useState('pending');
   const [eventActiveTab, setEventActiveTab] = useState('pending');
 
-  // --- State phân trang riêng biệt cho từng khu vực ---
   const [blogCurrentPage, setBlogCurrentPage] = useState(1);
   const [courseCurrentPage, setCourseCurrentPage] = useState(1);
   const [eventCurrentPage, setEventCurrentPage] = useState(1);
 
-  // --- State lưu trữ dữ liệu ---
   const [myPendingBlogs, setMyPendingBlogs] = useState([]);
   const [myApprovedBlogs, setMyApprovedBlogs] = useState([]);
   const [pendingBlogs, setPendingBlogs] = useState([]);
@@ -42,7 +39,6 @@ function HomeStaff() {
   const { get: getPendingCourses } = useFetch();
   const { get: getApprovedCourses } = useFetch();
 
-  // Hardcoded event data for example
   const eventData = {
     pending: [
       { id: 1, title: t('youthAwarenessWorkshop'), submittedDate: `1 ${t('weekAgo')}` },
@@ -85,7 +81,6 @@ function HomeStaff() {
   }, [user, getPendingCourses, getApprovedCourses, getMyPendingBlogs, getMyApprovedBlogs, getPendingBlogs, getApprovedBlogs]);
   console.log(myPendingBlogs);
 
-  // --- Tổ chức lại dữ liệu ---
   const blogData = {
     me: { pending: myPendingBlogs, approved: myApprovedBlogs },
     others: { pending: pendingBlogs, approved: approvedBlogs }
@@ -96,7 +91,6 @@ function HomeStaff() {
     approved: approvedCourses
   };
 
-  // --- Hàm xử lý thay đổi tab (reset trang về 1) ---
   const handleCourseTabChange = (tab) => {
     setCourseActiveTab(tab);
     setCourseCurrentPage(1);
@@ -117,7 +111,6 @@ function HomeStaff() {
     setBlogCurrentPage(1);
   };
 
-  // --- Logic phân trang cho Course ---
   const activeCourseList = courseData[courseActiveTab] || [];
   const totalCoursePages = Math.ceil(activeCourseList.length / itemsPerPage);
   const currentCourseItems = activeCourseList.slice(
@@ -125,7 +118,6 @@ function HomeStaff() {
     courseCurrentPage * itemsPerPage
   );
 
-  // --- Logic phân trang cho Event ---
   const activeEventList = eventData[eventActiveTab] || [];
   const totalEventPages = Math.ceil(activeEventList.length / itemsPerPage);
   const currentEventItems = activeEventList.slice(
@@ -133,7 +125,6 @@ function HomeStaff() {
     eventCurrentPage * itemsPerPage
   );
 
-  // --- Logic phân trang cho Blog ---
   const activeBlogList = (blogData[blogActiveTab] && blogData[blogActiveTab][blogSubTab]) ? blogData[blogActiveTab][blogSubTab] : [];
   const totalBlogPages = Math.ceil(activeBlogList.length / itemsPerPage);
   const currentBlogItems = activeBlogList.slice(
@@ -157,6 +148,10 @@ function HomeStaff() {
     }
   };
 
+  const handleAdd = (type) => {
+    navigate(`/${type}/create`);
+  };
+
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       <Container fluid className="px-4 py-4">
@@ -171,12 +166,12 @@ function HomeStaff() {
               activeTab={courseActiveTab}
               setActiveTab={handleCourseTabChange}
               dataType="course"
-              // Bổ sung prop counts với tổng số lượng
               counts={{
                 pending: pendingCourses.length,
                 approved: approvedCourses.length,
               }}
               onView={(id) => handleView(id, 'course')}
+              onAdd={() => handleAdd('courses')}
             />
             {totalCoursePages > 1 && (
               <Pagination
@@ -197,11 +192,11 @@ function HomeStaff() {
               activeTab={eventActiveTab}
               setActiveTab={handleEventTabChange}
               dataType="event"
-              // Bổ sung prop counts với tổng số lượng
               counts={{
                 pending: eventData.pending.length,
                 approved: eventData.approved.length,
               }}
+              onAdd={() => handleAdd('events')}
             />
             {totalEventPages > 1 && (
               <Pagination
@@ -230,7 +225,6 @@ function HomeStaff() {
               dataType="blog"
               onView={(id) => handleView(id, 'blog')}
               onApprove={(id) => handleApprove(id, 'blog')}
-              // Bổ sung prop counts với cấu trúc phức tạp hơn
               counts={{
                 me: {
                   pending: myPendingBlogs.length,
@@ -242,6 +236,7 @@ function HomeStaff() {
                 }
               }}
               onViewClick={(id, type) => handleView(id, type)}
+              onAdd={() => handleAdd('blogs')}
             />
             {totalBlogPages > 1 && (
               <Pagination

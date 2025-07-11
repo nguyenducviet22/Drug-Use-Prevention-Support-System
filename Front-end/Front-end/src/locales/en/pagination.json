@@ -1,6 +1,0 @@
-{
-    "paginationNavigation": "Pagination Navigation",
-    "previousPage": "Go to previous page",
-    "nextPage": "Go to next page",
-    "goToPage": "Go to page {{pageNumber}}"
-}

@@ -1,9 +1,44 @@
 {
-    "title": "User Details",
-    "fullName": "Full Name",
-    "gender": "Gender",
-    "dateOfBirth": "Date of birth",
-    "phoneNumber": "Phone Number",
-    "address": "Address",
-    "job": "Job"
+  "title": "User Details",
+  "fullName": "Full Name",
+  "gender": "Gender",
+  "dateOfBirth": "Date of Birth",
+  "phoneNumber": "Phone Number",
+  "email": "Eamil",
+  "address": "Address",
+  "job": "Job",
+  "editButton": "Edit",
+  "modal": {
+    "title": "Edit Details",
+    "cancelButton": "Cancel",
+    "saveChangesButton": "Save Changes"
+  },
+  "form": {
+    "fullNameLabel": "Full Name",
+    "fullNamePlaceholder": "Enter your full name",
+    "genderLabel": "Gender",
+    "selectGenderPlaceholder": "Select gender",
+    "dateOfBirthLabel": "Date of Birth",
+    "phoneNumberLabel": "Phone Number",
+    "phoneNumberPlaceholder": "Enter your phone number",
+    "emailLabel": "Eamil",
+    "emailPlaceholder": "Enter your email",
+    "jobLabel": "Job",
+    "jobPlaceholder": "Enter your job title",
+    "addressLabel": "Address",
+    "addressPlaceholder": "Enter your address",
+    "validation": {
+      "fullNameRequired": "Full name is required",
+      "phoneNumberRequired": "Phone number is required",
+      "dobRequired": "Date of birth is required",
+      "genderRequired": "Gender is required",
+      "emailRequired": "Email is required",
+      "jobTitleRequired": "Job title is required",
+      "addressRequired": "Address is required"
+    },
+    "alert": {
+      "success": "User details updated successfully!",
+      "failure": "Failed to update user details."
+    }
+  }
 }

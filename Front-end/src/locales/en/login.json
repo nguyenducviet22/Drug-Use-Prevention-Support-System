@@ -9,7 +9,7 @@
         "login": "Login",
         "register": "Register"
     },
-    "googleLoginButton": "Login with Google",
+    "googleLoginButton": "Continue with Google",
     "dividerText": "or",
     "loginForm": {
         "usernameLabel": "Username",

@@ -1,203 +1,328 @@
-import { useEffect, useMemo, useState } from "react"
-import { Container, Button } from "react-bootstrap"
-import { Calendar, Clock, MapPin } from "lucide-react"
-import "./EventList.css"
-import useFetch from "../../hooks/useFetch"
-import SearchFilter from "../../components/others/SearchFilter"
-import EventCard from "../../components/card/EventCard"
-import Pagination from "../../components/others/Pagination"
-import { useNavigate } from "react-router-dom"
-import LoadingSpinner from "../../components/LoadingSpinner"
-import ErrorMessage from "../../components/ErrorMessage"
-import NotFound from "../not-found/NotFound"
+import { useEffect, useMemo, useState } from "react";
+import { Container, Button, Tabs, Tab } from "react-bootstrap";
+import { useTranslation } from "react-i18next";
+import SearchFilter from "../../components/others/SearchFilter";
+import EventCard from "../../components/card/EventCard";
+import Pagination from "../../components/others/Pagination";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import ErrorMessage from "../../components/ErrorMessage";
+import NotFound from "../not-found/NotFound";
+import { useNavigate } from "react-router-dom";
+import "./EventList.css";
+import { useAuth } from "../../hooks/useAuth";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const ITEMS_PER_PAGE = 3;
 
 const EventList = () => {
-  const navigate = useNavigate()
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { t, i18n } = useTranslation("eventList");
+  const [events, setEvents] = useState([]);
+  const [eventStatuses, setEventStatuses] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { user } = useAuth();
 
-  // const [events, setEvents] = useState([])
-  // const { loading, error, get } = useFetch("http://localhost:8080/api/event");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState("__default__");
+  const [selectedDuration, setSelectedDuration] = useState("__default__");
+  const [activeTab, setActiveTab] = useState("ALL");
 
-  // useEffect(() => {
-  //   get().then(setEvents).catch(() => { });
-  // }, [get]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const navigate = useNavigate();
 
-  const [events] = useState([
-    {
-      eventId: 1,
-      eventName: "Say No To Drugs – Start With Yourself",
-      startDate: "04/06/2025",
-      time: "8:00 - 11:30",
-      location: "FPT University HCM",
-      description:
-        "A practical sharing session from a psychologist and former addict, helping participants understand the early signs, how to prevent and handle drug-related situations in the school environment.",
-      image: "https://img.freepik.com/free-vector/hand-drawn-international-day-against-drug-abuse-illicit-trafficking-illustration_23-2149412954.jpg?ga=GA1.1.1117822287.1749529273&semt=ais_hybrid&w=740",
-      imagePosition: "left",
-    },
-    {
-      eventId: 2,
-      eventName: "Behind The Smoke – The Truth About The New Addictive Drug",
-      startDate: "04/06/2025",
-      time: "8:00 - 11:30",
-      location: "FPT University HCM",
-      description:
-        "Interactive talk show with doctors, legal experts and experienced young people. Together we debunk common misconceptions about synthetic drugs and 'ecstasy' that are spreading rapidly among young people.",
-      image: "https://img.freepik.com/free-vector/flat-international-day-against-drug-abuse-illicit-trafficking-illustration_23-2149420843.jpg?ga=GA1.1.1117822287.1749529273&semt=ais_hybrid&w=740",
-      imagePosition: "right",
-    },
-    {
-      eventId: 3,
-      eventName: '"Live Positively – No Drugs" Campaign',
-      startDate: "21/05/2025",
-      time: "9:00 - 15:00",
-      location: "FPT University HCM",
-      description:
-        "Including activities: propaganda minigame, '30 days no stimulants' challenge, photo exhibition, livestream with experts.",
-      image: "https://img.freepik.com/free-vector/hand-drawn-international-day-against-drug-abuse-illicit-trafficking-illustration_23-2149425247.jpg?ga=GA1.1.1117822287.1749529273&semt=ais_hybrid&w=740",
-      imagePosition: "left",
-    },
-    {
-      eventId: 4,
-      eventName: "Behind The Smoke – The Truth About The New Addictive Drug",
-      startDate: "04/06/2025",
-      time: "8:00 - 11:30",
-      location: "FPT University HCM",
-      description:
-        "Interactive talk show with doctors, legal experts and experienced young people. Together we debunk common misconceptions about synthetic drugs and 'ecstasy' that are spreading rapidly among young people.",
-      image: "/placeholder.svg?height=300&width=400",
-      imagePosition: "right",
-    },
-    {
-      eventId: 5,
-      eventName: '"Live Positively – No Drugs" Campaign',
-      startDate: "21/05/2025",
-      time: "9:00 - 15:00",
-      location: "FPT University HCM",
-      description:
-        "Including activities: propaganda minigame, '30 days no stimulants' challenge, photo exhibition, livestream with experts.",
-      image: "/placeholder.svg?height=300&width=400",
-      imagePosition: "left",
-    },
-  ])
-  console.log(events);
+  const ageGroupOptions = [
+    { label: t("all"), value: "ALL" },
+    { label: t("adolescent"), value: "ADOLESCENT" },
+    { label: t("adult"), value: "ADULT" },
+    { label: t("senior"), value: "SENIOR" },
+    { label: t("everyone"), value: "EVERYONE" },
+  ];
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage] = useState(3) // Show 3 blog posts per page
+  const durationOptions = [
+    { label: t("allDurations"), value: "" },
+    { label: t("under30"), value: "SHORT" },
+    { label: t("between30and60"), value: "MEDIUM" },
+    { label: t("over60"), value: "LONG" },
+  ];
 
-  const handleJoinEvent = (eventId) => {
-    console.log(`Joining event ${eventId}`)
-    // Handle event registration logic
-  }
+  const fetchEvents = async () => {
+    setLoading(true);
+    try {
+      const url =
+        activeTab === "ONGOING"
+          ? "http://localhost:8080/api/event/upcoming"
+          : "http://localhost:8080/api/event";
 
-  const handleViewDetails = (eventId) => {
-    navigate(`/events/${eventId}`)
-  }
+      const response = await fetch(url);
+      const result = await response.json();
+      setEvents(result.data);
+    } catch (err) {
+      setError("Failed to fetch events.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const handleSearch = (filters) => {
-    setCurrentPage(1) // Reset to first page when searching
-    console.log("Searching with:", filters)
-  }
+  const fetchStatuses = async (events) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
-  // Filter events based on search criteria
+    const statusMap = {};
+    await Promise.all(
+      events.map(async (event) => {
+        try {
+          const res = await fetch(
+            `http://localhost:8080/api/event/${event.eventID}/status`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const result = await res.json();
+          statusMap[event.eventID] = result;
+        } catch {
+          console.warn("Failed to fetch status for event:", event.eventID);
+        }
+      })
+    );
+    setEventStatuses(statusMap);
+  };
+
+  useEffect(() => {
+    fetchEvents();
+    // eslint-disable-next-line
+  }, [activeTab, i18n.language]);
+
+  useEffect(() => {
+    if (events.length > 0) {
+      fetchStatuses(events);
+    }
+    // eslint-disable-next-line
+  }, [events]);
+
   const filteredEvents = useMemo(() => {
-    return events.filter((event) => {
-      return (
-        event.eventName && event.eventName.toLowerCase().includes(searchTerm.toLowerCase())
+    return events
+      .filter((event) =>
+        event.eventName?.toLowerCase().includes(searchTerm.toLowerCase())
       )
-    })
-  }, [events, searchTerm])
+      .filter((event) =>
+        selectedAgeGroup === "__default__" || selectedAgeGroup === "ALL"
+          ? true
+          : event.ageGroup === selectedAgeGroup
+      )
+      .filter((event) => {
+        switch (selectedDuration) {
+          case "SHORT":
+            return event.duration < 30;
+          case "MEDIUM":
+            return event.duration >= 30 && event.duration <= 60;
+          case "LONG":
+            return event.duration > 60;
+          default:
+            return true;
+        }
+      });
+  }, [events, searchTerm, selectedAgeGroup, selectedDuration, activeTab]);
 
-  // Calculate pagination
-  const totalPages = Math.ceil(filteredEvents.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const currentEvents = filteredEvents.slice(startIndex, endIndex)
+  const totalPages = Math.ceil(filteredEvents.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const currentEvents = filteredEvents.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
 
   const handlePageChange = (page) => {
-    setCurrentPage(page)
-    // Scroll to top of events section
-    document.querySelector(".events-section")?.scrollIntoView({ behavior: "smooth" })
-  }
+    setCurrentPage(page);
+    document
+      .querySelector(".event-section")
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const clearAllFilters = () => {
-    setSearchTerm("")
-    setCurrentPage(1)
+    setSearchTerm("");
+    setSelectedAgeGroup("__default__");
+    setSelectedDuration("__default__");
+    setCurrentPage(1);
+  };
+
+  const handleJoinEvent = async (eventID) => {
+    if (!user) {
+      toast.warning(<strong>⚠️ {t("pleaseLogin")}</strong>);
+      return;
+    }
+
+    const targetEvent = events.find((e) => e.eventID === eventID);
+    if (!targetEvent) {
+      toast.error(<strong>❌ {t("eventNotFound")}</strong>);
+      return;
+    }
+
+    if (user.ageGroup !== targetEvent.ageGroup) {
+      toast.error(<strong>❌ {t("unsuitableAge")}</strong>);
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:8080/api/event/${eventID}/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const result = await response.json();
+
+      if (!response.ok) throw new Error(result.message || t("registerFailed"));
+      toast.success(<strong>🎉 {t("registerSuccess")}</strong>);
+      fetchStatuses(events); // update button
+    } catch (err) {
+      toast.error(<strong>❌ {err.message || t("registerFailed")}</strong>);
+    }
+  };
+
+  const handleCancelEvent = async (eventID) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:8080/api/event/${eventID}/cancel`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) throw new Error(t("cancelFailed", "Cancel failed!"));
+      toast.success(
+        <strong>✅ {t("cancelSuccess", "Cancelled successfully!")}</strong>
+      );
+      fetchStatuses(events); // update button/status
+    } catch (err) {
+      toast.error(
+        <strong>❌ {err.message || t("cancelFailed", "Cancel failed!")}</strong>
+      );
+    }
+  };
+
+  const handleViewDetails = (eventID) => {
+    navigate(`/events/${eventID}`);
+  };
+
+  if (loading) {
+    return (
+      <Container className="py-5">
+        <LoadingSpinner loading />
+      </Container>
+    );
   }
 
-  <Container className="py-5">
-    <LoadingSpinner loading={loading} />
-    <ErrorMessage error={error} />
-  </Container>
+  if (error) {
+    return (
+      <Container className="py-5">
+        <ErrorMessage error={error} />
+      </Container>
+    );
+  }
 
   if (events.length === 0) {
     return (
       <NotFound
         code="📅"
-        title="No Events Found"
-        message="We are realy sorry for this inconvinience."
+        title={t("noEventsFound")}
+        message={t("noEventsMessage")}
         backLink="/"
-        backText="Back Home"
+        backText={t("backHome")}
       />
-    )
+    );
   }
 
   return (
     <div className="event-list-page">
-      {/* Header Section */}
       <Container className="my-4">
         <div className="page-header text-center mb-5">
-          <h1 className="display-5 fw-bold text-dark mb-3">Upcoming Events</h1>
-          <p className="lead text-muted">Join our community events and workshops for drug prevention awareness</p>
+          <h1 className="display-5 fw-bold text-dark mb-3">
+            {t("upcomingEvents")}
+          </h1>
+          <p className="lead text-muted">{t("intro")}</p>
         </div>
 
-        {/* Search Filter Section */}
         <SearchFilter
           searchTerm={searchTerm}
+          selectedAgeGroup={selectedAgeGroup}
+          selectedDuration={selectedDuration}
           onSearchChange={setSearchTerm}
-          onSearch={handleSearch}
-          placeholder="Search events..."
+          onAgeGroupChange={setSelectedAgeGroup}
+          onDurationChange={setSelectedDuration}
+          placeholder={t("searchPlaceholder")}
+          ageGroupOptions={ageGroupOptions}
+          durationOptions={durationOptions}
         />
       </Container>
 
-      {/* Events List */}
       <Container className="mb-5">
         <div className="event-section">
-          <div className="text-center mb-5">
-            <h2 className="fw-bold text-dark">Events</h2>
-            <div className="events-underline mx-auto"></div>
+          <div className="text-center mb-4">
+            <div className="text-center mb-4 custom-tabs">
+              <Tabs
+                activeKey={activeTab}
+                onSelect={(k) => {
+                  setActiveTab(k);
+                  setCurrentPage(1);
+                }}
+                className="d-inline-flex"
+              >
+                <Tab eventKey="ALL" title={t("tabAll")} />
+                <Tab eventKey="ONGOING" title={t("tabOngoing")} />
+              </Tabs>
+            </div>
+
             {filteredEvents.length > 0 && (
               <p className="text-muted mt-3">
-                Showing {startIndex + 1}-{Math.min(endIndex, filteredEvents.length)} of {filteredEvents.length} events
+                {t("showing")} {startIndex + 1} {t("to")}{" "}
+                {Math.min(startIndex + ITEMS_PER_PAGE, filteredEvents.length)}{" "}
+                {t("of")} {filteredEvents.length} {t("events")}
               </p>
             )}
           </div>
 
           {currentEvents.length === 0 ? (
             <div className="text-center py-5">
-              <p className="text-muted">No events found matching your criteria.</p>
-              <Button variant="outline-primary" onClick={clearAllFilters} className="mt-3">
-                Clear Filters
+              <p className="text-muted">{t("noEventsCriteria")}</p>
+              <Button variant="outline-primary" onClick={clearAllFilters}>
+                {t("clearFilters")}
               </Button>
             </div>
           ) : (
             <>
               {currentEvents.map((event) => (
-                <EventCard key={event.eventId} event={event} onJoinEvent={handleJoinEvent} onViewDetails={handleViewDetails} />
+                <EventCard
+                  key={event.eventID}
+                  event={event}
+                  statusInfo={eventStatuses[event.eventID]}
+                  onJoinEvent={handleJoinEvent}
+                  onViewDetails={handleViewDetails}
+                  onCancelEvent={handleCancelEvent}
+                />
               ))}
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
-                itemsPerPage={itemsPerPage}
+                itemsPerPage={ITEMS_PER_PAGE}
               />
             </>
           )}
         </div>
+        <ToastContainer position="top-right" autoClose={3000} />
       </Container>
     </div>
-  )
-}
+  );
+};
 
-export default EventList
+export default EventList;

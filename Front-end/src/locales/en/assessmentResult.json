@@ -36,5 +36,6 @@
         }
       ]
     }
-  }
+  },
+  "mainResultCard.details.suggestedActionLabel": "Suggested Action: "
 }

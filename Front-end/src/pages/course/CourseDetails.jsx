@@ -264,13 +264,12 @@ const CourseDetails = () => {
                   <BookOpen size={18} className="feature-icon" />
                   <span>{t("features.modules", { count: moduleCount })}</span> 
                 </div>
-                <div className="feature-description">{course.description}</div>
               </div>
 
               <div className="feature">
                 <div className="feature-value">
                   <Clock size={18} className="feature-icon" />
-                  <span>{t("features.minutes", { duration: moduleDuration })}</span> 
+                  <span>{t("features.minutes", { duration: course.duration })}</span> 
                 </div>
                 <div className="feature-description">&nbsp;</div>
               </div>
@@ -278,7 +277,7 @@ const CourseDetails = () => {
               <div className="feature">
                 <div className="feature-value">
                   <Calendar size={18} className="feature-icon" />
-                  <span>{course.createdAt}</span>
+                  <span>{new Date(course.createdAt).toLocaleDateString()} </span>
                 </div>
               </div>
             </div>

@@ -1,22 +1,23 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Row, Col, Card, Button, Form, Modal, Badge } from 'react-bootstrap';
+import { Row, Col, Card, Button, Form, Modal, Badge, Alert } from 'react-bootstrap';
 import { Award, Plus, ExternalLink, Calendar, GraduationCap, Building, Upload, ImageIcon, Edit, Trash2 } from 'lucide-react';
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import { useTranslation } from 'react-i18next';
 import "./Qualifications.css";
 import useFetch from '../../hooks/useFetch';
 import { useAuth } from '../../hooks/useAuth';
 import { toast } from 'react-toastify';
+import useUpload from '../../hooks/useUpload';
 
 const Qualifications = () => {
-    const { t } = useTranslation('qualifications'); // Specify the namespace
+    const { t } = useTranslation('qualifications');
     const { user } = useAuth();
     const [showAddEditModal, setShowAddEditModal] = useState(false);
     const [degrees, setDegrees] = useState([]);
     const [qualifications, setQualifications] = useState([]);
-    const [dragActive, setDragActive] = useState(false);
+    const { imageUrl: uploadedImageUrl, uploading: isUploadingImage, uploadError: imageUploadError, uploadImage, setImageUrl: setUploadedImageUrl } = useUpload();
 
     const [formData, setFormData] = useState({
-        link: null, // Will store File object or URL string
+        image: null, // Will store File object or URL string
         name: '',
         year: '',
         degree: '',
@@ -56,53 +57,26 @@ const Qualifications = () => {
         }));
     };
 
-    const handleFileChange = (event) => {
+    const handleImageSelect = (event) => {
         const file = event.target.files[0];
         if (file) {
-            if (file.size > 5 * 1024 * 1024) {
+            // Check file size (e.g., 5MB limit)
+            const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+            if (file.size > MAX_FILE_SIZE) {
                 toast.error(t("errors.fileSizeExceeded"));
-                if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
-                }
                 setImagePreview(null);
-                setFormData(prev => ({ ...prev, link: null }));
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = ''; // Clear the file input
+                }
                 return;
             }
 
             const reader = new FileReader();
             reader.onload = (e) => {
-                setImagePreview(e.target.result);
-                setFormData((prev) => ({
-                    ...prev,
-                    link: file, // Store the File object
-                }));
+                setImagePreview(e.target.result); // Display image preview immediately
             };
             reader.readAsDataURL(file);
-        } else {
-            setImagePreview(null);
-            setFormData(prev => ({ ...prev, link: null }));
-        }
-    };
-
-    const handleDrag = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (e.type === 'dragenter' || e.type === 'dragover') {
-            setDragActive(true);
-        } else if (e.type === 'dragleave') {
-            setDragActive(false);
-        }
-    };
-
-    const handleDrop = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setDragActive(false);
-
-        const file = e.dataTransfer.files?.[0];
-        if (file) {
-            const event = { target: { files: [file] } };
-            handleFileChange(event);
+            uploadImage(file); // Call uploadImage from custom hook to handle the upload
         }
     };
 
@@ -112,27 +86,17 @@ const Qualifications = () => {
             return;
         }
 
-        const dataToSend = new FormData();
-        dataToSend.append('name', formData.name);
-        dataToSend.append('year', formData.year);
-        dataToSend.append('degree', formData.degree);
-        dataToSend.append('institution', formData.institution);
-        if (formData.link instanceof File) {
-            dataToSend.append('img', formData.link); // Append the File object
-        } else if (typeof formData.link === 'string' && formData.link !== null) {
-             // If it's an existing URL (e.g., during edit without new file upload),
-             // you might need to handle this based on your backend.
-             // For now, let's assume if it's a string, it means no new file is being uploaded for add.
-             // For add, 'link' should usually be a File or null initially.
-        }
-
+        // Use uploadedImageUrl if a new image was uploaded, otherwise it will be null
+        const dataToSend = {
+            name: formData.name,
+            year: formData.year,
+            degree: formData.degree,
+            institution: formData.institution,
+            image: uploadedImageUrl // This will be the URL from successful upload
+        };
 
         try {
-            const response = await post(dataToSend, {
-                headers: {
-                    'Content-Type': 'multipart/form-data', // Important for file uploads
-                },
-            }, 'http://localhost:8080/api/qualification');
+            const response = await post(dataToSend, {}, 'http://localhost:8080/api/qualification');
             if (response) {
                 setQualifications(prev => [...prev, response]);
                 toast.success(t("messages.addSuccess"));
@@ -149,13 +113,14 @@ const Qualifications = () => {
         if (qualToEdit) {
             setEditingQualificationId(qualificationId);
             setFormData({
-                link: qualToEdit.link, // Keep existing URL for preview and send to backend if no new file
+                image: qualToEdit.image, // Keep existing URL for preview and send to backend if no new file
                 name: qualToEdit.name,
                 year: qualToEdit.year,
                 degree: qualToEdit.degree,
                 institution: qualToEdit.institution
             });
-            setImagePreview(qualToEdit.link);
+            setImagePreview(qualToEdit.image);
+            setUploadedImageUrl(qualToEdit.image); // Set the uploadedImageUrl for existing image
             setShowAddEditModal(true);
         }
     };
@@ -168,32 +133,16 @@ const Qualifications = () => {
             return;
         }
 
-        const dataToSend = new FormData();
-        dataToSend.append('name', formData.name);
-        dataToSend.append('year', formData.year);
-        dataToSend.append('degree', formData.degree);
-        dataToSend.append('institution', formData.institution);
-
-        // Handle image: if it's a new File object, append it. Otherwise, keep the existing link (URL string)
-        if (formData.link instanceof File) {
-            dataToSend.append('img', formData.link); // New file to upload
-        } else if (typeof formData.link === 'string' && formData.link !== null) {
-            // If it's a string, it's an existing image URL. Your backend might expect this
-            // to indicate no change to the image, or you might need to explicitly send it.
-            // If your backend handles `multipart/form-data` and knows to keep existing
-            // image if 'img' field is not present or is an empty string, then you don't need this.
-            // If it expects the URL, you might do:
-            // dataToSend.append('img', formData.link);
-            // This depends on your backend API for updates.
-        }
-
+        const dataToSend = {
+            name: formData.name,
+            year: formData.year,
+            degree: formData.degree,
+            institution: formData.institution,
+            image: uploadedImageUrl // This will be the new URL if uploaded, or existing URL
+        };
 
         try {
-            const response = await put(dataToSend, {
-                headers: {
-                    'Content-Type': 'multipart/form-data', // Important for file uploads
-                },
-            }, `http://localhost:8080/api/qualification/${editingQualificationId}`);
+            const response = await put(dataToSend, {}, `http://localhost:8080/api/qualification/${editingQualificationId}`);
             if (response) {
                 setQualifications(prev => prev.map(q => q.qualificationID === editingQualificationId ? response : q));
                 toast.success(t("messages.updateSuccess"));
@@ -222,13 +171,14 @@ const Qualifications = () => {
         setShowAddEditModal(false);
         setEditingQualificationId(null);
         setFormData({
-            link: null,
+            image: null,
             name: '',
             year: '',
             degree: '',
             institution: ''
         });
         setImagePreview(null);
+        setUploadedImageUrl(null); // Clear uploaded image URL on close
         if (fileInputRef.current) {
             fileInputRef.current.value = '';
         }
@@ -249,8 +199,9 @@ const Qualifications = () => {
                                 setEditingQualificationId(null);
                                 setShowAddEditModal(true);
                                 setImagePreview(null);
+                                setUploadedImageUrl(null); // Clear uploaded image URL when adding new
                                 setFormData({ // Reset form data for new entry
-                                    link: null,
+                                    image: null,
                                     name: '',
                                     year: '',
                                     degree: '',
@@ -278,11 +229,11 @@ const Qualifications = () => {
                                                 <h6 className="fw-bold text-dark mb-1">{t("qualificationNumber", { number: index + 1 })}</h6>
                                             </div>
                                             <div className="member-actions d-flex align-items-center">
-                                                {qualification.link && (
+                                                {qualification.image && (
                                                     <Button
                                                         variant="outline-primary"
                                                         size="sm"
-                                                        href={qualification.link}
+                                                        href={qualification.image}
                                                         target="_blank"
                                                         className="d-flex align-items-center me-2"
                                                     >
@@ -442,7 +393,7 @@ const Qualifications = () => {
 
                         <Form.Group className="mb-4">
                             <Form.Label className="fw-medium">{t("form.certificateImage")}</Form.Label>
-                            <div className="form-section-new">
+                            <div className="form-section-new mb-4">
                                 <div
                                     className="image-upload-area-new"
                                     onClick={() => fileInputRef.current?.click()}
@@ -453,41 +404,35 @@ const Qualifications = () => {
                                             fileInputRef.current?.click();
                                         }
                                     }}
-                                    onDragEnter={handleDrag}
-                                    onDragLeave={handleDrag}
-                                    onDragOver={handleDrag}
-                                    onDrop={handleDrop}
                                 >
-                                    {imagePreview ? (
+                                    {(imagePreview || uploadedImageUrl) ? (
                                         <div className="image-preview-new">
                                             <img
-                                                src={imagePreview}
-                                                alt="Certificate preview"
+                                                src={imagePreview || uploadedImageUrl || "/placeholder.svg"}
+                                                alt={t("form.imageUpload.altText")}
                                                 className="preview-image-new"
                                             />
                                             <div className="image-overlay-new">
                                                 <Upload size={24} />
-                                                <span>
-                                                    {t("form.clickToChange")}
-                                                </span>
+                                                <span>{t("form.imageUpload.clickToChange")}</span>
                                             </div>
                                         </div>
                                     ) : (
                                         <div className="upload-placeholder-new">
                                             <ImageIcon size={48} className="upload-icon-new" />
-                                            <span className="upload-text-new">
-                                                {t("form.clickToUpload")}
-                                            </span>
+                                            <span className="upload-text-new">{t("form.imageUpload.clickToUpload")}</span>
                                         </div>
                                     )}
                                 </div>
                                 <input
                                     ref={fileInputRef}
                                     type="file"
-                                    accept="image/*,.pdf"
-                                    onChange={handleFileChange}
+                                    accept="image/*"
+                                    onChange={handleImageSelect}
                                     className="d-none"
                                 />
+                                {isUploadingImage && <Alert variant="info" className="mt-2">{t("form.imageUpload.uploading")}</Alert>}
+                                {imageUploadError && <Alert variant="danger" className="mt-2">{t("form.imageUpload.error", { error: imageUploadError })}</Alert>}
                             </div>
                         </Form.Group>
                     </Form>

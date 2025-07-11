@@ -60,16 +60,31 @@
 }
 
 .event-image-container {
-  background-color: #0f2942;
-  border-radius: 0.5rem;
+  background-color: #cfe8ff;
+  border-radius: 0.75rem;
   overflow: hidden;
-  max-width: 350px;
+  width: 100%;
+  height: 280px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .event-image {
-  width: 100%;
-  height: auto;
-  display: block;
+  width: 80%;
+  height: 90%;
+  max-width: 1000px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0.75rem;
+  justify-self: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.event-image:hover {
+  transform: scale(1.02);
 }
 
 .event-content {
