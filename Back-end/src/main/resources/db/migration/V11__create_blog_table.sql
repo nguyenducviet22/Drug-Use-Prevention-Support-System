@@ -7,7 +7,7 @@ CREATE TABLE blog (
     content TEXT NOT NULL,
     reading_time INT NOT NULL,
     blog_type ENUM('PERSONAL', 'NICHE', 'NEWS', 'EDUCATIONAL', 'GENERAL') NOT NULL,
-    blog_status ENUM('DRAFT', 'PUBLISHED', 'PENDING', 'UNAVAILABLE') NOT NULL,
+    blog_status ENUM('DRAFT', 'PUBLISHED', 'PENDING', 'UNAVAILABLE', 'REJECTED') NOT NULL,
     created_at DATETIME(6) NOT NULL,
     updated_at DATETIME(6) NOT NULL,
     member_id VARCHAR(100) NOT NULL,

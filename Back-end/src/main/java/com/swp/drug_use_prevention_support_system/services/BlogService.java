@@ -17,9 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -110,24 +108,8 @@ public class BlogService {
         return blogMapper.toDto(blog);
     }
 
-    @PostAuthorize("returnObject.member.username == authentication.name || hasRole('STAFF')")
+    @PostAuthorize("returnObject.member.username == authentication.name || hasAnyRole('STAFF', 'MANAGER')")
     public BlogResponse updateBlogStatus(UUID blogID, BlogStatus status) {
-        Blog blog = blogMapper.toEntity(getBlog(blogID));
-        blog.setBlogStatus(status);
-        blogRepository.save(blog);
-        return blogMapper.toDto(blog);
-    }
-
-    @PostAuthorize("hasRole('STAFF')")
-    public BlogResponse approveUserBlogsStatus(UUID blogID, BlogStatus status) {
-        Blog blog = blogMapper.toEntity(getBlog(blogID));
-        blog.setBlogStatus(status);
-        blogRepository.save(blog);
-        return blogMapper.toDto(blog);
-    }
-
-    @PostAuthorize("hasRole('MANAGER')")
-    public BlogResponse approveStaffBlogsStatus(UUID blogID, BlogStatus status) {
         Blog blog = blogMapper.toEntity(getBlog(blogID));
         blog.setBlogStatus(status);
         blogRepository.save(blog);
@@ -137,7 +119,7 @@ public class BlogService {
     public List<BlogResponse> getBlogsByAgeGroup(AgeGroup ageGroup) {
         List<Blog> blogs = blogRepository.findByAgeGroupAndBlogStatusOrderByCreatedAtDesc(ageGroup, BlogStatus.PUBLISHED);
         List<Blog> blogsForEveryone = blogRepository.findByAgeGroupAndBlogStatusOrderByCreatedAtDesc(AgeGroup.EVERYONE, BlogStatus.PUBLISHED);
-        List<Blog> combinedBlogs = new ArrayList<>(blogs);
+        Set<Blog> combinedBlogs = new HashSet<>(blogs);
         combinedBlogs.addAll(blogsForEveryone);
         return combinedBlogs.stream()
                 .map(blog -> blogMapper.toDto(blog))

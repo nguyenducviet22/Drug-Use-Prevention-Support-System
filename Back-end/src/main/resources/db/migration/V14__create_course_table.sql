@@ -6,7 +6,7 @@ CREATE TABLE course (
     image VARCHAR(255),
     description TEXT,
     age_group ENUM('ADOLESCENT', 'ADULT', 'SENIOR', 'EVERYONE') NOT NULL,
-    status ENUM('PENDING', 'AVAILABLE', 'UNAVAILABLE') NOT NULL,
+    status ENUM('PENDING', 'AVAILABLE', 'UNAVAILABLE', 'REJECTED') NOT NULL,
     created_at DATETIME(6) NOT NULL,
     updated_at DATETIME(6) NOT NULL
 );

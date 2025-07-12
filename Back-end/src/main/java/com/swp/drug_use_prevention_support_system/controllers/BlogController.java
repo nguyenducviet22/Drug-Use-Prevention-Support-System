@@ -71,15 +71,10 @@ public class BlogController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PutMapping("/{id}/status/{status}")
+    @PutMapping("/{id}/{status}")
     public ResponseEntity<ApiResponse<BlogResponse>> updateBlogStatus(@PathVariable UUID id,
                                                                       @PathVariable BlogStatus status) {
-        BlogResponse response = null;
-        if (status == BlogStatus.PUBLISHED) {
-            response = blogService.approveUserBlogsStatus(id, status);
-        } else if (status == BlogStatus.UNAVAILABLE) {
-            response = blogService.updateBlogStatus(id, status);
-        }
+        BlogResponse response = blogService.updateBlogStatus(id, status);
         ApiResponse<BlogResponse> apiResponse = ApiResponse.<BlogResponse>builder()
                 .data(response)
                 .status(HttpStatus.OK.value())
@@ -161,17 +156,6 @@ public class BlogController {
                 .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponses);
-    }
-
-    @PutMapping("/staff-list/{id}/status/{status}")
-    public ResponseEntity<ApiResponse<BlogResponse>> approveStaffBlogsStatus(@PathVariable UUID id,
-                                                                             @PathVariable BlogStatus status) {
-        BlogResponse response = blogService.approveStaffBlogsStatus(id, status);
-        ApiResponse<BlogResponse> apiResponse = ApiResponse.<BlogResponse>builder()
-                .data(response)
-                .status(HttpStatus.OK.value())
-                .build();
-        return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/status/{status}")

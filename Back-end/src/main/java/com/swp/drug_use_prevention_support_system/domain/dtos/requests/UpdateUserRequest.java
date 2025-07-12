@@ -1,6 +1,5 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.requests;
 
-import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.Gender;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -41,7 +40,4 @@ public class UpdateUserRequest {
     @NotBlank(message = "Address is required")
     @Size(max = 255, message = "Address must be less than 256 characters")
     String address;
-
-    @NotNull(message = "Age group is required")
-    AgeGroup ageGroup;
 }

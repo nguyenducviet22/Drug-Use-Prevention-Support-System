@@ -1,5 +1,5 @@
 package com.swp.drug_use_prevention_support_system.domain.enums;
 
 public enum BlogStatus {
-    DRAFT, PUBLISHED, PENDING, UNAVAILABLE
+    DRAFT, PUBLISHED, PENDING, UNAVAILABLE, REJECTED
 }

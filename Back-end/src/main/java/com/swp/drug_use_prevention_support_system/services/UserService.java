@@ -101,6 +101,7 @@ public class UserService {
         user.setPhoneNumber(request.getPhoneNumber());
         user.setJob(request.getJob());
         user.setAddress(request.getAddress());
+        user.setRole(Role.MEMBER);
         userRepository.save(user);
         return userMapper.toDto(user);
     }

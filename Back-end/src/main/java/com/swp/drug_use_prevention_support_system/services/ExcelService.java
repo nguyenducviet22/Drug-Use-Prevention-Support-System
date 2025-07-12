@@ -56,7 +56,9 @@ public class ExcelService {
                 String password = getCellValue(row.getCell(1));
                 String email = getCellValue(row.getCell(2));
                 String fullName = getCellValue(row.getCell(3));
-                LocalDate dob = LocalDate.parse(getCellValue(row.getCell(4)));
+                String raw = getCellValue(row.getCell(4));
+                String dateOnly = raw.split("T")[0];
+                LocalDate dob = LocalDate.parse(dateOnly);
                 Gender gender = Gender.valueOf(getCellValue(row.getCell(5)).toUpperCase());
                 String phone = getCellValue(row.getCell(6));
                 String job = getCellValue(row.getCell(7));
@@ -64,6 +66,8 @@ public class ExcelService {
                 String address = getCellValue(row.getCell(9));
                 UserStatus status = UserStatus.valueOf(getCellValue(row.getCell(10)).toUpperCase());
                 AgeGroup group = AgeGroup.valueOf(getCellValue(row.getCell(11)));
+                Instant createdAt = Instant.parse(getCellValue(row.getCell(12)));
+                Instant updatedAt = Instant.parse(getCellValue(row.getCell(13)));
 
                 User user = User.builder()
                         .username(username)
@@ -78,6 +82,8 @@ public class ExcelService {
                         .role(role)
                         .status(status)
                         .ageGroup(group)
+                        .createdAt(createdAt)
+                        .updatedAt(updatedAt)
                         .build();
                 users.add(user);
             } catch (Exception e) {
