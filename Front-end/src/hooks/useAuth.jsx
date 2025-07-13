@@ -22,6 +22,7 @@ export const useAuth = () => {
             if (role === "STAFF") navigate("/staff");
             if (role === "MANAGER") navigate("/manager");
             if (role === "CONSULTANT") navigate("/consultant");
+            if (role === "ADMIN") navigate("/admin/dashboard");
             toast.success("Login successfully")
         } catch (error) {
             if (error.response) {

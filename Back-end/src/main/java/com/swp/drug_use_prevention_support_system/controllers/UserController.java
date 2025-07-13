@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/user")
@@ -158,5 +159,35 @@ public class UserController {
                 .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponses);
+    }
+
+    //ADMIN SECTION
+    @GetMapping("/no-admin")
+    public ResponseEntity<?> getAllUsersExceptAdmin() {
+        List<UserResponse> responses = userService.getAllUsersExceptAdmin();
+        ApiResponse<List<UserResponse>> apiResponses = ApiResponse.<List<UserResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
+
+    //Get Users by Role
+    @GetMapping("/role/{role}")
+    public ResponseEntity<?> getUsersByRole(@PathVariable("role") Role role) {
+        List<UserResponse> users = userService.getUsersByRole(role);
+        return ResponseEntity.ok().body(Map.of("data", users));
+    }
+
+    @PutMapping("/toggleStatus/{username}")
+    public ResponseEntity<ApiResponse<Void>> toggleUserStatus(@PathVariable String username) {
+        userService.toggleUserStatus(username);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("admin/{username}")
+    public ResponseEntity<ApiResponse<Void>> deletePermanentUser(@PathVariable String username) {
+        userService.deletePermanentUser(username);
+        return ResponseEntity.noContent().build();
     }
 }

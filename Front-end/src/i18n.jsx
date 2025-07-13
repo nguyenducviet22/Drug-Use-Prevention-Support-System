@@ -49,6 +49,10 @@ import qualificationsEn from './locales/en/qualifications.json';
 import eventDetailsEn from './locales/en/eventDetails.json';
 import eventListEn from './locales/en/eventList.json';
 
+import userManagementEn from './locales/en/userManagement.json';
+
+
+
 // Nếu có tiếng Việt
 import homeVi from './locales/vi/home.json';
 import appointmentBookingVi from './locales/vi/appointmentBooking.json';
@@ -95,6 +99,8 @@ import qualificationsVi from './locales/vi/qualifications.json';
 //import userDetailsVi from './locales/vi/userDetails.json'; // Import new file
 import eventDetailsVi from './locales/vi/eventDetails.json';
 import eventListVi from './locales/vi/eventList.json';
+
+import userManagementVi from './locales/vi/userManagement.json';
 
 i18n
   .use(LanguageDetector)
@@ -149,6 +155,8 @@ i18n
         //userDetails: userDetailsEn, // Add new namespace
         eventDetails: eventDetailsEn,
         eventList: eventListEn,
+
+        userManagement: userManagementEn,
       },
       vi: {
         home: homeVi,
@@ -196,6 +204,8 @@ i18n
         //userDetails: userDetailsVi, // Add new namespace
         eventDetails: eventDetailsVi,
         eventList: eventListVi,
+
+        userManagement: userManagementVi,
       }
     },
     // Ensure 'analyticsPreview' is added to the `ns` array
@@ -212,7 +222,8 @@ i18n
       'statusCard', 'pendingCard', 'analyticsPreview', 'appointmentCard',
       'qualifications', // Add new namespace
       // 'recommendation', 'reports', 'searchFilter', 'userDetails', 
-      'eventDetails', 'eventList'
+      'eventDetails', 'eventList', 
+      'userManagement',
     ],
     defaultNS: 'home',
     interpolation: {

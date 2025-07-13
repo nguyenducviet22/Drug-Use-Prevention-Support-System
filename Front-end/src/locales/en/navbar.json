@@ -8,5 +8,8 @@
     "logout": "Logout",
     "login": "Log In",
     "register": "Register",
-    "userPlaceholder": "User"
+    "userPlaceholder": "User",
+    "dashboard": "Dashboard",
+    "users": "User Management",
+    "system": "System"
 }
