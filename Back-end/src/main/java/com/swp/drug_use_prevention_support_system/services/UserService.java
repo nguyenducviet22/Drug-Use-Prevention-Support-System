@@ -41,6 +41,7 @@ public class UserService {
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         newUser.setRole(null);
         newUser.setStatus(UserStatus.ACTIVE);
+        newUser.setRole(Role.MEMBER);
         userRepository.save(newUser);
         return userMapper.toDto(newUser);
     }
@@ -101,7 +102,6 @@ public class UserService {
         user.setPhoneNumber(request.getPhoneNumber());
         user.setJob(request.getJob());
         user.setAddress(request.getAddress());
-        user.setRole(Role.MEMBER);
         userRepository.save(user);
         return userMapper.toDto(user);
     }
