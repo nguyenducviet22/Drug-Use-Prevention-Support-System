@@ -65,8 +65,8 @@ export const useAuth = () => {
             const res = await API.get("/api/user/my-info");
             setUser(res.data.data);
             return res.data.data;
-        } catch (err) {
-            console.error("Auth error:", err);
+        } catch (error) {
+            console.error("Auth error:", error);
             logout();
             return null;
         } finally {

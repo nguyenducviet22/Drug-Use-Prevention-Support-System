@@ -57,8 +57,8 @@ const EventDetails = () => {
             setStatusInfo(statusData);
           }
         }
-      } catch (err) {
-        console.error("Fetch error:", err);
+      } catch (error) {
+        console.error("Fetch error:", error);
         setError("Failed to load event details.");
       } finally {
         setLoading(false);
@@ -247,10 +247,10 @@ const EventDetails = () => {
                         status: "REGISTERED",
                       }));
                     })
-                    .catch((err) => {
+                    .catch((error) => {
                       toast.error(
                         <strong>
-                          {t("registerFail")}: {err.message}
+                          {t("registerFail")}: {error.message}
                         </strong>
                       );
                     });
@@ -291,9 +291,9 @@ const EventDetails = () => {
                       ...prev,
                       status: "NOT_REGISTERED", // hoặc fetch lại status mới nhất từ backend
                     }));
-                  } catch (err) {
+                  } catch (error) {
                     toast.error(
-                      <strong>{err.message || t("cancelFail")}</strong>
+                      <strong>{error.message || t("cancelFail")}</strong>
                     );
                   } finally {
                     setCancelLocked(false);

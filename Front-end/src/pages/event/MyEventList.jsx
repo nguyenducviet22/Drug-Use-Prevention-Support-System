@@ -63,7 +63,7 @@ const MyEventList = () => {
       const result = await res.json();
       setEvents(Array.isArray(result) ? result : result.data || []);
       setError(null);
-    } catch (err) {
+    } catch (error) {
       setError(t("fetchError") || "Failed to fetch your registered events.");
     } finally {
       setLoading(false);
@@ -177,8 +177,8 @@ const MyEventList = () => {
       if (!response.ok) throw new Error(result.message || t("registerFailed"));
       toast.success(<strong>🎉 {t("registerSuccess")}</strong>);
       fetchStatuses(events); // update button
-    } catch (err) {
-      toast.error(<strong>❌ {err.message || t("registerFailed")}</strong>);
+    } catch (error) {
+      toast.error(<strong>❌ {error.message || t("registerFailed")}</strong>);
     }
   };
 
@@ -199,9 +199,9 @@ const MyEventList = () => {
           <strong>✅ {t("cancelSuccess", "Cancelled successfully!")}</strong>
         );
         fetchStatuses(events); // update button/status
-      } catch (err) {
+      } catch (error) {
         toast.error(
-          <strong>❌ {err.message || t("cancelFailed", "Cancel failed!")}</strong>
+          <strong>❌ {error.message || t("cancelFailed", "Cancel failed!")}</strong>
         );
       }
     };

@@ -29,10 +29,18 @@ public class ProgressService {
     }
 
     public ProgressResponse createLessonProgress(CreateProgressRequest request) {
+        UUID enrollmentID = request.getEnrollmentID();
+        UUID lessonID = request.getLessonID();
+        Progress existingProgress = progressRepository.findByEnrollmentEnrollmentIDAndLessonID(enrollmentID, lessonID);
+        if (existingProgress != null) {
+            return progressMapper.toDto(existingProgress);
+        }
+
         Progress progress = progressMapper.toEntity(request);
-        progress.setLessonID(request.getLessonID());
+        progress.setLessonID(lessonID);
         progress.setStatus(ProgressStatus.NOT_STARTED);
-        Enrollment enrollment = enrollmentService.getEnrollmentEntity(request.getEnrollmentID());
+
+        Enrollment enrollment = enrollmentService.getEnrollmentEntity(enrollmentID);
         progress.setEnrollment(enrollment);
 
         progressRepository.save(progress);

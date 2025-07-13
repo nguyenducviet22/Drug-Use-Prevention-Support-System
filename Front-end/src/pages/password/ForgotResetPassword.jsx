@@ -86,8 +86,8 @@ const ForgotResetPassword = () => {
             } else {
                 setApiError(apiResponse.message || t('emailStep.toast.sendOtpFailed'));
             }
-        } catch (err) {
-            setApiError(err.message || t('emailStep.toast.unexpectedError'));
+        } catch (error) {
+            setApiError(error.message || t('emailStep.toast.unexpectedError'));
         } finally {
             setIsLoading(false);
         }
@@ -153,9 +153,9 @@ const ForgotResetPassword = () => {
             setTimeout(() => {
                 navigate('/login');
             }, 3000);
-        } catch (err) {
-            // Check if err.response.data.message exists for specific backend errors
-            setApiError(err.response?.data?.message || err.message || t('resetStep.toast.unexpectedError'));
+        } catch (error) {
+            // Check if error.response.data.message exists for specific backend errors
+            setApiError(error.response?.data?.message || error.message || t('resetStep.toast.unexpectedError'));
         } finally {
             setIsLoading(false);
         }

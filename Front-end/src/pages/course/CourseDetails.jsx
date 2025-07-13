@@ -18,6 +18,7 @@ const CourseDetails = () => {
 
   const { id: courseID } = useParams()
   const { user, authLoading } = useAuth()
+  console.log('user', user);
   const username = user?.username
   const [course, setCourse] = useState(null)
   const [enrollment, setEnrollment] = useState(null)
@@ -44,12 +45,12 @@ const CourseDetails = () => {
         }
         const initialEnrollment = await getEnrollment(`http://localhost:8080/api/enrollment?courseID=${courseID}&username=${username}`);
         setEnrollment(initialEnrollment);
-      } catch (err) {
+      } catch (error) {
         // Nếu API trả về 404 (Not Found), nghĩa là người dùng chưa đăng ký
-        if (err.response && err.response.status === 404) {
+        if (error.response && error.response.status === 404) {
           setEnrollment(null); // Đặt null để biểu thị chưa đăng ký
         } else {
-          console.error("Error fetching initial enrollment status:", err);
+          console.error("Error fetching initial enrollment status:", error.message);
         }
       }
     } else if (!username && !authLoading) {
@@ -85,9 +86,9 @@ const CourseDetails = () => {
 
         setLessons(allLessons);
         setModuleDuration(totalDuration);
-      } catch (err) {
-        console.error("Fetch error in CourseDetails:", err);
-        toast.error(t("toastMessages.fetchDataError"), "danger") 
+      } catch (error) {
+        console.error("Fetch error in CourseDetails:", error);
+        toast.error(t("toastMessages.fetchDataError"), "danger")
       }
     };
 
@@ -100,8 +101,8 @@ const CourseDetails = () => {
         try {
           const completionProgressData = await getCompletionProgress(`http://localhost:8080/api/progress/course-completion?enrollmentID=${enrollmentID}&courseID=${courseID}`);
           setCompletionProgress(completionProgressData);
-        } catch (err) {
-          console.error("Error fetching completion progress:", err);
+        } catch (error) {
+          console.error("Error fetching completion progress:", error);
         }
       } else if (enrollment === null && !loadingEnrollment && !authLoading) {
         // If enrollment is explicitly null (user not enrolled), set progress to 0
@@ -125,7 +126,7 @@ const CourseDetails = () => {
 
   const onEnrollClick = async (id) => {
     if (!username) {
-      toast.error(t("toastMessages.loginRequired")); 
+      toast.error(t("toastMessages.loginRequired"));
       navigate('/login');
       return;
     }
@@ -135,14 +136,14 @@ const CourseDetails = () => {
     if (currentEnrollmentStatus === "LEARNING" || currentEnrollmentStatus === "NOT_STARTED" || currentEnrollmentStatus === "COMPLETED") {
       // If already learning, not started, or completed, just navigate
       if (enrollment?.enrollmentID) {
-        toast.info(t("toastMessages.continueOrCompleted")); 
+        toast.info(t("toastMessages.continueOrCompleted"));
         navigate(`/courses/lesson/${id}`, {
           state: {
             enrollmentID: enrollment.enrollmentID
           }
         });
       } else {
-        toast.error(t("toastMessages.enrollmentInfoNotFound")); 
+        toast.error(t("toastMessages.enrollmentInfoNotFound"));
         // Fallback: try to re-fetch if ID is missing for some reason
         fetchEnrollmentStatus();
       }
@@ -157,7 +158,7 @@ const CourseDetails = () => {
       const response = await postEnrollment(enrollmentData, {}, "http://localhost:8080/api/enrollment");
 
       setEnrollment(response);
-      toast.success(t("toastMessages.enrollmentSuccess")); 
+      toast.success(t("toastMessages.enrollmentSuccess"));
       console.log(`Enrolled successfully`, response);
 
       navigate(`/courses/lesson/${id}`, {
@@ -165,12 +166,13 @@ const CourseDetails = () => {
           enrollmentID: response.enrollmentID // Lấy enrollmentID từ response.data
         }
       });
-    } catch (err) {
-      console.error("Failed to enroll:", err);
-      if (err.response && err.response.data && err.response.data.message) {
-        toast.error(t("toastMessages.apiError", { message: err.response.data.message }));
+    } catch (error) {
+      console.error("Failed to enroll:", error);
+      if (error.messageFromServer) {
+        const fullMessage = error.messageFromServer + t("toastMessages.enrollmentInform");
+        toast.error(t("toastMessages.apiError", { message: fullMessage }));
       } else {
-        toast.error(t("toastMessages.enrollmentFailed")); 
+        toast.error(t("toastMessages.enrollmentFailed"));
       }
     }
   }
@@ -181,7 +183,7 @@ const CourseDetails = () => {
   return (
     <Container className="py-5">
       <LoadingSpinner loading={authLoading || loadingCourseDetails || loadingModules || loadingLessons || loadingEnrollment || loadingNewEnrollment} />
-      <ErrorMessage error={errorCourseDetails || errorModules || errorLessons || errorEnrollment || errorNewEnrollment} />
+      {/* <ErrorMessage error={errorCourseDetails || errorModules || errorLessons || errorEnrollment || errorNewEnrollment} /> */}
 
       {!course || !modules || !lessons ? (
         <NotFound
@@ -195,7 +197,7 @@ const CourseDetails = () => {
         <div className="course-details-page">
           <div className="course-header">
             <Container>
-              <BackButton label={t("backButton")} /> 
+              <BackButton label={t("backButton")} />
 
               <div className="course-header-content">
                 <h1 className="course-title">{course.courseName}</h1>
@@ -205,7 +207,7 @@ const CourseDetails = () => {
                   {isCourseEnrolled && (
                     <div className="progress-section mb-3">
                       <div className="d-flex justify-content-between mb-2">
-                        <span className="text-muted small">{t("progressSection.progressLabel")}</span> 
+                        <span className="text-muted small">{t("progressSection.progressLabel")}</span>
                         <span className="fw-semibold text-primary">
                           {completionProgress?.completion ? completionProgress.completion.toFixed(2) : 0}%
                         </span>
@@ -230,20 +232,20 @@ const CourseDetails = () => {
                     disabled={loadingNewEnrollment || loadingEnrollment}
                   >
                     {loadingNewEnrollment || loadingEnrollment ? (
-                      t("enrollButton.loading") 
+                      t("enrollButton.loading")
                     ) : (
                       isCourseEnrolled === "NOT_STARTED" || isCourseEnrolled === "LEARNING" ? (
-                        t("enrollButton.continue") 
+                        t("enrollButton.continue")
                       ) : isCourseEnrolled === "EXPIRED" ? (
-                        t("enrollButton.refreshDue") 
+                        t("enrollButton.refreshDue")
                       ) : isCourseEnrolled === "COMPLETED" ? (
-                        t("enrollButton.completed") 
+                        t("enrollButton.completed")
                       ) : (
-                        t("enrollButton.enroll") 
+                        t("enrollButton.enroll")
                       )
                     )}
                   </Button>
-                  <p className="enrolled-count">{t("enrolledCount", { quantity: course.quantity })}</p> 
+                  <p className="enrolled-count">{t("enrolledCount", { quantity: course.quantity })}</p>
                 </div>
               </div>
             </Container>
@@ -262,14 +264,14 @@ const CourseDetails = () => {
               <div className="feature">
                 <div className="feature-value">
                   <BookOpen size={18} className="feature-icon" />
-                  <span>{t("features.modules", { count: moduleCount })}</span> 
+                  <span>{t("features.modules", { count: moduleCount })}</span>
                 </div>
               </div>
 
               <div className="feature">
                 <div className="feature-value">
                   <Clock size={18} className="feature-icon" />
-                  <span>{t("features.minutes", { duration: course.duration })}</span> 
+                  <span>{t("features.minutes", { duration: course.duration })}</span>
                 </div>
                 <div className="feature-description">&nbsp;</div>
               </div>
@@ -284,7 +286,7 @@ const CourseDetails = () => {
           </Container>
 
           <Container className="py-5">
-            <h2 className="section-title">{t("sections.whatYouWillLearn")}</h2> 
+            <h2 className="section-title">{t("sections.whatYouWillLearn")}</h2>
 
             <Row className="learning-outcomes">
               {lessons.map((lesson) => (
@@ -297,7 +299,7 @@ const CourseDetails = () => {
               ))}
             </Row>
 
-            <h2 className="section-title mt-5">{t("sections.courseContent")}</h2> 
+            <h2 className="section-title mt-5">{t("sections.courseContent")}</h2>
 
             <div className="lessons-container">
               {modules.map((module, index) => (
@@ -305,7 +307,7 @@ const CourseDetails = () => {
                   <div className="lesson-header">
                     <div>
                       <h3 className="lesson-title">
-                        {t("sections.moduleTitle", { index: index + 1, moduleName: module.moduleName })} 
+                        {t("sections.moduleTitle", { index: index + 1, moduleName: module.moduleName })}
                       </h3>
                     </div>
                   </div>

@@ -131,8 +131,8 @@ const CrafftQuestionnaire = () => {
       throw new Error("Missing result ID from server response.");
     }
     navigate(`/assessment-result/${resultId}`);
-  } catch (err) {
-    alert("Submission failed: " + err.message);
+  } catch (error) {
+    alert("Submission failed: " + error.message);
   } finally {
     setLoading(false);
   }

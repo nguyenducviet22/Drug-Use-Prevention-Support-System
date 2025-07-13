@@ -1,20 +1,20 @@
 package com.swp.drug_use_prevention_support_system.controllers;
 
-
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateEventRequest;
-import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateEventRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EventResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EventStatusResponse;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.EventStatus;
 import com.swp.drug_use_prevention_support_system.services.EventService;
+import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,6 +25,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EventController {
     private final EventService eventService;
+    private final ExcelService excelService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<EventResponse>> createEvent(@Valid @RequestBody CreateEventRequest request) {
@@ -153,5 +154,14 @@ public class EventController {
     @GetMapping("/my-events/{memberId}")
     public List<EventResponse> getMyEvents(@PathVariable String memberId) {
         return eventService.getEventsByMember(memberId);
+    }
+
+    @PostMapping(value = "/import", consumes = "multipart/form-data")
+    public ResponseEntity<String> importEventsFromExcel(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("File is empty!");
+        }
+        excelService.importEventsFromExcel(file.getInputStream());
+        return ResponseEntity.ok("Excel file data saved Events into DB");
     }
 }

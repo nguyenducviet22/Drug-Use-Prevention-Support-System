@@ -71,8 +71,8 @@ const HomeMe = () => {
           const todayAppointmentsData = await getAppointments(`http://localhost:8080/api/appointment/today/member/${username}`);
           setUpcomingAppointments(todayAppointmentsData);
         }
-      } catch (err) {
-        console.error("Fetch error in Home Me:", err);
+      } catch (error) {
+        console.error("Fetch error in Home Me:", error);
         // Có thể set lỗi vào state để hiển thị ErrorMessage
       }
     };

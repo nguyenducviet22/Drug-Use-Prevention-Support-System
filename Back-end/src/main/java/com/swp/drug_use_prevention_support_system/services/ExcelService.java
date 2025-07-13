@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -30,8 +29,6 @@ public class ExcelService {
     private final UserDetailsRepository userDetailsRepository;
     private final QualificationRepository qualificationRepository;
     private final AssessmentRepository assessmentRepository;
-    private final AssessmentService assessmentService;
-    private final AssessmentResultRepository assessmentResultRepository;
     private final CourseRepository courseRepository;
     private final CourseService courseService;
     private final BlogRepository blogRepository;
@@ -411,20 +408,19 @@ public class ExcelService {
                 String img = getCellValue(row.getCell(4));
                 EventStatus status = EventStatus.valueOf(getCellValue(row.getCell(5)).toUpperCase());
 
-                ZoneId zone = ZoneId.systemDefault();
-                LocalDateTime startDate = LocalDateTime.ofInstant(Instant.parse(getCellValue(row.getCell(6))), zone);
-                LocalDateTime endDate = LocalDateTime.ofInstant(Instant.parse(getCellValue(row.getCell(7))), zone);
+                LocalDateTime startDate = LocalDateTime.parse(getCellValue(row.getCell(6)));
+                LocalDateTime endDate = LocalDateTime.parse(getCellValue(row.getCell(7)));
 
-                String subTitle = getCellValue(row.getCell(8));
-                String location = getCellValue(row.getCell(9));
-                Double fee = Double.valueOf(getCellValue(row.getCell(10)));
-                String details = getCellValue(row.getCell(11));
-                AgeGroup ageGroup = AgeGroup.valueOf(getCellValue(row.getCell(12)).toUpperCase());
+//                String subTitle = getCellValue(row.getCell(8));
+//                String location = getCellValue(row.getCell(9));
+//                Double fee = Double.valueOf(getCellValue(row.getCell(10)));
+//                String details = getCellValue(row.getCell(11));
+                AgeGroup ageGroup = AgeGroup.valueOf(getCellValue(row.getCell(8)));
 
                 // Tạm thời chưa gán createdByStaff nếu không có thông tin trong Excel
                 Event event = Event.builder()
                         .eventName(name)
-                        .subTitle(subTitle)
+                        .subTitle("No subtitle")
                         .duration(duration)
                         .quantity(quantity)
                         .description(description)
@@ -432,9 +428,9 @@ public class ExcelService {
                         .status(status)
                         .startDate(startDate)
                         .endDate(endDate)
-                        .location(location)
-                        .fee(fee)
-                        .details(details)
+                        .location("FPT University")
+                        .fee(0.0)
+                        .details("No details")
                         .ageGroup(ageGroup)
                         .build();
 

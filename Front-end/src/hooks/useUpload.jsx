@@ -38,10 +38,10 @@ const useUpload = () => {
             setImageUrl(response); // response trực tiếp là URL của ảnh
             toast.success("Tải ảnh lên thành công!");
             return response; // Trả về URL của ảnh
-        } catch (err) {
-            console.error("Error uploading image:", err);
-            setUploadError(err.response?.data?.message || "Lỗi khi tải ảnh lên.");
-            toast.error(err.response?.data?.message || "Lỗi khi tải ảnh lên!");
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            setUploadError(error.response?.data?.message || "Lỗi khi tải ảnh lên.");
+            toast.error(error.response?.data?.message || "Lỗi khi tải ảnh lên!");
             return null;
         } finally {
             setUploading(false);

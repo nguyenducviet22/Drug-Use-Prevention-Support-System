@@ -59,8 +59,8 @@ const CourseCreation = () => {
             setUploadedImageUrl(courseData.image);
           }
         }
-      } catch (err) {
-        console.error("Fetch error in CourseCreation:", err);
+      } catch (error) {
+        console.error("Fetch error in CourseCreation:", error);
         toast.error(t("modulesSection.toastMessages.fetchError"), "danger");
       }
     };

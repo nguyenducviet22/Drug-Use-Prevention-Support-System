@@ -32,6 +32,7 @@
     "continueOrCompleted": "Bạn đang tiếp tục hoặc đã hoàn thành khóa học này.",
     "enrollmentInfoNotFound": "Không tìm thấy thông tin đăng ký để tiếp tục.",
     "enrollmentSuccess": "Đăng ký khóa học thành công!",
+    "enrollmentInform": ". Bạn cần phải cập nhật thông tin cá nhân của mình",
     "enrollmentFailed": "Đăng ký thất bại. Vui lòng thử lại.",
     "apiError": "Đã xảy ra lỗi: {{message}}"
   }

@@ -63,8 +63,8 @@ const BlogCreation = () => {
             setUploadedImageUrl(blogData.image); // Set URL ảnh cũ vào useUpload
           }
         }
-      } catch (err) {
-        console.error("Fetch error in BlogCreation:", err);
+      } catch (error) {
+        console.error("Fetch error in BlogCreation:", error);
         // Có thể set lỗi vào state để hiển thị ErrorMessage
       }
     };
@@ -415,7 +415,7 @@ const BlogCreation = () => {
                     <Save size={18} className="me-2" />
                     {t("form.buttons.save")}
                   </Button>
-                  <Button
+                  {/* <Button
                     variant="info"
                     className="action-btn-new view-btn-new me-3"
                     onClick={handlePreview}
@@ -423,7 +423,7 @@ const BlogCreation = () => {
                   >
                     <Eye size={18} className="me-2" />
                     {t("form.buttons.view")}
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="primary"
                     className="action-btn-new publish-btn-new"

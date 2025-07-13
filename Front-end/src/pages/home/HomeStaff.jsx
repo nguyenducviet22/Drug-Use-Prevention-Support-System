@@ -72,8 +72,8 @@ function HomeStaff() {
         setPendingBlogs(pendingBlogsData || []);
         const approvedBlogsData = await getApprovedBlogs("http://localhost:8080/api/blog/status/PUBLISHED/role-except/STAFF");
         setApprovedBlogs(approvedBlogsData || []);
-      } catch (err) {
-        console.error("Fetch error in HomeStaff:", err);
+      } catch (error) {
+        console.error("Fetch error in HomeStaff:", error);
       }
     };
 

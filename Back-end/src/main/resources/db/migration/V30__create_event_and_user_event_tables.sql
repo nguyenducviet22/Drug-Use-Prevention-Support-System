@@ -11,7 +11,7 @@ CREATE TABLE event (
     end_date DATETIME,
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL,
-    age_group ENUM('ADOLESCENT', 'ADULT', 'SENIOR') NOT NULL,
+    age_group ENUM('ADOLESCENT', 'ADULT', 'SENIOR', 'EVERYONE') NOT NULL,
     created_by_staff VARCHAR(100),
     location VARCHAR(255),
     fee DOUBLE,

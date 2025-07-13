@@ -49,8 +49,8 @@ const Recommendation = ({ type }) => {
           ? result.map((e) => e.eventID)
           : result?.data?.map((e) => e.eventID) || [];
         setJoinedEventIds(joinedIds);
-      } catch (err) {
-        console.warn("Failed to fetch joined events:", err);
+      } catch (error) {
+        console.warn("Failed to fetch joined events:", error);
       }
     };
 
@@ -72,8 +72,8 @@ const Recommendation = ({ type }) => {
             setRecommendations(getRandomItems(data || [], 3));
           }
         })
-        .catch((err) => {
-          console.error("Failed to fetch recommendations:", err);
+        .catch((error) => {
+          console.error("Failed to fetch recommendations:", error);
         });
     }
   }, [authLoading, user?.ageGroup, get, endpoint, joinedEventIds, type]);

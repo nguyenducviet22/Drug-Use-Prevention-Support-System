@@ -30,8 +30,8 @@ const BlogDetails = () => {
                     const blogDetailsData = await getBlogDetails(`http://localhost:8080/api/blog/${id}`)
                     setBlogDetails(blogDetailsData)
                 }
-            } catch (err) {
-                console.error("Fetch error in BlogsDetails:", err)
+            } catch (error) {
+                console.error("Fetch error in BlogsDetails:", error)
             }
         }
 
@@ -48,7 +48,7 @@ const BlogDetails = () => {
             const blogID = blogDetails?.blogID
             console.log(blogID);
             if (blogID) {
-                const response = await putBlogStatus({}, {}, `http://localhost:8080/api/blog/${blogID}/status/UNAVAILABLE`);
+                const response = await putBlogStatus({}, {}, `http://localhost:8080/api/blog/${blogID}/UNAVAILABLE`);
                 console.log("Blog status updated to unavailable:", response);
                 toast.success(t("toastMessages.deleteSuccess"), "success");
                 navigate("/blogs")

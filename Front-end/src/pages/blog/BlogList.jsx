@@ -61,8 +61,8 @@ const BlogList = () => {
           }
           setBlogs(userBlogsData);
         }
-      } catch (err) {
-        console.error("Fetch error in BlogList:", err);
+      } catch (error) {
+        console.error("Fetch error in BlogList:", error);
         // Optionally set error to a state to display ErrorMessage component
       }
     };
