@@ -5,18 +5,20 @@ CREATE TABLE event (
     duration INT,
     quantity INT,
     description TEXT,
-    img VARCHAR(255),
-    status ENUM('NOT_STARTED', 'ONGOING', 'EXPIRED', 'CANCELLED', 'DRAFT') NOT NULL,
+    image VARCHAR(255),
+    status ENUM('NOT_STARTED', 'ONGOING', 'EXPIRED', 'CANCELLED', 'DRAFT', 'PENDING_APPROVAL', 'REJECTED', 'APPROVED') NOT NULL,
     start_date DATETIME,
     end_date DATETIME,
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL,
-    age_group ENUM('ADOLESCENT', 'ADULT', 'SENIOR') NOT NULL,
-    created_by_staff VARCHAR(100),
+    age_group ENUM('ADOLESCENT', 'ADULT', 'SENIOR', 'EVERYONE') NOT NULL,
+    created_by_staff VARCHAR(100) NOT NULL,
+    approved_by_manager VARCHAR(100), -- Thêm dòng này để lưu Manager duyệt sự kiện
     location VARCHAR(255),
     fee DOUBLE,
     details TEXT,
-    FOREIGN KEY (created_by_staff) REFERENCES users(username)
+    FOREIGN KEY (created_by_staff) REFERENCES users(username),
+    FOREIGN KEY (approved_by_manager) REFERENCES users(username) -- Thêm khóa ngoại
 );
 
 

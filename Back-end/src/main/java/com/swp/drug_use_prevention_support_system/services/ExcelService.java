@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -54,7 +56,9 @@ public class ExcelService {
                 String password = getCellValue(row.getCell(1));
                 String email = getCellValue(row.getCell(2));
                 String fullName = getCellValue(row.getCell(3));
-                LocalDate dob = LocalDate.parse(getCellValue(row.getCell(4)));
+                String raw = getCellValue(row.getCell(4));
+                String dateOnly = raw.split("T")[0];
+                LocalDate dob = LocalDate.parse(dateOnly);
                 Gender gender = Gender.valueOf(getCellValue(row.getCell(5)).toUpperCase());
                 String phone = getCellValue(row.getCell(6));
                 String job = getCellValue(row.getCell(7));
@@ -133,21 +137,21 @@ public class ExcelService {
             if (row == null || isRowEmpty(row)) continue;
 
             try {
-                String img = getCellValue(row.getCell(0));
-                Degree degree = Degree.valueOf(getCellValue(row.getCell(1)));
-                String institution = getCellValue(row.getCell(2));
-                Integer year = Integer.valueOf(getCellValue(row.getCell(3)));
-                String description = getCellValue(row.getCell(4));
+                String name = getCellValue(row.getCell(0));
+                String img = getCellValue(row.getCell(1));
+                Degree degree = Degree.valueOf(getCellValue(row.getCell(2)));
+                String institution = getCellValue(row.getCell(3));
+                Integer year = Integer.valueOf(getCellValue(row.getCell(4)));
                 CourseStatus status = CourseStatus.valueOf(getCellValue(row.getCell(5)).toUpperCase());
                 String consultantUsername = getCellValue(row.getCell(6));
                 User consultant = userService.getUserEntity(consultantUsername);
 
                 Qualification qualification = Qualification.builder()
-                        .img(img)
+                        .name(name)
+                        .image(img)
                         .degree(degree)
                         .institution(institution)
                         .year(year)
-                        .description(description)
                         .status(status)
                         .consultant(consultant)
                         .build();
@@ -186,7 +190,7 @@ public class ExcelService {
                 Blog blog = Blog.builder()
                         .blogName(name)
                         .rate(rate)
-                        .img(img)
+                        .image(img)
                         .description(description)
                         .blogType(type)
                         .blogStatus(status)
@@ -229,7 +233,7 @@ public class ExcelService {
                         .courseName(name)
                         .quantity(quantity)
                         .duration(duration)
-                        .img(img)
+                        .image(img)
                         .description(description)
                         .ageGroup(ageGroup)
                         .status(status)
@@ -330,15 +334,15 @@ public class ExcelService {
                 User member = userService.getUserEntity(memberUsername);
                 UUID courseID = UUID.fromString(getCellValue(row.getCell(1)));
                 Course course = courseService.getCourseEntity(courseID);
-                LocalDate startDate = LocalDate.parse(getCellValue(row.getCell(2)));
-                LocalDate endDate = LocalDate.parse(getCellValue(row.getCell(3)));
+                Instant startedAt = Instant.parse(getCellValue(row.getCell(2)));
+                Instant endedAt = Instant.parse(getCellValue(row.getCell(3)));
                 EnrollmentStatus status = EnrollmentStatus.valueOf(getCellValue(row.getCell(4)).toUpperCase());
 
                 Enrollment enrollment = Enrollment.builder()
                         .member(member)
                         .course(course)
-                        .startDate(startDate)
-                        .endDate(endDate)
+                        .startedAt(startedAt)
+                        .endedAt(endedAt)
                         .status(status)
                         .build();
                 enrollments.add(enrollment);
@@ -369,7 +373,7 @@ public class ExcelService {
                 CourseStatus status = CourseStatus.valueOf(getCellValue(row.getCell(5)));
 
                 Assessment assessment = Assessment.builder()
-                        .img(img)
+                        .image(img)
                         .assessmentType(type)
                         .linkTest(link)
                         .description(description)
@@ -397,31 +401,45 @@ public class ExcelService {
 
             try {
                 String name = getCellValue(row.getCell(0));
-                String subTitle = getCellValue(row.getCell(1));
-                Integer duration = Integer.valueOf(getCellValue(row.getCell(2)));
-                Integer quantity = Integer.valueOf(getCellValue(row.getCell(3)));
-                String description = getCellValue(row.getCell(4));
-                String img = getCellValue(row.getCell(5));
-                EventStatus status = EventStatus.valueOf(getCellValue(row.getCell(6)).toUpperCase());
-                LocalDateTime startDate = LocalDateTime.parse(getCellValue(row.getCell(7)));
-                LocalDateTime endDate = LocalDateTime.parse(getCellValue(row.getCell(8)));
+                Integer duration = Integer.valueOf(getCellValue(row.getCell(1)));
+                Integer quantity = Integer.valueOf(getCellValue(row.getCell(2)));
+                String description = getCellValue(row.getCell(3));
+                String img = getCellValue(row.getCell(4));
+                EventStatus status = EventStatus.valueOf(getCellValue(row.getCell(5)).toUpperCase());
 
+                ZoneId zone = ZoneId.systemDefault();
+                LocalDateTime startDate = LocalDateTime.ofInstant(Instant.parse(getCellValue(row.getCell(6))), zone);
+                LocalDateTime endDate = LocalDateTime.ofInstant(Instant.parse(getCellValue(row.getCell(7))), zone);
+
+                String subTitle = getCellValue(row.getCell(8));
+                String location = getCellValue(row.getCell(9));
+                Double fee = Double.valueOf(getCellValue(row.getCell(10)));
+                String details = getCellValue(row.getCell(11));
+                AgeGroup ageGroup = AgeGroup.valueOf(getCellValue(row.getCell(12)).toUpperCase());
+
+                // Tạm thời chưa gán createdByStaff nếu không có thông tin trong Excel
                 Event event = Event.builder()
                         .eventName(name)
                         .subTitle(subTitle)
                         .duration(duration)
                         .quantity(quantity)
                         .description(description)
-                        .img(img)
+                        .image(img)
                         .status(status)
                         .startDate(startDate)
                         .endDate(endDate)
+                        .location(location)
+                        .fee(fee)
+                        .details(details)
+                        .ageGroup(ageGroup)
                         .build();
+
                 events.add(event);
             } catch (Exception e) {
                 throw new RuntimeException("Error Excel import Events at line " + (i + 1) + ": " + e.getMessage(), e);
             }
         }
+
         eventRepository.saveAll(events);
         workbook.close();
     }

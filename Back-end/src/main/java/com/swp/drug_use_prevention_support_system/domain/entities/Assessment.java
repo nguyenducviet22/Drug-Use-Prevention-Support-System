@@ -6,7 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +24,7 @@ public class Assessment {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "assessment_id")
     UUID assessmentID;
-    String img;
+    String image;
     @Enumerated(EnumType.STRING)
     AssessmentType assessmentType;
     String linkTest;
@@ -31,21 +32,21 @@ public class Assessment {
     String details;
     @Enumerated(EnumType.STRING)
     CourseStatus status;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    Instant createdAt;
+    Instant updatedAt;
 
     @OneToMany(mappedBy = "assessment")
     List<AssessmentResult> assessmentResults = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 }

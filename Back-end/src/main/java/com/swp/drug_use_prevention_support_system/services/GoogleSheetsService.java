@@ -1,7 +1,6 @@
 package com.swp.drug_use_prevention_support_system.services;
 
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.services.sheets.v4.Sheets;
@@ -26,15 +25,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList; // Đảm bảo import này được sử dụng nếu bạn bỏ comment phần stream
-
 @Service
-@RequiredArgsConstructor // Sử dụng Lombok để tạo constructor với các final fields
+@RequiredArgsConstructor
 public class GoogleSheetsService {
 
     private final UserService userService;
@@ -84,19 +83,21 @@ public class GoogleSheetsService {
                     Integer score = (row.get(0) != null) ? Integer.valueOf(row.get(0).toString()) : null;
                     RiskLevel level = (row.get(1) != null) ? RiskLevel.valueOf(row.get(1).toString()) : null;
                     String action = (row.get(2) != null) ? row.get(2).toString() : null;
-                    LocalDateTime completed = (row.get(3) != null) ? LocalDateTime.parse(row.get(3).toString(), DATETIME_FORMATTER) : null;
-                    String username = (row.get(4) != null) ? row.get(4).toString() : null;
+                    LocalDateTime completed = (row.get(3) != null)
+                            ? LocalDateTime.parse(row.get(3).toString(), DATETIME_FORMATTER)
+                            : null;
+                    String email = (row.get(4) != null) ? row.get(4).toString() : null;
 
                     User user = null;
-                    if (username != null) {
+                    if (email != null) {
                         try {
-                            user = userService.getUserEntity(username);
+                            user = userService.getUserEntityByEmail(email);
                         } catch (Exception userEx) {
-                            System.err.println("User not found for username: " + username + " at row " + (i + 2) + ". Skipping this row.");
-                            continue; // Bỏ qua hàng này nếu không tìm thấy người dùng
+                            System.err.println("User not found for email: " + email + " at row " + (i + 2) + ". Skipping this row.");
+                            continue;
                         }
                     } else {
-                        System.err.println("Username is null at row " + (i + 2) + ". Skipping this row.");
+                        System.err.println("Email is null at row " + (i + 2) + ". Skipping this row.");
                         continue;
                     }
 
@@ -107,7 +108,7 @@ public class GoogleSheetsService {
                             assessment = assessmentService.getAssessmentEntity(type);
                         } catch (Exception assessmentEx) {
                             System.err.println("Assessment not found for type: " + type + " at row " + (i + 2) + ". Skipping this row.");
-                            continue; // Bỏ qua hàng này nếu không tìm thấy Assessment
+                            continue;
                         }
                     } else {
                         System.err.println("AssessmentType is null at row " + (i + 2) + ". Skipping this row.");
@@ -131,8 +132,6 @@ public class GoogleSheetsService {
                     System.err.println("Data format error at row " + (i + 2) + ": " + e.getMessage() + ". Skipping.");
                 } catch (Exception e) {
                     System.err.println("Error processing row " + (i + 2) + ": " + e.getMessage());
-                    // Thay vì ném RuntimeException, hãy log và bỏ qua hàng bị lỗi
-                    // throw new RuntimeException("Error at row " + (i + 2) + ": " + e.getMessage(), e);
                 }
             }
         }
@@ -176,7 +175,7 @@ public class GoogleSheetsService {
     }
 
     // Đảm bảo @EnableScheduling được đặt ở lớp Main Application
-    @Scheduled(fixedRate = 1000 * 60 * 5) // Chạy mỗi 5 phút (ví dụ, thay vì mỗi 1 giây để tránh quá tải)
+    @Scheduled(fixedRate = 5000) // Chạy mỗi 5 giây
     public void syncGoogleSheetsData() {
         try {
             // Có thể thêm logging ở đây để biết khi nào tác vụ bắt đầu

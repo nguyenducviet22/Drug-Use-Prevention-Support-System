@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, Button } from "react-bootstrap";
 import { useAuth } from "../../hooks/useAuth";
 import HomeMe from "../../components/home/HomeMe";
@@ -6,11 +6,45 @@ import HomeExplore from "../../components/home/HomeExplore";
 import "./Home.css";
 import { MessageCircle } from "lucide-react";
 import { useTranslation } from "react-i18next"; // Import useTranslation
+import useFetch from "../../hooks/useFetch";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState("explore");
   const { t } = useTranslation("home"); // Khởi tạo hook useTranslation
+
+  const [assessment, setAssessment] = useState({})
+  const { get: getCrafftAssessment } = useFetch()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const assessmentResponse = await getCrafftAssessment("http://localhost:8080/api/assessment/type/CRAFFT")
+        setAssessment(assessmentResponse)
+      } catch (error) {
+        console.error("Fetch error in BlogList:", error);
+      }
+    }
+
+    fetchData()
+  }, [getCrafftAssessment])
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+      navigate("/")
+      return
+    }
+    const { scope } = jwtDecode(token)
+    console.log(scope);
+    if (scope === "MEMBER" || scope === "") navigate("/");
+    if (scope === "STAFF") navigate("/staff");
+    if (scope === "MANAGER") navigate("/manager");
+    if (scope === "CONSULTANT") navigate("/consultant");
+  }, [])
 
   const handleChatClick = () => {
     console.log("Chat button clicked");
@@ -56,7 +90,9 @@ const Home = () => {
         <>
           <Container className="text-center mb-4">
             <p className="text-muted mb-3">{t("loggedOutSection.smallTestText")}</p>
-            <Button variant="dark" size="lg" className="px-4 logged-out-explore-button">
+            <Button variant="dark" size="lg" className="px-4 logged-out-explore-button"
+              onClick={() => navigate('/assessment')}
+            >
               {t("loggedOutSection.smallTestButton")}
             </Button>
           </Container>

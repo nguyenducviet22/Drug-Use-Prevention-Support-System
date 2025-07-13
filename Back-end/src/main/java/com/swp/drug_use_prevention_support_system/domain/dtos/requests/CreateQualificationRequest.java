@@ -4,6 +4,7 @@ import com.swp.drug_use_prevention_support_system.domain.enums.Degree;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,8 +15,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CreateQualificationRequest {
 
-    @NotBlank(message = "Image URL is required")
-    String img;
+    @NotBlank(message = "Name is required")
+    String name;
+
+    String image;
 
     @NotNull(message = "Degree is required")
     Degree degree;
@@ -26,6 +29,4 @@ public class CreateQualificationRequest {
     @NotNull(message = "Year is required")
     @Min(value = 1900, message = "Year must be valid")
     Integer year;
-
-    String description;
 }

@@ -4,6 +4,8 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateCou
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateCourseRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CourseResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.Course;
+import com.swp.drug_use_prevention_support_system.domain.entities.Module;
+import com.swp.drug_use_prevention_support_system.domain.entities.Lesson;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
@@ -15,8 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,12 +28,15 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
     private final EnrollmentRepository enrollmentRepository;
+    private final ModuleService moduleService;
+    private final LessonService lessonService;
 
     @PreAuthorize("hasRole('STAFF')")
     public CourseResponse createCourse(CreateCourseRequest request) {
         Course course = courseMapper.toEntity(request);
         course.setCourseID(UUID.randomUUID());
         course.setStatus(CourseStatus.UNAVAILABLE);
+        course.setDuration(0);
         courseRepository.save(course);
         return courseMapper.toDto(course);
     }
@@ -58,9 +62,9 @@ public class CourseService {
     public CourseResponse updateCourse(UUID courseId, UpdateCourseRequest request) {
         Course course = getCourseEntity(courseId);
         course.setCourseName(request.getCourseName());
-        course.setDuration(request.getDuration());
+        course.setDuration(calculateCourseDuration(request.getCourseID()));
         course.setQuantity(request.getQuantity());
-        course.setImg(request.getImg());
+        course.setImage(request.getImage());
         course.setDescription(request.getDescription());
         course.setAgeGroup(request.getAgeGroup());
         courseRepository.save(course);
@@ -76,7 +80,7 @@ public class CourseService {
     }
 
     public List<CourseResponse> getCoursesByAgeGroup(AgeGroup ageGroup) {
-        List<Course> courses = courseRepository.findByAgeGroupOrderByCreatedAtDesc(ageGroup);
+        List<Course> courses = courseRepository.findByAgeGroupAndStatusOrderByCreatedAtDesc(ageGroup, CourseStatus.AVAILABLE);
         return courses.stream()
                 .map(course -> courseMapper.toDto(course))
                 .toList();
@@ -96,21 +100,31 @@ public class CourseService {
                 .toList();
     }
 
-    public List<CourseResponse> getCoursesByStatusAndDateDuration(CourseStatus status, LocalDate startDate, LocalDate endDate) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
-        List<Course> courses = courseRepository.findByStatusAndCreatedAtBetween(status, startDateTime, endDateTime);
+    public List<CourseResponse> getCoursesByStatusAndDateDuration(CourseStatus status, Instant startedAt, Instant endedAt) {
+        List<Course> courses = courseRepository.findByStatusAndCreatedAtBetween(status, startedAt, endedAt);
         return courses.stream()
                 .map(course -> courseMapper.toDto(course))
                 .toList();
     }
 
-    public List<CourseResponse> getAllCoursesByDateDuration(LocalDate startDate, LocalDate endDate) {
-        LocalDateTime startDateTime = startDate.atStartOfDay();
-        LocalDateTime endDateTime = endDate.plusDays(1).atStartOfDay();
-        List<Course> courses = courseRepository.findByCreatedAtBetween(startDateTime, endDateTime);
+    public List<CourseResponse> getAllCoursesByDateDuration( Instant startedAt,  Instant endedAt) {
+        List<Course> courses = courseRepository.findByCreatedAtBetween(startedAt, endedAt);
         return courses.stream()
                 .map(course -> courseMapper.toDto(course))
                 .toList();
+    }
+
+    public Integer calculateCourseDuration(UUID courseID) {
+        List<com.swp.drug_use_prevention_support_system.domain.entities.Module> modules = moduleService.getAllModulesByCourseID(courseID, CourseStatus.AVAILABLE);
+
+        int totalDuration = 0;
+
+        for (Module module : modules) {
+            List<Lesson> lessons = lessonService.getLessonsByModuleID(module.getModuleID(), CourseStatus.AVAILABLE);
+            for (Lesson lesson : lessons) {
+                totalDuration += lesson.getDuration();
+            }
+        }
+        return totalDuration;
     }
 }

@@ -1,10 +1,10 @@
 package com.swp.drug_use_prevention_support_system.services;
 
 import com.swp.drug_use_prevention_support_system.domain.MailBody;
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.ForgotPasswordRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.ResetPasswordRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ForgotPasswordResponse;
 import com.swp.drug_use_prevention_support_system.domain.entities.Password;
-import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.mappers.PasswordMapper;
 import com.swp.drug_use_prevention_support_system.repositories.PasswordRepository;
 import jakarta.mail.MessagingException;
@@ -12,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Random;
 
 @Service
@@ -27,12 +28,10 @@ public class PasswordService {
     private static final int OTP_EXPIRATION_MINUTES = 10;
 
     @Transactional
-    public ForgotPasswordResponse generateOtp() {
-        String loginUsername = userService.getLoginUsername();
-        User user = userService.getUserEntity(loginUsername);
-        String email = user.getEmail();
+    public ForgotPasswordResponse generateOtp(ForgotPasswordRequest request) {
+        String email = request.getEmail();
         String otp = String.valueOf(new Random().nextInt(100_000, 999_999));
-        LocalDateTime expiryTime = LocalDateTime.now().plusMinutes(OTP_EXPIRATION_MINUTES);
+        Instant expiryTime = Instant.now().plus(OTP_EXPIRATION_MINUTES, ChronoUnit.MINUTES);
 
         passwordRepository.deleteByEmail(email);
         Password newPassword = Password.builder()
@@ -45,8 +44,9 @@ public class PasswordService {
     }
 
     public void sendOtpEmail(String email, String otp) throws MessagingException {
+        String[] recipients = {email};
         MailBody mailBody = MailBody.builder()
-                .to(email)
+                .to(recipients)
                 .subject("Password Reset OTP")
                 .content("Your OTP code to reset your password is: " + otp + "\n"
                         + "This code will expire in " + OTP_EXPIRATION_MINUTES + " minutes.\n"
@@ -56,15 +56,13 @@ public class PasswordService {
     }
 
     public boolean verifyOtp(ResetPasswordRequest request) {
-        String loginUsername = userService.getLoginUsername();
-        User user = userService.getUserEntity(loginUsername);
-        String email = user.getEmail();
+        String email = request.getEmail();
         String otp = request.getOtp();
         Password password = passwordRepository.findByEmailAndOtp(email, otp);
 
-        if (password.getExpiryTime().isBefore(LocalDateTime.now())){
+        if (password.getExpiryTime().isBefore(Instant.now())){
             return false;
         }
-        return userService.changePassword(request.getNewPassword());
+        return userService.changePassword(request.getUsername(), request.getNewPassword());
     }
 }

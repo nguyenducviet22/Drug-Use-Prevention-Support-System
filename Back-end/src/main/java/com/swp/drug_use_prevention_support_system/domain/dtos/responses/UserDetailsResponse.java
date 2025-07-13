@@ -4,7 +4,6 @@ import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -20,7 +19,7 @@ public class UserDetailsResponse {
     String relationship;
     String address;
     UserStatus status;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    String createdAt;
+    String updatedAt;
     UserResponse member;
 }

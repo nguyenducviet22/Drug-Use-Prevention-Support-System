@@ -1,0 +1,29 @@
+{
+    "backButton": "Back",
+    "sidebar": {
+        "readingTimeTitle": "Reading Time",
+        "minutes": "{{duration}} mins",
+        "courseLabel": "Course:",
+        "descriptionLabel": "Description:"
+    },
+    "lessonNavigation": {
+        "moduleTitle": "Module {{index}}: {{moduleName}}"
+    },
+    "mainContent": {
+        "selectLessonPrompt": "Select a lesson to start learning.",
+        "markAsReadButton": {
+            "loading": "Loading...",
+            "completed": "Completed",
+            "markAsRead": "Mark as Read"
+        }
+    },
+    "lessonNotFound": {
+        "code": "📘",
+        "title": "Lesson Not Found",
+        "message": "We couldn't find the lesson you're looking for or there was an error loading course content.",
+        "backText": "Back to Courses"
+    },
+    "toastMessages": {
+        "allLessonsCompleted": "You have completed this course. We will send your certificate later."
+    }
+}

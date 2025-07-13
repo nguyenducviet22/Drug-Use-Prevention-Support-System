@@ -22,7 +22,7 @@ public class EventResponse {
     Integer duration;
     Integer quantity;
     String description;
-    String img;
+    String image;
     EventStatus status;
     LocalDateTime startDate;
     LocalDateTime endDate;

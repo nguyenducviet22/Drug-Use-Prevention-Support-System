@@ -5,8 +5,8 @@ CREATE TABLE user_details (
     relationship VARCHAR(100) NOT NULL,
     address VARCHAR(255) NOT NULL,
     status ENUM('ACTIVE', 'INACTIVE') NOT NULL,
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL,
+    created_at DATETIME(6) NOT NULL,
+    updated_at DATETIME(6) NOT NULL,
     member_id VARCHAR(100) NOT NULL,
     FOREIGN KEY (member_id) REFERENCES users(username)
 );

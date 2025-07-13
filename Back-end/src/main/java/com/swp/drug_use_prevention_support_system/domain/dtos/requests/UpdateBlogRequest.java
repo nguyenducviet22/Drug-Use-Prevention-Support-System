@@ -20,8 +20,7 @@ public class UpdateBlogRequest {
     @Size(max = 255, message = "Blog name must be at most 255 characters")
     String blogName;
 
-    @Size(max = 255, message = "Image URL must be at most 255 characters")
-    String img;
+    String image;
 
     @NotBlank(message = "Description is required")
     String description;

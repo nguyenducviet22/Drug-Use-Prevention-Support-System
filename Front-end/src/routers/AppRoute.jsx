@@ -31,9 +31,11 @@ import AvailabilityBooking from '../pages/availability/AvailabilityBooking'
 import EventList from '../pages/event/EventList'
 import EventDetails from '../pages/event/EventDetails'
 import MyEventList from "../pages/event/MyEventList"
+import EventCreation from "../pages/event/CreateEventPage"
 
 import HomeStaff from '../pages/home/HomeStaff'
 import HomeManager from '../pages/home/HomeManager'
+import HomeConsultant from '../pages/home/HomeConsultant'
 
 export default function AppRoute() {
     return (
@@ -42,6 +44,7 @@ export default function AppRoute() {
                 <Route path='/' element={<Home />} />
                 <Route path='/staff' element={<HomeStaff />} />
                 <Route path='/manager' element={<HomeManager />} />
+                <Route path='/consultant' element={<HomeConsultant />} />
                 <Route path="/oauth2/success" element={<OAuth2RedirectHandler />} />
 
                 <Route path="/blogs" element={<BlogList />} />
@@ -52,6 +55,8 @@ export default function AppRoute() {
                 <Route path="/events" element={<EventList />} />
                 <Route path="/events/:id" element={<EventDetails />} />
                 <Route path="/my-events" element={<MyEventList />} />
+                <Route path="/events/create" element={<EventCreation />} />
+                <Route path="/events/preview" element={<EventDetails isPreview />} />
 
                 <Route path="/courses" element={<CourseList />} />
                 <Route path="/courses/:id" element={<CourseDetails />} />

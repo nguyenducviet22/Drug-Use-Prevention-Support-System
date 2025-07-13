@@ -8,6 +8,7 @@ import com.swp.drug_use_prevention_support_system.domain.entities.Course;
 import com.swp.drug_use_prevention_support_system.domain.entities.Module;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.mappers.ModuleMapper;
+import com.swp.drug_use_prevention_support_system.repositories.CourseRepository;
 import com.swp.drug_use_prevention_support_system.repositories.ModuleRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,28 +24,29 @@ public class ModuleService {
 
     private final ModuleRepository moduleRepository;
     private final ModuleMapper moduleMapper;
-    private final CourseService courseService;
+    private final CourseRepository courseRepository;
 
     public ModuleResponse createModule(CreateModuleRequest request) {
         Module module = moduleMapper.toModel(request);
         module.setModuleID(UUID.randomUUID());
         module.setStatus(CourseStatus.AVAILABLE);
         UUID courseID = request.getCourseID();
-        Course course = courseService.getCourseEntity(courseID);
+        Course course = courseRepository.findById(courseID)
+                .orElseThrow(() -> new EntityNotFoundException("Course does not exist with ID: " + courseID));
         module.setCourse(course);
         moduleRepository.save(module);
         return moduleMapper.toDto(module);
     }
 
     public List<ModuleResponse> getAllModulesForCourse(UUID courseID) {
-        List<Module> modules = getAllModulesByCourseID(courseID);
+        List<Module> modules = getAllModulesByCourseID(courseID, CourseStatus.AVAILABLE);
         return modules.stream()
                 .map(module -> moduleMapper.toDto(module))
                 .toList();
     }
 
-    public List<Module> getAllModulesByCourseID(UUID courseID) {
-        return moduleRepository.findByCourseCourseID(courseID);
+    public List<Module> getAllModulesByCourseID(UUID courseID, CourseStatus status) {
+        return moduleRepository.findByCourseCourseIDAndStatus(courseID, status);
     }
 
     public Module getModelEntity(UUID moduleID) {
@@ -65,7 +67,7 @@ public class ModuleService {
     }
 
     public List<ModuleResponse> updateModulesStatus(UUID courseID, DeleteModulesRequest request) {
-        List<UUID> existingModuleIDs = getAllModulesByCourseID(courseID).stream()
+        List<UUID> existingModuleIDs = getAllModulesByCourseID(courseID, CourseStatus.AVAILABLE).stream()
                 .map(Module::getModuleID).toList();
         List<UUID> requestedModuleIDs = request.getModuleIds();
         List<Module> modules = new ArrayList<>();

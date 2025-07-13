@@ -1,0 +1,40 @@
+{
+  "notFound": {
+    "code": "📊",
+    "title": "Không Tìm Thấy Kết Quả Đánh Giá",
+    "message": "Chúng tôi không tìm thấy kết quả bạn đang tìm.",
+    "backLinkText": "Quay lại Bài Đánh Giá"
+  },
+  "progressIndicator": {
+    "step1": "1",
+    "step2": "2"
+  },
+  "mainResultCard": {
+    "completionTitle": "Đã Hoàn Thành",
+    "completionSubtitle": "Đây là kết quả của bạn!",
+    "details": {
+      "userLabel": "Người dùng:",
+      "assessmentScoreLabel": "Điểm đánh giá:",
+      "riskLevelLabel": "Mức độ rủi ro:",
+      "completedDateTimeLabel": "Thời gian hoàn thành:"
+    },
+    "warningSection": {
+      "warningText": "Cảnh báo: Phát hiện nguy cơ tái nghiện",
+      "nextStepsTitle": "Các bước tiếp theo:",
+      "recommendations": [
+        {
+          "title": "Tham gia khóa học phù hợp:",
+          "description": "Hệ thống sẽ đề xuất khóa học phù hợp với mức độ rủi ro cao của bạn."
+        },
+        {
+          "title": "Nhận tư vấn chuyên sâu:",
+          "description": "Đặt lịch với chuyên gia tư vấn được đào tạo bài bản."
+        },
+        {
+          "title": "Tham gia sự kiện cộng đồng:",
+          "description": "Kết nối với các chương trình giáo dục và hoạt động cộng đồng liên quan."
+        }
+      ]
+    }
+  }
+}

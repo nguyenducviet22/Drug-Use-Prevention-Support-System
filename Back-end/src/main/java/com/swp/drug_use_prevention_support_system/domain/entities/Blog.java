@@ -7,7 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -24,7 +25,7 @@ public class Blog {
     UUID blogID;
     String blogName;
     Integer rate;
-    String img;
+    String image;
     String description;
     String content;
     Integer readingTime;
@@ -34,8 +35,8 @@ public class Blog {
     BlogStatus blogStatus;
     @Enumerated(EnumType.STRING)
     AgeGroup ageGroup;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    Instant createdAt;
+    Instant updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
@@ -43,13 +44,13 @@ public class Blog {
 
     @PrePersist
     protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = Instant.now();
     }
 }

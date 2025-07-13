@@ -64,7 +64,7 @@ const EventCard = ({ event, onJoinEvent, onViewDetails, statusInfo, onCancelEven
         {/* Image Section */}
         <div className="event-image-section">
           <img
-            src={event.img || "/placeholder.svg"}
+            src={event.image || "/placeholder.svg"}
             alt={eventName}
             className="event-image"
           />

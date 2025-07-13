@@ -40,12 +40,24 @@ public class EventService {
     private final UserService userService;
 
     //CRUDs for Events
-    @PreAuthorize("hasAnyRole('MANAGER')")
+    @PreAuthorize("hasAnyRole('STAFF')")
     public EventResponse createEvent(CreateEventRequest eventRequest) {
         Event newEvent = eventMapper.toEntity(eventRequest);
         String loginUsername = userService.getLoginUsername();
         User staff = userService.getUserEntity(loginUsername);
         newEvent.setCreatedByStaff(staff);
+        eventRepository.save(newEvent);
+        return eventMapper.toDto(newEvent);
+    }
+
+    // Lưu event dưới dạng DRAFT
+    @PreAuthorize("hasAnyRole('STAFF')")
+    public EventResponse saveEventAsDraft(CreateEventRequest eventRequest) {
+        Event newEvent = eventMapper.toEntity(eventRequest);
+        String loginUsername = userService.getLoginUsername();
+        User staff = userService.getUserEntity(loginUsername);
+        newEvent.setCreatedByStaff(staff);
+        newEvent.setStatus(EventStatus.DRAFT);
         eventRepository.save(newEvent);
         return eventMapper.toDto(newEvent);
     }
@@ -84,20 +96,24 @@ public class EventService {
         return events.stream().map(eventMapper::toDto).toList();
     }
 
-    @PreAuthorize("hasAnyRole('STAFF', 'MANAGER')")
+    @PreAuthorize("hasAnyRole('STAFF')")
     public EventResponse updateEvent(UUID eventId, UpdateEventRequest request) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new EntityNotFoundException("Event does not exist with ID: " + eventId));
 
         event.setEventName(request.getEventName());
+        event.setSubTitle(request.getSubTitle());
         event.setDuration(request.getDuration());
         event.setQuantity(request.getQuantity());
         event.setDescription(request.getDescription());
-        event.setImg(request.getImg());
+        event.setImage(request.getImage());
         event.setStatus(request.getStatus());
         event.setStartDate(request.getStartDate());
         event.setEndDate(request.getEndDate());
         event.setAgeGroup(request.getAgeGroup());
+        event.setLocation(request.getLocation());
+        event.setFee(request.getFee());
+        event.setDetails(request.getDetails());
 
         eventRepository.save(event);
         return eventMapper.toDto(event);
@@ -242,5 +258,4 @@ public class EventService {
                 .map(eventMapper::toDto)
                 .collect(Collectors.toList());
     }
-
 }

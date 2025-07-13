@@ -4,7 +4,7 @@ import com.swp.drug_use_prevention_support_system.domain.enums.NotificationStatu
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+
 import java.util.UUID;
 
 @Data
@@ -18,5 +18,5 @@ public class NotificationResponse {
     String title;
     String description;
     NotificationStatus status;
-    LocalDateTime createdAt;
+    String createdAt;
 }

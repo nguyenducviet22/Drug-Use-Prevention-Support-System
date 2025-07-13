@@ -1,5 +1,5 @@
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
-import { Heart, Clipboard, Calendar, BookOpen, AlertTriangle, CalendarIcon, User } from "lucide-react";
+import { Heart, Clipboard, Calendar, BookOpen, AlertTriangle, CalendarIcon, User, Video } from "lucide-react";
 import "./HomeMe.css";
 import useFetch from "../../hooks/useFetch";
 import { useAuth } from "../../hooks/useAuth";
@@ -8,6 +8,7 @@ import CourseCard from "../card/CourseCard";
 import BlogCard from "../card/BlogCard";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next"; // Import useTranslation
+import AppointmentCard from "../card/AppointmentCard";
 
 const HomeMe = () => {
   const { t } = useTranslation("homeMe"); // Initialize useTranslation
@@ -45,7 +46,7 @@ const HomeMe = () => {
   const [recommendedCourses, setRecommendedCourses] = useState([]);
   const [learningCourses, setLearningCourses] = useState([]);
   const [draftBlogs, setDraftBlogs] = useState([]);
-  const [upcomingAppointments, setupcomingAppointments] = useState([]);
+  const [todayAppointments, setUpcomingAppointments] = useState([]);
 
   const { loading: loadingRecommendedCourses, error: errorRecommendedCourses, get: getRecommendedCourses } = useFetch();
   const { loading: loadingLearningCourses, error: errorLearningCourses, get: getLearningCourses } = useFetch();
@@ -64,11 +65,11 @@ const HomeMe = () => {
           const learningCoursesData = await getLearningCourses(`http://localhost:8080/api/course/LEARNING/${username}`);
           setLearningCourses(learningCoursesData);
 
-          const draftBlogsData = await getDraftBlogs(`http://localhost:8080/api/blog/my-list/draft/${username}`);
+          const draftBlogsData = await getDraftBlogs(`http://localhost:8080/api/blog/my-list/${username}/status/DRAFT`);
           setDraftBlogs(draftBlogsData);
 
-          const appointmentsData = await getAppointments(`http://localhost:8080/api/appointment/my-list/${username}`);
-          setupcomingAppointments(appointmentsData);
+          const todayAppointmentsData = await getAppointments(`http://localhost:8080/api/appointment/today/member/${username}`);
+          setUpcomingAppointments(todayAppointmentsData);
         }
       } catch (err) {
         console.error("Fetch error in Home Me:", err);
@@ -81,10 +82,10 @@ const HomeMe = () => {
   console.log("recommendedCourses:", recommendedCourses);
   console.log("learningCourses:", learningCourses);
   console.log("draftBlogs:", draftBlogs);
-  console.log("upcomingAppointments:", upcomingAppointments);
+  console.log("todayAppointments:", todayAppointments);
 
-  const handleDraftContinue = (blogId) => {
-    navigate(`/blogs/draft/${blogId}`);
+  const handleDraftContinue = (blogID) => {
+    navigate(`/blogs/${blogID}`);
   };
 
   const handleMyBlogsClick = () => {
@@ -95,8 +96,8 @@ const HomeMe = () => {
     navigate('/my-events');
   };
 
-  const handleMyCoursesClick = () => {
-    navigate('/courses');
+  const handleMyCoursesClick = (courseID) => {
+    navigate(`/courses/${courseID}`);
   };
 
   const handleBookAppointmentClick = () => {
@@ -236,35 +237,9 @@ const HomeMe = () => {
         </Row>
 
         <Row>
-          {/* Upcoming Appointment Card */}
+          {/* Today Appointment Card */}
           <Col lg={6} className="mb-4">
-            <Card className="h-100 border-0 shadow-sm appointment-card">
-              <div className="card-header-custom bg-primary text-white d-flex align-items-center">
-                <Calendar size={24} className="me-2" />
-                <h5 className="mb-0 fw-bold">{t("upcomingAppointmentTitle")}</h5>
-              </div>
-              <Card.Body className="p-4">
-                {upcomingAppointments.length > 0 ? (
-                  <>
-                    {upcomingAppointments.filter(appointment => appointment.status === "SCHEDULED").map((appointment) => (
-                      <div className="appointment-info bg-light rounded-3 p-3">
-                        <div className="d-flex justify-content-between align-items-start mb-2">
-                          <div>
-                            <h6 className="fw-bold text-dark mb-1">{appointment.consultant.username}</h6>
-                          </div>
-                          <span className="badge bg-warning text-dark">{appointment.status}</span>
-                        </div>
-                        <div className="appointment-time mt-3">
-                          <div className="fw-semibold text-primary">{appointment.appointmentDateTime}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                ) : (
-                  <div className="text-center text-muted">{t("noUpcomingAppointments")}</div>
-                )}
-              </Card.Body>
-            </Card>
+            <AppointmentCard appointments={todayAppointments} />
           </Col>
 
           {/* Recommended Course Card */}
@@ -276,7 +251,9 @@ const HomeMe = () => {
               </div>
               <Card.Body className="p-4">
                 {recommendedCourses.length > 0 ? (
-                  <CourseCard course={recommendedCourses[0]} />
+                  <CourseCard course={recommendedCourses[0]}
+                    onEnrollClick={handleMyCoursesClick}
+                    onDetailsClick={handleMyCoursesClick} />
                 ) : (
                   <div className="text-center text-muted">{t("noRecommendedCourses")}</div>
                 )}
@@ -303,7 +280,9 @@ const HomeMe = () => {
               <Card.Body className="p-4">
                 {learningCourses.length > 0 ? (
                   <>
-                    <CourseCard course={learningCourses[0]} status={'Learning'} />
+                    <CourseCard course={learningCourses[0]}
+                      status={'learning'}
+                      onContinueClick={handleMyCoursesClick} />
                   </>
                 ) : (
                   <div className="text-center text-muted">{t("noLearningCourses")}</div>

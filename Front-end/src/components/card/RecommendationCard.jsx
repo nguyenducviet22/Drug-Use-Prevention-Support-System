@@ -9,7 +9,7 @@ const RecommendationCard = ({ recommendation, type, onViewClick }) => {
     >
       <Card.Img
         variant="top"
-        src={recommendation.img}
+        src={recommendation.image}
         alt={recommendation[`${type}Name`]}
         className="recommendation-image"
       />

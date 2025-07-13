@@ -2,7 +2,7 @@ CREATE TABLE assessment_result (
     assessment_result_id BINARY(16) NOT NULL PRIMARY KEY,
     score INT NOT NULL,
     suggested_action TEXT,
-    completed_time DATETIME NOT NULL,
+    completed_time DATETIME(6) NOT NULL,
     risk_level ENUM('NORMAL', 'LOW', 'MODERATE', 'HIGH', 'CRITICAL') NOT NULL,
     assessment_type ENUM('ASSIST', 'CRAFFT') NOT NULL,
     username VARCHAR(100) NOT NULL,

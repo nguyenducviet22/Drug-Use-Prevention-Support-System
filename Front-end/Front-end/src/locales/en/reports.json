@@ -1,0 +1,23 @@
+{
+    "loading": "Loading...",
+    "title": "Reports",
+    "downloadReport": "Download Report",
+    "blogsPublished": "Blogs Published",
+    "coursesCompleted": "Courses Completed",
+    "assessmentsTaken": "Assessments Taken",
+    "appointmentsScheduled": "Appointments Scheduled",
+    "finishedActivities": "Finished Activities",
+    "blogsSectionTitle": "Blogs",
+    "noBlogsWritten": "No blogs written yet.",
+    "mins": "mins",
+    "coursesSectionTitle": "Courses",
+    "noCoursesCompleted": "No courses completed yet.",
+    "certified": "Certified",
+    "score": "Score",
+    "assessmentSectionTitle": "Assessment",
+    "noAssessmentsCompleted": "No assessments completed yet.",
+    "riskLevelLow": "Low Risk",
+    "riskLevelModerate": "Moderate Risk",
+    "riskLevelHigh": "High Risk",
+    "viewDetails": "View Details"
+}

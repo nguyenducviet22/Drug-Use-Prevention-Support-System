@@ -1,7 +1,7 @@
 {
   "notFoundTitle": "Không tìm thấy sự kiện",
   "notFoundMessage": "Xin lỗi, sự kiện này không tồn tại hoặc đã bị xóa.",
-  "backToEvents": "Quay lại danh sách sự kiện",
+  "back": "Quay lại",
   "register": "Đăng ký",
   "joined": "Đã tham gia",
   "unavailable": "Không khả dụng",

@@ -11,6 +11,6 @@ import lombok.experimental.FieldDefaults;
 public class ReportRequest {
 
     String filterType;
-    String startDate;
-    String endDate;
+    String startedMonth;
+    String endedMonth;
 }

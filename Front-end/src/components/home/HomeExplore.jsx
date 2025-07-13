@@ -154,7 +154,7 @@ const HomeExplore = () => {
       .then((data) => {
         setRandomBlogs(getRandomItems(data, 2));
       })
-      .catch(() => {});
+      .catch(() => { });
 
     getEveryoneCourses()
       .then((data) => {
@@ -176,6 +176,14 @@ const HomeExplore = () => {
       setUpcomingEvents(enrichedEvents);
     });
   }, [getEveryoneBlogs, getEveryoneCourses, getEvents]);
+
+    const handleReadMore = (blogId) => {
+    navigate(`/blogs/${blogId}`);
+  };
+
+  const handleCoursesClick = (courseID) => {
+    navigate(`/courses/${courseID}`);
+  };
 
   useEffect(() => {
     const fetchRegisteredEvents = async () => {
@@ -250,10 +258,10 @@ const HomeExplore = () => {
               return (
                 <Col md={6} key={event.eventID} className="mb-4">
                   <Card className="h-100 border-0 shadow-sm event-card">
-                    {event.img && (
+                    {event.image && (
                       <Card.Img
                         variant="top"
-                        src={event.img}
+                        src={event.image}
                         alt={event.eventName}
                         style={{ height: 180, objectFit: "cover" }}
                       />
@@ -370,7 +378,9 @@ const HomeExplore = () => {
           <Row>
             {randomCourses.map((course) => (
               <Col md={4} key={course.courseID} className="mb-4">
-                <CourseCard course={course} />
+                <CourseCard course={course}
+                  onEnrollClick={handleCoursesClick}
+                  onDetailsClick={handleCoursesClick} />
               </Col>
             ))}
           </Row>

@@ -7,7 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
+import java.time.Instant;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class Event {
     Integer duration;
     Integer quantity;
     String description;
-    String img;
+    String image;
     @Enumerated(EnumType.STRING)
     EventStatus status;
     LocalDateTime startDate;
@@ -53,6 +54,10 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "created_by_staff", nullable = false, updatable = false)
     User createdByStaff;
+
+    @ManyToOne
+    @JoinColumn(name = "approved_by_manager")
+    User approvedByManager;
 
     @PrePersist
     protected void onCreate() {

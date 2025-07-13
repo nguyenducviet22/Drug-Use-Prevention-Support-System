@@ -53,10 +53,15 @@ public class AssessmentService {
         return assessmentMapper.toDto(assessment);
     }
 
+    public AssessmentResponse getAssessmentByType(AssessmentType type) {
+        Assessment assessment = getAssessmentEntity(type);
+        return assessmentMapper.toDto(assessment);
+    }
+
     @PreAuthorize("hasRole('STAFF')")
     public AssessmentResponse updateAssessment(UUID assessmentID, UpdateAssessmentRequest request) {
         Assessment assessment = getAssessmentEntity(assessmentID);
-        assessment.setImg(request.getImg());
+        assessment.setImage(request.getImage());
         assessment.setAssessmentType(request.getAssessmentType());
         assessment.setLinkTest(request.getLinkTest());
         assessment.setDescription(request.getDescription());

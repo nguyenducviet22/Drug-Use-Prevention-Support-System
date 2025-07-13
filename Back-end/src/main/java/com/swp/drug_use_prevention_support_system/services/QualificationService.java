@@ -45,7 +45,7 @@ public class QualificationService {
     }
 
     public List<QualificationResponse> getConsultantQualifications(String username) {
-        List<Qualification> qualifications = qualificationRepository.findByConsultantUsername(username);
+        List<Qualification> qualifications = qualificationRepository.findByConsultantUsernameAndStatusOrderByYearDesc(username, CourseStatus.AVAILABLE);
         return qualifications.stream()
                 .map(qualification -> qualificationMapper.toDto(qualification))
                 .toList();
@@ -64,11 +64,11 @@ public class QualificationService {
     @PostAuthorize("returnObject.consultant.username == authentication.name")
     public QualificationResponse updateQualification(UUID qualificationID, UpdateQualificationRequest request) {
         Qualification qualification = getQualificationEntity(qualificationID);
-        qualification.setImg(request.getImg());
+        qualification.setName(request.getName());
+        qualification.setImage(request.getImage());
         qualification.setDegree(request.getDegree());
         qualification.setInstitution(request.getInstitution());
         qualification.setYear(request.getYear());
-        qualification.setDescription(request.getDescription());
         qualificationRepository.save(qualification);
         return qualificationMapper.toDto(qualification);
     }

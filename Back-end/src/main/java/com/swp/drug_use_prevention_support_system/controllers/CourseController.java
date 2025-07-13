@@ -10,7 +10,6 @@ import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
 import com.swp.drug_use_prevention_support_system.services.CourseService;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
-import com.swp.drug_use_prevention_support_system.services.LessonService;
 import com.swp.drug_use_prevention_support_system.services.ModuleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

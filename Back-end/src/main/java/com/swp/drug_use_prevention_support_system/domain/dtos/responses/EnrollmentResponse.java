@@ -4,7 +4,7 @@ import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
+
 import java.util.UUID;
 
 @Data
@@ -16,8 +16,8 @@ public class EnrollmentResponse {
 
     UUID enrollmentID;
     EnrollmentStatus status;
-    LocalDate startDate;
-    LocalDate endDate;
+    String startedAt;
+    String endedAt;
     CourseResponse course;
     UserResponse member;
 }

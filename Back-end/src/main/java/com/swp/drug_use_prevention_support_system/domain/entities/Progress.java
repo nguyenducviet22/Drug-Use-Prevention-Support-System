@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -25,8 +26,8 @@ public class Progress {
     UUID lessonID;
     @Enumerated(EnumType.STRING)
     ProgressStatus status;
-    LocalDateTime startedAt;
-    LocalDateTime completedAt;
+    Instant startedAt;
+    Instant completedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "enrollment_id")
@@ -34,13 +35,13 @@ public class Progress {
 
     @PrePersist
     protected void onCreate() {
-        LocalDateTime now = LocalDateTime.now();
+        Instant now = Instant.now();
         this.startedAt = now;
         this.completedAt = now;
     }
 
     @PreUpdate
     protected void onUpdate() {
-        this.completedAt = LocalDateTime.now();
+        this.completedAt = Instant.now();
     }
 }

@@ -9,7 +9,7 @@ CREATE TABLE users (
     job VARCHAR(255),
     role ENUM('MEMBER', 'STAFF', 'CONSULTANT', 'MANAGER', 'ADMIN'),
     address VARCHAR(255),
-    created_at DATETIME NOT NULL,
-    updated_at DATETIME NOT NULL,
+    created_at DATETIME(6) NOT NULL,
+    updated_at DATETIME(6) NOT NULL,
     status ENUM('ACTIVE', 'INACTIVE') NOT NULL
 );

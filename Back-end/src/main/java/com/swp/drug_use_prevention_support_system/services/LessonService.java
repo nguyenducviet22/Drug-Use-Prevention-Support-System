@@ -38,12 +38,16 @@ public class LessonService {
         return lessonMapper.toDto(lesson);
     }
 
-    public List<Lesson> getLessonsByModuleID(UUID moduleID) {
-        return lessonRepository.findByModuleModuleID(moduleID);
+    public List<LessonResponse> getLessons() {
+        return lessonRepository.findAll().stream().map(lessonMapper::toDto).toList();
+    }
+
+    public List<Lesson> getLessonsByModuleID(UUID moduleID, CourseStatus status) {
+        return lessonRepository.findByModuleModuleIDAndStatus(moduleID, status);
     }
 
     public List<LessonResponse> getLessonsForModule(UUID moduleID) {
-        List<Lesson> lessons = getLessonsByModuleID(moduleID);
+        List<Lesson> lessons = getLessonsByModuleID(moduleID, CourseStatus.AVAILABLE);
         return lessons.stream()
                 .map(lesson -> lessonMapper.toDto(lesson))
                 .toList();
@@ -71,7 +75,7 @@ public class LessonService {
     }
 
     public List<LessonResponse> updateLessonsStatus(UUID moduleID, DeleteLessonsRequest request) {
-        List<UUID> existingLessonIDs = getLessonsByModuleID(moduleID).stream()
+        List<UUID> existingLessonIDs = getLessonsByModuleID(moduleID, CourseStatus.AVAILABLE).stream()
                 .map(Lesson::getLessonID).toList();
         List<UUID> requestedLessonIDs = request.getLessonIds();
         List<Lesson> lessons = new ArrayList<>();

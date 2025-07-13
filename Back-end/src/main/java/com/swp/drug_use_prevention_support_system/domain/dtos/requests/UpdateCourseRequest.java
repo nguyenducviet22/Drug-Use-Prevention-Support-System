@@ -5,12 +5,17 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateCourseRequest {
+
+    @NotNull(message = "Course ID is required")
+    UUID courseID;
 
     @NotBlank(message = "Course name is required")
     @Size(max = 255, message = "Course name must be at most 255 characters")
@@ -22,8 +27,7 @@ public class UpdateCourseRequest {
     @PositiveOrZero(message = "Quantity cannot be negative")
     Integer quantity;
 
-    @Size(max = 255, message = "Image URL must be at most 255 characters")
-    String img;
+    String image;
 
     @NotBlank(message = "Description is required")
     String description;

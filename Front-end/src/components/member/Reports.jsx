@@ -15,60 +15,44 @@ const Reports = () => {
 
   // Mock data for finished activities
   const [blogs, setBlogs] = useState([])
-  const [courses, setCourses] = useState([]) // Assuming this will be fetched in the future
+  const [enrollments, setEnrollments] = useState([]) // Assuming this will be fetched in the future
   const [assessmentResults, setAssessmentResults] = useState([])
-  const username = user?.username;
-  const { loading: loadingBlogs, error: blogsError, get: getBlogs } = useFetch(`http://localhost:8080/api/blog/my-list/${username}`)
-  // const { loading: coursesLoading, error: coursesError, get: getCourses } = useFetch(`http://localhost:8080/api/course/my-list/${user?.username}`)
-  const { loading: loadingAssessmentResults, error: assessmentResultsError, get: getAssessmentResults } = useFetch(`http://localhost:8080/api/assessment-result/my-list/${username}`)
+  const { loading: loadingBlogs, error: blogsError, get: getBlogs } = useFetch()
+  const { loading: enrollmentsLoading, error: enrollmentsError, get: getEnrollments } = useFetch()
+  const { loading: loadingAssessmentResults, error: assessmentResultsError, get: getAssessmentResults } = useFetch()
 
   useEffect(() => {
-    getBlogs()
-      .then(setBlogs)
-      .catch(() => { });
+    const fetchData = async () => {
+      try {
+        if (user) {
+          const blogsData = await getBlogs(`http://localhost:8080/api/blog/my-list/${user?.username}/status/PUBLISHED`)
+          setBlogs(blogsData)
+          const enrollmentsData = await getEnrollments(`http://localhost:8080/api/enrollment/my-list/${user?.username}`)
+          setEnrollments(enrollmentsData)
+          const assessmentResultsData = await getAssessmentResults(`http://localhost:8080/api/assessment-result/my-list/${user?.username}`)
+          setAssessmentResults(assessmentResultsData)
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+    }
 
-    // getCourses()
-    //   .then(setCourses)
-    //   .catch(() => { });
-
-    getAssessmentResults()
-      .then(setAssessmentResults)
-      .catch(() => { });
-  }, [getBlogs, getAssessmentResults])
-
-  const finishedActivities = {
-    blogs,
-    courses: [ // This is still mock data. You'll need to fetch real data here.
-      {
-        id: 1,
-        title: "School Drug Prevention",
-        completedDate: "2024-12-20",
-        duration: "4 hours",
-        score: 95,
-        certificate: true,
-      },
-      {
-        id: 2,
-        title: "Awareness of synthetic drugs",
-        completedDate: "2024-12-01",
-        duration: "3 hours",
-        score: 88,
-        certificate: true,
-      },
-    ],
-    assessmentResults
-  }
+    fetchData()
+  }, [user, getBlogs, getEnrollments, getAssessmentResults])
+  console.log(blogs);
+  console.log(enrollments);
+  console.log(assessmentResults);
 
   const stats = {
-    totalBlogs: finishedActivities.blogs.length,
-    totalCourses: finishedActivities.courses.length,
-    totalAssessmentResults: finishedActivities.assessmentResults.length,
-    averageCourseScore: finishedActivities.courses.length > 0
+    totalBlogs: blogs.length,
+    totalEnrollments: enrollments.length,
+    totalAssessmentResults: assessmentResults.length,
+    averageCourseScore: enrollments.length > 0
       ? Math.round(
-          finishedActivities.courses.reduce((sum, course) => sum + course.score, 0) / finishedActivities.courses.length,
-        )
+        enrollments.reduce((sum, course) => sum + course.score, 0) / enrollments.length,
+      )
       : 0, // Handle division by zero
-    certificatesEarned: finishedActivities.courses.filter((course) => course.certificate).length,
+    certificatesEarned: enrollments.filter((course) => course.certificate).length,
   }
 
   const getRiskLevelColor = (riskLevel) => {
@@ -131,7 +115,7 @@ const Reports = () => {
               <Col md={3} className="mb-3">
                 <div className="stat-card text-center p-3">
                   <GraduationCap size={32} className="text-success mb-2" />
-                  <h4 className="mb-1">{stats.totalCourses}</h4>
+                  <h4 className="mb-1">{stats.totalEnrollments}</h4>
                   <small className="text-muted">{t("coursesCompleted")}</small>
                 </div>
               </Col>
@@ -162,11 +146,11 @@ const Reports = () => {
             {/* Blogs Section */}
             <div className="activity-section mb-4">
               <h6 className="activity-title mb-3">{t("blogsSectionTitle")}</h6>
-              {finishedActivities.blogs.length === 0 ? (
+              {blogs.length === 0 ? (
                 <p className="text-muted">{t("noBlogsWritten")}</p>
               ) : (
                 <div className="activity-list">
-                  {finishedActivities.blogs.map((blog) => (
+                  {blogs.map((blog) => (
                     <div
                       key={blog.blogID}
                       className="activity-item d-flex justify-content-between align-items-center p-3 mb-2"
@@ -196,49 +180,42 @@ const Reports = () => {
               )}
             </div>
 
-            {/* Courses Section */}
+            {/* Enrollments Section */}
             <div className="activity-section mb-4">
               <h6 className="activity-title mb-3">{t("coursesSectionTitle")}</h6>
-              {finishedActivities.courses.length === 0 ? (
+              {enrollments.length === 0 ? (
                 <p className="text-muted">{t("noCoursesCompleted")}</p>
               ) : (
                 <div className="activity-list">
-                  {finishedActivities.courses.map((course) => (
+                  {enrollments.map((enrollment) => (
                     <div
-                      key={course.id}
+                      key={enrollment.course.courseID}
                       className="activity-item d-flex justify-content-between align-items-center p-3 mb-2"
                     >
                       <div className="activity-info flex-grow-1">
-                        <h6 className="mb-1">{course.title}</h6>
+                        <h6 className="mb-1">{enrollment.course.courseName}</h6>
                         <div className="activity-meta mb-2">
                           <small className="text-muted me-3">
                             <Calendar size={14} className="me-1" />
-                            {new Date(course.completedDate).toLocaleDateString()}
+                            {new Date(enrollment.endDate).toLocaleDateString()}
                           </small>
                           <small className="text-muted me-3">
                             <GraduationCap size={14} className="me-1" />
-                            {course.duration}
+                            {enrollment.course.duration}
                           </small>
-                          {course.certificate && (
+                          {enrollment.course.certificate && (
                             <Badge bg="success" className="certificate-badge">
                               <Award size={12} className="me-1" />
                               {t("certified")}
                             </Badge>
                           )}
                         </div>
-                        <div className="score-progress">
-                          <div className="d-flex justify-content-between align-items-center mb-1">
-                            <small className="text-muted">{t("score")}</small>
-                            <small className="fw-bold text-primary">{course.score}%</small>
-                          </div>
-                          <ProgressBar variant="primary" now={course.score} style={{ height: "6px" }} />
-                        </div>
                       </div>
                       <Button
                         variant="outline-primary"
                         size="sm"
                         className="ms-3"
-                        onClick={() => handleViewDetails("course", course.id)}
+                        onClick={() => handleViewDetails("course", enrollment.course.courseID)}
                       >
                         <Eye size={14} />
                       </Button>
@@ -251,11 +228,11 @@ const Reports = () => {
             {/* Assessment Section */}
             <div className="activity-section">
               <h6 className="activity-title mb-3">{t("assessmentSectionTitle")}</h6>
-              {finishedActivities.assessmentResults.length === 0 ? (
+              {assessmentResults.length === 0 ? (
                 <p className="text-muted">{t("noAssessmentsCompleted")}</p>
               ) : (
                 <div className="activity-list">
-                  {finishedActivities.assessmentResults.map((result) => (
+                  {assessmentResults.map((result) => (
                     <div key={result.assessmentResultID} className="activity-item p-3 mb-2">
                       <div className="d-flex justify-content-between align-items-start mb-2">
                         <div className="activity-info">
@@ -267,8 +244,9 @@ const Reports = () => {
                             </small>
                             <small className="text-muted me-3">{t("score")}: {result.score}</small>
                             <Badge bg={getRiskLevelColor(result.riskLevel)} className="risk-badge">
-                              {t(`riskLevel${result.riskLevel.replace(/\s/g, '')}`)}
+                              {t(`riskLevel${result.riskLevel.charAt(0).toUpperCase()}${result.riskLevel.slice(1).toLowerCase()}`)}
                             </Badge>
+
                           </div>
                         </div>
                         <Button

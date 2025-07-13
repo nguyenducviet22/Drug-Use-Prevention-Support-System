@@ -29,5 +29,6 @@
     "progressIndicator": {
     "step1": "1",
     "step2": "2"
-  }
+  }, 
+  "backToAssessments": "Back"
 }

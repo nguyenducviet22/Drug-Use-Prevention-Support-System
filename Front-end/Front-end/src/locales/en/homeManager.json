@@ -1,0 +1,23 @@
+{
+  "totalMembers": "Total Members",
+  "staffMembers": "Staff Members",
+  "consultants": "Consultants",
+  "monthlyConsultations": "Monthly Consultations",
+  "activeCourses": "Active Courses",
+  "blogs": "Blogs",
+  "events": "Events",
+  "courses": "Courses",
+  "pendingBlogs": "Blogs",
+  "pendingCourses": "Courses",
+  "pendingEvents": "Events",
+  "communityDrugPreventionSummit2024": "Community Drug Prevention Summit 2024",
+  "youthLeadershipWorkshop": "Youth Leadership Workshop",
+  "parentTeacherDrugAwarenessMeeting": "Parent-Teacher Drug Awareness Meeting",
+  "hoursAgo": "hours ago",
+  "dayAgo": "day ago",
+  "userManagement": "User Management",
+  "manageUsersDescription": "Manage members, staff, and consultants with comprehensive tools",
+  "accessDashboard": "Access Dashboard",
+  "successfullyApproved": "Successfully approved {{type}} with ID: {{id}}",
+  "failedToApprove": "Failed to approve {{type}} with ID: {{id}}"
+}

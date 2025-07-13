@@ -2,11 +2,9 @@ package com.swp.drug_use_prevention_support_system.controllers;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateLessonRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.DeleteLessonsRequest;
-import com.swp.drug_use_prevention_support_system.domain.dtos.requests.DeleteModulesRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateLessonRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.LessonResponse;
-import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ModuleResponse;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import com.swp.drug_use_prevention_support_system.services.LessonService;
 import jakarta.validation.Valid;
@@ -36,6 +34,16 @@ public class LessonController {
                 .status(HttpStatus.CREATED.value())
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+    }
+
+    @GetMapping()
+    public ResponseEntity<ApiResponse<List<LessonResponse>>> getLessons() {
+        List<LessonResponse> responses = lessonService.getLessons();
+        ApiResponse<List<LessonResponse>> apiResponse = ApiResponse.<List<LessonResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/{id}")

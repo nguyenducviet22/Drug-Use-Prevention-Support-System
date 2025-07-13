@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -27,7 +27,7 @@ public class Survey {
     SurveyStatus status;
     String feedback;
     String description;
-    LocalDateTime surveyDate;
+    Instant surveyDate;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
@@ -35,6 +35,6 @@ public class Survey {
 
     @PrePersist
     protected void onCreate() {
-        this.surveyDate = LocalDateTime.now();
+        this.surveyDate = Instant.now();
     }
 }

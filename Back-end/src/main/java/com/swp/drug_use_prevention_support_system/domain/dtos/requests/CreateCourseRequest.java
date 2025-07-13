@@ -22,8 +22,7 @@ public class CreateCourseRequest {
     @PositiveOrZero(message = "Quantity cannot be negative")
     Integer quantity;
 
-    @Size(max = 255, message = "Image URL must be at most 255 characters")
-    String img;
+    String image;
 
     @NotBlank(message = "Description is required")
     String description;

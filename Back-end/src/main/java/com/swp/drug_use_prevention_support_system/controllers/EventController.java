@@ -36,6 +36,16 @@ public class EventController {
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
 
+    @PostMapping("/draft")
+    public ResponseEntity<ApiResponse<EventResponse>> saveEventAsDraft(@Valid @RequestBody CreateEventRequest request) {
+        EventResponse response = eventService.saveEventAsDraft(request);
+        ApiResponse<EventResponse> apiResponse = ApiResponse.<EventResponse>builder()
+                .data(response)
+                .status(HttpStatus.CREATED.value())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+    }
+
     @GetMapping
     public ResponseEntity<ApiResponse<List<EventResponse>>> getAllEvents() throws IOException {
         List<EventResponse> responses = eventService.getAllEvents();
@@ -94,8 +104,10 @@ public class EventController {
         EventResponse response = eventService.updateEvent(id, request);
         ApiResponse<EventResponse> apiResponse = ApiResponse.<EventResponse>builder()
                 .data(response)
+                .message("Event updated successfully")
                 .status(HttpStatus.OK.value())
                 .build();
+
         return ResponseEntity.ok(apiResponse);
     }
 

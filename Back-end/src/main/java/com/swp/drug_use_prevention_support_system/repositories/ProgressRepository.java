@@ -15,4 +15,6 @@ public interface ProgressRepository extends JpaRepository<Progress, UUID> {
     List<Progress> findByEnrollmentEnrollmentIDAndStatus(UUID enrollmentID, ProgressStatus progressStatus);
 
     Progress findByEnrollmentEnrollmentIDAndLessonID(UUID enrollmentID, UUID lessonID);
+
+//    List<Progress> findByEnrollmentEnrollmentIDAndLessonID(UUID enrollmentID, UUID lessonID);
 }

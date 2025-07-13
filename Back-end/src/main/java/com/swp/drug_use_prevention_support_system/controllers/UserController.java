@@ -89,7 +89,7 @@ public class UserController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PatchMapping("/{username}")
+    @PutMapping("/status/{username}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();

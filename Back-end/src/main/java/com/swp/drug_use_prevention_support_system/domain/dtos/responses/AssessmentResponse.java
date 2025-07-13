@@ -5,7 +5,7 @@ import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+
 import java.util.UUID;
 
 @Data
@@ -16,12 +16,12 @@ import java.util.UUID;
 public class AssessmentResponse {
 
     UUID assessmentID;
-    String img;
+    String image;
     AssessmentType assessmentType;
     String linkTest;
     String description;
     String details;
     CourseStatus status;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    String createdAt;
+    String updatedAt;
 }

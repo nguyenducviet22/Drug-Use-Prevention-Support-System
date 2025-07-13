@@ -6,7 +6,7 @@ import com.swp.drug_use_prevention_support_system.domain.enums.BlogType;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDateTime;
+
 import java.util.UUID;
 
 @Data
@@ -19,14 +19,14 @@ public class BlogResponse {
     UUID blogID;
     String blogName;
     Integer rate;
-    String img;
+    String image;
     String description;
     String content;
     Integer readingTime;
     BlogType blogType;
     BlogStatus blogStatus;
     AgeGroup ageGroup;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    String createdAt;
+    String updatedAt;
     UserResponse member;
 }
