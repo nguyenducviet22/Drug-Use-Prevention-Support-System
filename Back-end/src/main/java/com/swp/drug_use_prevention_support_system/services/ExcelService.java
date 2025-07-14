@@ -30,6 +30,8 @@ public class ExcelService {
     private final UserDetailsRepository userDetailsRepository;
     private final QualificationRepository qualificationRepository;
     private final AssessmentRepository assessmentRepository;
+    private final AssessmentService assessmentService;
+    private final AssessmentResultRepository assessmentResultRepository;
     private final CourseRepository courseRepository;
     private final CourseService courseService;
     private final BlogRepository blogRepository;
@@ -64,8 +66,6 @@ public class ExcelService {
                 String address = getCellValue(row.getCell(9));
                 UserStatus status = UserStatus.valueOf(getCellValue(row.getCell(10)).toUpperCase());
                 AgeGroup group = AgeGroup.valueOf(getCellValue(row.getCell(11)));
-                Instant createdAt = Instant.parse(getCellValue(row.getCell(12)));
-                Instant updatedAt = Instant.parse(getCellValue(row.getCell(13)));
 
                 User user = User.builder()
                         .username(username)
@@ -80,8 +80,6 @@ public class ExcelService {
                         .role(role)
                         .status(status)
                         .ageGroup(group)
-                        .createdAt(createdAt)
-                        .updatedAt(updatedAt)
                         .build();
                 users.add(user);
             } catch (Exception e) {
@@ -409,19 +407,20 @@ public class ExcelService {
                 String img = getCellValue(row.getCell(4));
                 EventStatus status = EventStatus.valueOf(getCellValue(row.getCell(5)).toUpperCase());
 
-                LocalDateTime startDate = LocalDateTime.parse(getCellValue(row.getCell(6)));
-                LocalDateTime endDate = LocalDateTime.parse(getCellValue(row.getCell(7)));
+                ZoneId zone = ZoneId.systemDefault();
+                LocalDateTime startDate = LocalDateTime.ofInstant(Instant.parse(getCellValue(row.getCell(6))), zone);
+                LocalDateTime endDate = LocalDateTime.ofInstant(Instant.parse(getCellValue(row.getCell(7))), zone);
 
-//                String subTitle = getCellValue(row.getCell(8));
-//                String location = getCellValue(row.getCell(9));
-//                Double fee = Double.valueOf(getCellValue(row.getCell(10)));
-//                String details = getCellValue(row.getCell(11));
-                AgeGroup ageGroup = AgeGroup.valueOf(getCellValue(row.getCell(8)));
+                String subTitle = getCellValue(row.getCell(8));
+                String location = getCellValue(row.getCell(9));
+                Double fee = Double.valueOf(getCellValue(row.getCell(10)));
+                String details = getCellValue(row.getCell(11));
+                AgeGroup ageGroup = AgeGroup.valueOf(getCellValue(row.getCell(12)).toUpperCase());
 
                 // Tạm thời chưa gán createdByStaff nếu không có thông tin trong Excel
                 Event event = Event.builder()
                         .eventName(name)
-                        .subTitle("No subtitle")
+                        .subTitle(subTitle)
                         .duration(duration)
                         .quantity(quantity)
                         .description(description)
@@ -429,15 +428,21 @@ public class ExcelService {
                         .status(status)
                         .startDate(startDate)
                         .endDate(endDate)
-                        .location("FPT University")
-                        .fee(0.0)
-                        .details("No details")
+                        .location(location)
+                        .fee(fee)
+                        .details(details)
                         .ageGroup(ageGroup)
                         .build();
 
+                events.add(event);
             } catch (Exception e) {
                 throw new RuntimeException("Error Excel import Events at line " + (i + 1) + ": " + e.getMessage(), e);
             }
+        }
+
+        eventRepository.saveAll(events);
+        workbook.close();
+    }
 
     private String getCellValue(Cell cell) {
         if (cell == null) return "";

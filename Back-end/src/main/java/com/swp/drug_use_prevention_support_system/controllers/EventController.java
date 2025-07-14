@@ -1,6 +1,7 @@
 package com.swp.drug_use_prevention_support_system.controllers;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateEventRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateEventRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EventResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EventStatusResponse;
