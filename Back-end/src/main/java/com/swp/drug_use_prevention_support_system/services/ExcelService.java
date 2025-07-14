@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -434,15 +435,9 @@ public class ExcelService {
                         .ageGroup(ageGroup)
                         .build();
 
-                events.add(event);
             } catch (Exception e) {
                 throw new RuntimeException("Error Excel import Events at line " + (i + 1) + ": " + e.getMessage(), e);
             }
-        }
-
-        eventRepository.saveAll(events);
-        workbook.close();
-    }
 
     private String getCellValue(Cell cell) {
         if (cell == null) return "";

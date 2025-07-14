@@ -1,0 +1,11 @@
+{
+  "pendingCard": {
+    "badgeText": "đang chờ duyệt",
+    "noTitle": "Không có tiêu đề",
+    "recently": "gần đây",
+    "unknownAuthor": "Tác giả không rõ",
+    "byLabel": "Bởi {{author}}",
+    "approveButton": "Duyệt",
+    "viewButton": "Xem"
+  }
+}

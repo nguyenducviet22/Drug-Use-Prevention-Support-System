@@ -167,4 +167,14 @@ public class BlogController {
                 .build();
         return ResponseEntity.ok(apiResponses);
     }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> getBlogsByStatus(@PathVariable BlogStatus status) {
+        List<BlogResponse> responses = blogService.getBlogsByStatus(status);
+        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
 }

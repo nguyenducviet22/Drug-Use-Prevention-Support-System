@@ -1,0 +1,19 @@
+{
+    "personalInformation": {
+        "header": "Personal Information",
+        "username": "Username",
+        "email": "Email",
+        "phoneNumber": "Phone Number",
+        "role": "Role"
+    },
+    "passwordSecurity": {
+        "header": "Password and Security",
+        "password": "Password",
+        "secretPhrase": "Secret makes a woman woman",
+        "changeButton": "Change"
+    },
+    "linkAccount": {
+        "header": "Link Account",
+        "linkButton": "Link"
+    }
+}

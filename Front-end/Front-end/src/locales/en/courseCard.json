@@ -1,0 +1,12 @@
+{
+    "durationSuffix": "hours",
+    "enrollButton": "Enroll",
+    "detailsButton": "Details",
+    "continueButton": "Continue",
+    "ageGroup": {
+        "ADOLESCENT": "Adolescent",
+        "ADULT": "Adult",
+        "SENIOR": "Senior",
+        "EVERYONE": "Everyone"
+    }
+}

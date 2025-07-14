@@ -8,11 +8,13 @@ import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.Role;
 import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
+import com.swp.drug_use_prevention_support_system.exception.ResourceNotFoundException;
 import com.swp.drug_use_prevention_support_system.mappers.UserMapper;
 import com.swp.drug_use_prevention_support_system.repositories.AppointmentRepository;
 import com.swp.drug_use_prevention_support_system.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +25,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -126,16 +129,16 @@ public class UserService {
                 .toList();
     }
 
+    public List<UserResponse> getUsersByStatus(UserStatus status) {
+        List<User> users = userRepository.findByStatus(status);
+        return users.stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     @PreAuthorize("hasAnyRole('STAFF', 'MANAGER')")
     public List<UserResponse> getUsersByRoleAndDateDuration(Role role,  Instant startedAt,  Instant endedAt) {
         List<User> users = userRepository.findByRoleAndCreatedAtBetween(role, startedAt, endedAt);
-        return users.stream()
-                .map(user -> userMapper.toDto(user))
-                .toList();
-    }
-
-    public List<UserResponse> getUsersByStatus(UserStatus status) {
-        List<User> users = userRepository.findByStatus(status);
         return users.stream()
                 .map(user -> userMapper.toDto(user))
                 .toList();
@@ -171,5 +174,43 @@ public class UserService {
         } else {
             return AgeGroup.SENIOR;
         }
+    }
+
+    //ADMIN SECTION
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public List<UserResponse> getAllUsersExceptAdmin() {
+        List<User> users = userRepository.findByRoleNot(Role.ADMIN);
+        return users.stream()
+                .map(userMapper::toDto)
+                .toList();
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public List<UserResponse> getUsersByRoleAdmin(Role role) {
+        List<User> users = userRepository.findByRole(role);
+        return users.stream()
+                .map(userMapper::toDto)
+                .toList();
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public void toggleUserStatus(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+
+        if (user.getStatus() == UserStatus.ACTIVE) {
+            user.setStatus(UserStatus.INACTIVE);
+        } else {
+            user.setStatus(UserStatus.ACTIVE);
+        }
+
+        userRepository.save(user);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public void deletePermanentUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
+        userRepository.delete(user);
     }
 }

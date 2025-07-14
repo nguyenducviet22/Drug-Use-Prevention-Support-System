@@ -1,11 +1,8 @@
--- Delete existing users with same username or email
-DELETE FROM users
-WHERE username IN ('kiet_member', 'kiet_manager')
-   OR email IN ('kiet@example.com', 'kietle@example.com');
-
--- Insert new users
-INSERT INTO users (
-    username, password, email, full_name, dob, gender, phone_number, job, role, address, created_at, updated_at, status
-) VALUES
-('kiet_member', '$2y$04$87WuyPlKu1v2UT2V9b789ul.7c/9c9eTbmJTpnVpaMeEFD1MdUFRu', 'kiet@example.com', 'kiet le', '1990-01-01', 'MALE', '0862886128', 'Engineer', 'MEMBER', '123 Main St', NOW(), NOW(), 'ACTIVE'),
-('kiet_manager', '$2y$04$87WuyPlKu1v2UT2V9b789ul.7c/9c9eTbmJTpnVpaMeEFD1MdUFRu', 'kietle@example.com', 'tuan kiet', '1990-01-01', 'MALE', '0933259000', 'Engineer', 'MANAGER', '123 Main St', NOW(), NOW(), 'ACTIVE');
+INSERT INTO users (username, password, email, full_name, dob, gender, phone_number, job, role, address, created_at, updated_at, status, age_group) VALUES
+('john_member', '$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4t1KsnmG', 'john@example.com', 'John Doe', '1990-01-01', 'MALE', '1234567890', 'Engineer', 'MEMBER', '123 Main St', NOW(), NOW(), 'ACTIVE', 'ADOLESCENT'),
+('kiet_member', '$2y$04$87WuyPlKu1v2UT2V9b789ul.7c/9c9eTbmJTpnVpaMeEFD1MdUFRu', 'kiet@example.com', 'kiet le', '1990-01-01', 'MALE', '0862886128', 'Engineer', 'MEMBER', '123 Main St', NOW(), NOW(), 'ACTIVE', 'ADULT'),
+('kiet_manager', '$2y$04$87WuyPlKu1v2UT2V9b789ul.7c/9c9eTbmJTpnVpaMeEFD1MdUFRu', 'kietle@example.com', 'tuan kiet', '1990-01-01', 'MALE', '0933259000', 'Engineer', 'MANAGER', '123 Main St', NOW(), NOW(), 'ACTIVE', 'ADULT'),
+('david_manager', '$2y$04$87WuyPlKu1v2UT2V9b789ul.7c/9c9eTbmJTpnVpaMeEFD1MdUFRu', 'vidda@example.com', 'david', '1990-01-01', 'MALE', '0987654321', 'Engineer', 'MANAGER', '123 Main St', NOW(), NOW(), 'ACTIVE', 'ADULT'),
+('lucas_member', '$2a$10$xn3LI/AjqicFYZFruSwve.681477XaVNaUQbr1gioaWPn4t1KsnmG', 'david@example.com', 'David Smith', '1992-02-02', 'MALE', '4689561308', 'Teacher', 'MEMBER', '456 Oak St', NOW(), NOW(), 'ACTIVE', 'SENIOR'),
+('kiet_staff', '$2y$04$87WuyPlKu1v2UT2V9b789ul.7c/9c9eTbmJTpnVpaMeEFD1MdUFRu', 'kietew@example.com', 'kiet le', '1990-01-01', 'MALE', '9862886128', 'Engineer', 'STAFF', '123 Main St', NOW(), NOW(), 'ACTIVE', 'ADULT'),
+('nhot_staff', '$2y$04$87WuyPlKu1v2UT2V9b789ul.7c/9c9eTbmJTpnVpaMeEFD1MdUFRu', 'nhot@example.com', 'nhot le', '1990-01-01', 'MALE', '6456452143', 'Engineer', 'STAFF', '123 Main St', NOW(), NOW(), 'ACTIVE', 'ADULT');

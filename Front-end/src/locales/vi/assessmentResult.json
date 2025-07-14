@@ -16,11 +16,24 @@
       "userLabel": "Người dùng:",
       "assessmentScoreLabel": "Điểm đánh giá:",
       "riskLevelLabel": "Mức độ rủi ro:",
-      "completedDateTimeLabel": "Thời gian hoàn thành:"
+      "completedDateTimeLabel": "Thời gian hoàn thành:",
+      "assessmentTypeLabel": "Loại đánh giá:",
+      "ageGroupLabel": "Nhóm tuổi",
+      "yesAnswersLabel": "Số câu trả lời Có",
+      "outOf": "trên tổng",
+      "detailsTitle": "Chi tiết đánh giá",
+      "guestUser": "Khách"
     },
+    "scoringExplanationTitle": "Giải thích điểm CRAFFT",
+    "scoringExplanationHow": "Cách tính điểm CRAFFT:",
+    "scoringExplanationContent": "Mỗi câu trả lời \"Có\" ở Phần B của đánh giá CRAFFT được tính 1 điểm. Tổng điểm tối đa là 6. Điểm của bạn là",
+    "scoringExplanationOutOf": "trên tổng",
+    "scoringExplanationIndicates": "cho thấy",
+    "scoringExplanationRiskLevel": "mức độ rủi ro về vấn đề sử dụng chất gây nghiện.",
     "warningSection": {
       "warningText": "Cảnh báo: Phát hiện nguy cơ tái nghiện",
       "nextStepsTitle": "Các bước tiếp theo:",
+      "recommendationsTitle": "Khuyến nghị",
       "recommendations": [
         {
           "title": "Tham gia khóa học phù hợp:",
@@ -35,7 +48,19 @@
           "description": "Kết nối với các chương trình giáo dục và hoạt động cộng đồng liên quan."
         }
       ]
-    }
-  },
-  "mainResultCard.details.suggestedActionLabel" : "Khuyến nghị Hành động: "
+    },
+    "preventionTipsTitle": "Mẹo & Chiến lược phòng ngừa",
+    "preventionTips": [
+      "Xây dựng mối quan hệ tích cực với gia đình và bạn bè",
+      "Tham gia các hoạt động thể thao, giải trí lành mạnh",
+      "Học cách quản lý căng thẳng và áp lực hiệu quả",
+      "Tránh môi trường có nguy cơ tiếp xúc với chất gây nghiện",
+      "Tìm kiếm sự hỗ trợ khi gặp khó khăn trong cuộc sống",
+      "Tăng cường kiến thức về tác hại và nghiện chất"
+    ],
+    "downloadReport": "Tải báo cáo chi tiết",
+    "scheduleConsultation": "Đặt lịch tư vấn",
+    "retakeAssessment": "Làm lại đánh giá",
+    "back": "Quay lại"
+  }
 }

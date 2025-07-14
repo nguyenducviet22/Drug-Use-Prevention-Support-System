@@ -55,6 +55,10 @@ public class Event {
     @JoinColumn(name = "created_by_staff", nullable = false, updatable = false)
     User createdByStaff;
 
+    @ManyToOne
+    @JoinColumn(name = "approved_by_manager")
+    User approvedByManager;
+
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();

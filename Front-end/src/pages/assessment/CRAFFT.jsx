@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTranslation, Trans } from "react-i18next"; // Đảm bảo import Trans
 import "./craft.css"; // Import file CSS cho CRAFFT
+import BackButton from "../../components/BackButton";
 
 const CrafftQuestionnaire = () => {
   const { user } = useAuth();
@@ -121,6 +122,7 @@ const CrafftQuestionnaire = () => {
           score: data.score,
           riskLevel: data.riskLevel,
           suggestedAction: data.suggestedAction,
+          completedTime: data.completedTime,
         },
       });
       return;
@@ -141,6 +143,7 @@ const CrafftQuestionnaire = () => {
 
   return (
     <Container className="py-4">
+      <BackButton label={t("backToAssessments")} />
       <div className="progress-indicator mb-4">
               <div className="step active">
                 <span className="step-number">
@@ -204,10 +207,7 @@ const CrafftQuestionnaire = () => {
               <div className="mb-4">
                 <Form.Label className="fw-semibold">
                   <Trans i18nKey="question1" ns="crafftQuestionnaire">
-                    1. During the
-                    <strong style={{ color: "#60a5fa" }}>PAST 12 MONTHS</strong>
-                    , on how many days did you drink more than a few sips of
-                    beer, wine, or any drink containing alcohol?
+                    1. During the <strong style={{ color: "#60a5fa", display: "inline" }}>PAST 12 MONTHS</strong>, on how many days did you drink more than a few sips of beer, wine, or any drink containing alcohol?
                   </Trans>
                   <span className="required-asterisk">*</span>
                 </Form.Label>

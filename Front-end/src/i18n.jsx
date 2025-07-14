@@ -50,6 +50,10 @@ import eventDetailsEn from './locales/en/eventDetails.json';
 import eventListEn from './locales/en/eventList.json';
 import forgotResetPasswordEn from './locales/en/forgotResetPassword.json'; // Import the new namespace
 
+import userManagementEn from './locales/en/userManagement.json';
+
+
+
 // Nếu có tiếng Việt
 import homeVi from './locales/vi/home.json';
 import appointmentBookingVi from './locales/vi/appointmentBooking.json';
@@ -97,6 +101,8 @@ import qualificationsVi from './locales/vi/qualifications.json';
 import eventDetailsVi from './locales/vi/eventDetails.json';
 import eventListVi from './locales/vi/eventList.json';
 import forgotResetPasswordVi from './locales/vi/forgotResetPassword.json'; // Import the new namespace
+
+import userManagementVi from './locales/vi/userManagement.json';
 
 i18n
   .use(LanguageDetector)
@@ -151,7 +157,9 @@ i18n
         //userDetails: userDetailsEn, // Add new namespace
         eventDetails: eventDetailsEn,
         eventList: eventListEn,
-        forgotResetPassword: forgotResetPasswordEn // Add the new namespace here
+        forgotResetPassword: forgotResetPasswordEn, // Add the new namespace here
+
+        userManagement: userManagementEn,
       },
       vi: {
         home: homeVi,
@@ -199,9 +207,12 @@ i18n
         //userDetails: userDetailsVi, // Add new namespace
         eventDetails: eventDetailsVi,
         eventList: eventListVi,
-        forgotResetPassword: forgotResetPasswordVi
+        forgotResetPassword: forgotResetPasswordVi,
+
+        userManagement: userManagementVi,
       }
     },
+    // Ensure 'analyticsPreview' is added to the `ns` array
     ns: [
       'home', 'appointmentBooking', 'assessmentList', 'assessmentResult', 'crafftQuestionnaire',
       'availabilityBooking', 'blogCreation', 'blogDetails', 'blogList',
@@ -216,7 +227,8 @@ i18n
       'qualifications', // Add new namespace
       // 'recommendation', 'reports', 'searchFilter', 'userDetails', 
       'eventDetails', 'eventList',
-      'qualifications', 'forgotResetPassword' // Added the new namespace here
+      'qualifications', 'forgotResetPassword', // Added the new namespace here
+      'userManagement',
     ],
     defaultNS: 'home',
     interpolation: {

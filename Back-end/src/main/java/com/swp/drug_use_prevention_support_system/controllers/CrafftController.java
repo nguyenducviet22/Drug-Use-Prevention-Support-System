@@ -29,7 +29,8 @@ public class CrafftController {
                     "temp", true,
                     "score", result.getScore(),
                     "riskLevel", result.getRiskLevel(),
-                    "suggestedAction", result.getSuggestedAction()
+                    "suggestedAction", result.getSuggestedAction(),
+                    "completedTime", result.getCompletedTime()
             ));
         }
 

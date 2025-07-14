@@ -1,0 +1,313 @@
+/* HomeMe Component Styles */
+
+.home-me {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Card Header Styles */
+.card-header-custom {
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+  border: none;
+}
+
+/* Health Status Card Styles */
+.health-status-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.health-status-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.health-item {
+  border-bottom: 1px solid #f1f3f4;
+  padding-bottom: 0.75rem;
+}
+
+.health-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.health-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.health-icon.mental-health {
+  background-color: #ff6b6b;
+}
+
+.health-icon.physical-health {
+  background-color: #4ecdc4;
+}
+
+.health-icon.drug-use {
+  background-color: #ff9f43;
+}
+
+.health-icon.crafft-score {
+  background-color: #6c5ce7;
+}
+
+.health-icon.counseling {
+  background-color: #a29bfe;
+}
+
+.health-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.health-value {
+  font-size: 0.9rem;
+  color: #495057;
+}
+
+.warning-section {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+}
+
+.action-section {
+  background-color: #d1ecf1;
+  border: 1px solid #bee5eb;
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+}
+
+/* Tasks Card Styles */
+.tasks-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tasks-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.task-item {
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+}
+
+.task-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: #0984e3;
+}
+
+.task-icon {
+  flex-shrink: 0;
+}
+
+/* Course Card Styles */
+.course-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Assessment Card Styles */
+.assessment-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.assessment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Badge Styles */
+.badge {
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+/* Button Styles */
+.btn-primary {
+  background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0770c7 0%, #5fa8ff 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(9, 132, 227, 0.3);
+}
+
+/* Background Colors */
+.bg-primary {
+  background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%) !important;
+}
+
+.bg-info {
+  background: linear-gradient(135deg, #17a2b8 0%, #6dd5ed 100%) !important;
+}
+
+.bg-success {
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+}
+
+.bg-warning {
+  background: linear-gradient(135deg, #ffc107 0%, #ffeb3b 100%) !important;
+}
+
+/* Typography */
+.fw-bold {
+  font-weight: 600 !important;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+
+  .health-status-card,
+  .tasks-card,
+  .appointment-card,
+  .course-card,
+  .assessment-card {
+    margin-bottom: 1.5rem;
+  }
+
+  .task-item {
+    padding: 1rem;
+  }
+
+  .card-header-custom {
+    padding: 0.75rem 1rem;
+  }
+
+  .health-label,
+  .health-value {
+    font-size: 0.8rem;
+  }
+
+  .appointment-info {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .card-header-custom h5 {
+    font-size: 1rem;
+  }
+
+  .health-item {
+    padding-bottom: 0.5rem;
+  }
+
+  .task-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .task-icon {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Current Activities Styles */
+.current-course-card,
+.blog-progress-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.current-course-card:hover,
+.blog-progress-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+.progress-section {
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border: 1px solid #e9ecef;
+}
+
+.progress-custom {
+  border-radius: 1rem;
+  background-color: #e9ecef;
+  overflow: hidden;
+}
+
+.progress-bar {
+  border-radius: 1rem;
+  transition: width 0.6s ease;
+  background: linear-gradient(90deg, #0984e3, #74b9ff) !important;
+}
+
+.blog-content {
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.badge.bg-primary {
+  background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%) !important;
+  color: white;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+}
+
+/* Current Activities Responsive Design */
+@media (max-width: 768px) {
+
+  .current-course-card,
+  .blog-progress-card {
+    margin-bottom: 1.5rem;
+  }
+
+  .progress-section {
+    padding: 0.75rem;
+  }
+
+  .blog-content {
+    min-height: 60px;
+  }
+
+  .card-header-custom h5 {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .progress-section {
+    padding: 0.5rem;
+  }
+
+  .blog-content h6 {
+    font-size: 1rem;
+  }
+}

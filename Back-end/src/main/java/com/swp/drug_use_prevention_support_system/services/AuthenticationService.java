@@ -64,6 +64,10 @@ public class AuthenticationService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
         if (!authenticated) throw new BadCredentialsException("Incorrect username or password!");
+        // Check user status
+        if (user.getStatus() != UserStatus.ACTIVE) {
+            throw new BadCredentialsException("Your account is Locked for Security reasons. Please contact support: 0862886128");
+        }
         return userMapper.toDto(user);
     }
 

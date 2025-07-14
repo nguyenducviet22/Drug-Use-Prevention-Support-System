@@ -1,0 +1,64 @@
+.language-switcher-container {
+  display: flex;
+  align-items: center;
+  background-color: #f0f2f5;
+  padding: 5px;
+  border-radius: 25px;
+  height: 40px;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+.language-switcher-text {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #888;
+  margin: 0 8px;
+  user-select: none;
+  min-width: 25px;
+  text-align: center;
+}
+
+.language-switcher-text.active {
+  color: #333;
+}
+
+.language-switcher-track {
+  width: 50px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: #e0e2e5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px;
+  position: relative;
+}
+
+.language-switcher-thumb {
+  width: 25px;
+  height: 24px;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  transition: left 0.3s ease-in-out, background-image 0.3s ease-in-out;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.language-switcher-thumb.en-active {
+  left: 3px;
+}
+
+.language-switcher-thumb.vn-active {
+  left: calc(100% - 27px);
+}
+
+.language-switcher-thumb.uk-flag {
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Flag_of_the_United_Kingdom_%281-2%29.svg/1000px-Flag_of_the_United_Kingdom_%281-2%29.svg.png');
+}
+
+.language-switcher-thumb.vietnam-flag {
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/1000px-Flag_of_Vietnam.svg.png'); /* URL cờ Việt Nam */
+}

@@ -8,5 +8,8 @@
   "logout": "Đăng Xuất",
   "login": "Đăng Nhập",
   "register": "Đăng Ký",
-  "userPlaceholder": "Người Dùng"
+  "userPlaceholder": "Người Dùng",
+  "dashboard": "Trang Chủ",
+  "users": "Quản Lý Người Dùng",
+  "system": "Hệ thống"
 }

@@ -1,0 +1,20 @@
+{
+  "backButton": "Quay lại",
+  "moduleHeader": "Chuyên đề: {{moduleName}}",
+  "form": {
+    "lessonNamePlaceholder": "Tên bài học",
+    "objectivePlaceholder": "Mục tiêu",
+    "resourcePlaceholder": "Tài liệu tham khảo",
+    "contentLabel": "Nội dung",
+    "contentPlaceholder": "Nhập nội dung bài học tại đây...",
+    "saveButton": "Lưu Bài Học",
+    "createButton": "Tạo Bài Học"
+  },
+  "toastMessages": {
+    "fetchError": "Không thể tải dữ liệu khi tạo bài học",
+    "createSuccess": "Tạo bài học thành công!",
+    "createError": "Không thể tạo bài học. Vui lòng thử lại.",
+    "saveSuccess": "Lưu bài học thành công!",
+    "saveError": "Không thể lưu bài học. Vui lòng thử lại."
+  }
+}

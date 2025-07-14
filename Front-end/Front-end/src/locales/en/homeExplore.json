@@ -1,0 +1,34 @@
+{
+    "loadingMessage": "Loading...",
+    "newBlogsTitle": "New Blogs",
+    "eventsTitle": "Events",
+    "eventTime": "Time:",
+    "eventLocation": "Location:",
+    "eventPlatform": "Platform:",
+    "eventSpeaker": "Speaker:",
+    "eventDescription": "Description:",
+    "eventActivities": "Activities:",
+    "eventContents": "Contents:",
+    "attendButton": "Attend",
+    "popularCoursesTitle": "Popular Courses",
+    "drugAwarenessWeekTitle": "Drug Awareness Week 2025",
+    "drugAwarenessWeekTime": "July 10-15, 2025",
+    "drugAwarenessWeekLocation": "FPT University – Ho Chi Minh City Campus",
+    "drugAwarenessWeekDescription": "A week to raise awareness about the harmful effects of drugs through a series of activities:",
+    "drugAwarenessWeekActivities": {
+        "activity1": "Photo exhibition 'Dark corners of life'",
+        "activity2": "Talkshow 'Try once, pay for life'",
+        "activity3": "Interact with people who have successfully recovered",
+        "activity4": "Minigame and distribute propaganda leaflets"
+    },
+    "workshopTitle": "Workshop: Refusal Skills & Coping with Pressure",
+    "workshopTime": "03/08/2025 – 14:00 to 16:00",
+    "workshopPlatform": "Zoom (Online Event)",
+    "workshopSpeaker": "Dr. Elias William - School psychology expert",
+    "workshopContents": {
+        "content1": "How to recognize drug invitations",
+        "content2": "Skills to say 'No' while maintaining relationships",
+        "content3": "The role of healthy friendship groups",
+        "content4": "Q&A with experts"
+    }
+}

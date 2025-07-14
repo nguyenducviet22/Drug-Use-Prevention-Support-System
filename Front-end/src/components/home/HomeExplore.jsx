@@ -258,10 +258,10 @@ const HomeExplore = () => {
               return (
                 <Col md={6} key={event.eventID} className="mb-4">
                   <Card className="h-100 border-0 shadow-sm event-card">
-                    {event.img && (
+                    {event.image && (
                       <Card.Img
                         variant="top"
-                        src={event.img}
+                        src={event.image}
                         alt={event.eventName}
                         style={{ height: 180, objectFit: "cover" }}
                       />
