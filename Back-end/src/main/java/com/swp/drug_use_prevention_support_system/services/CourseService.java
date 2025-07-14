@@ -35,7 +35,7 @@ public class CourseService {
     public CourseResponse createCourse(CreateCourseRequest request) {
         Course course = courseMapper.toEntity(request);
         course.setCourseID(UUID.randomUUID());
-        course.setStatus(CourseStatus.UNAVAILABLE);
+        course.setStatus(CourseStatus.PENDING);
         course.setDuration(0);
         courseRepository.save(course);
         return courseMapper.toDto(course);
