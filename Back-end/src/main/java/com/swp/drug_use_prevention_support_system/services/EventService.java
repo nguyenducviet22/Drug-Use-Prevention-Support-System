@@ -2,13 +2,12 @@ package com.swp.drug_use_prevention_support_system.services;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateEventRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateEventRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CourseResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EventResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EventStatusResponse;
-import com.swp.drug_use_prevention_support_system.domain.entities.Event;
-import com.swp.drug_use_prevention_support_system.domain.entities.EventUser;
-import com.swp.drug_use_prevention_support_system.domain.entities.EventUserId;
-import com.swp.drug_use_prevention_support_system.domain.entities.User;
+import com.swp.drug_use_prevention_support_system.domain.entities.*;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
+import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.EventStatus;
 import com.swp.drug_use_prevention_support_system.domain.enums.EventUserStatus;
 import com.swp.drug_use_prevention_support_system.exception.*;
@@ -257,5 +256,12 @@ public class EventService {
                 .flatMap(Optional::stream) // tự động bỏ qua Optional.empty()
                 .map(eventMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public List<EventResponse> getEventsByStatus(EventStatus status) {
+        List<Event> events = eventRepository.findByStatusOrderByCreatedAtDesc(status);
+        return events.stream()
+                .map(event -> eventMapper.toDto(event))
+                .toList();
     }
 }

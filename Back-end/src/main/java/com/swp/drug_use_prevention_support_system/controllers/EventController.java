@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -113,9 +114,9 @@ public class EventController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}/{status}")
     public ResponseEntity<ApiResponse<EventResponse>> updateEventStatus(@PathVariable UUID id,
-                                                                      @RequestParam EventStatus status) {
+                                                                        @PathVariable EventStatus status) {
         EventResponse response = eventService.updateEventStatus(id, status);
         ApiResponse<EventResponse> apiResponse = ApiResponse.<EventResponse>builder()
                 .data(response)
@@ -176,5 +177,27 @@ public class EventController {
         }
         excelService.importEventsFromExcel(file.getInputStream());
         return ResponseEntity.ok("Excel file data saved Events into DB");
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<ApiResponse<List<EventResponse>>> getEventsByStatus(@PathVariable EventStatus status) {
+        List<EventResponse> responses = eventService.getEventsByStatus(status);
+        ApiResponse<List<EventResponse>> apiResponse = ApiResponse.<List<EventResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(responses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<ApiResponse<List<String>>> getAllEventStatuses() {
+        List<String> statuses = Arrays.stream(EventStatus.values())
+                .map(Enum::name)
+                .toList();
+        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+                .status(HttpStatus.OK.value())
+                .data(statuses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
     }
 }
