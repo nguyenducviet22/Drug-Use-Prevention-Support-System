@@ -93,18 +93,6 @@ public class CourseController {
         return ResponseEntity.ok("Excel file data saved Courses into DB");
     }
 
-    @GetMapping("/age-group")
-    public ResponseEntity<ApiResponse<List<String>>> getAllCourseAgeGroups() {
-        List<String> groups = Arrays.stream(AgeGroup.values())
-                .map(Enum::name)
-                .toList();
-        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
-                .status(HttpStatus.OK.value())
-                .data(groups)
-                .build();
-        return ResponseEntity.ok(apiResponse);
-    }
-
     @GetMapping("/status")
     public ResponseEntity<ApiResponse<List<String>>> getAllCourseStatuses() {
         List<String> statuses = Arrays.stream(CourseStatus.values())

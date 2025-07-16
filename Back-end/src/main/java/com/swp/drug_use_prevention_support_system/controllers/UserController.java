@@ -4,6 +4,7 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateUse
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateUserRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.UserResponse;
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.Gender;
 import com.swp.drug_use_prevention_support_system.domain.enums.Role;
 import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
@@ -137,6 +138,18 @@ public class UserController {
         ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
                 .status(HttpStatus.OK.value())
                 .data(statuses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/age-group")
+    public ResponseEntity<ApiResponse<List<String>>> getAllAgeGroups() {
+        List<String> groups = Arrays.stream(AgeGroup.values())
+                .map(Enum::name)
+                .toList();
+        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+                .status(HttpStatus.OK.value())
+                .data(groups)
                 .build();
         return ResponseEntity.ok(apiResponse);
     }

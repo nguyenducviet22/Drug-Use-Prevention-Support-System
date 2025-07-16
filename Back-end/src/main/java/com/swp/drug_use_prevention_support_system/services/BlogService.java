@@ -50,6 +50,13 @@ public class BlogService {
                 .toList();
     }
 
+    public List<BlogResponse> getBlogsByRole(Role role) {
+        List<Blog> blogs = blogRepository.findByMemberRoleOrderByCreatedAtDesc(role);
+        return blogs.stream()
+                .map(blog -> blogMapper.toDto(blog))
+                .toList();
+    }
+
     public List<BlogResponse> getBlogsByStatusExceptRole(BlogStatus status, Role role) {
         List<Blog> blogs = blogRepository.findByBlogStatusOrderByCreatedAtDesc(status);
         return blogs.stream()
