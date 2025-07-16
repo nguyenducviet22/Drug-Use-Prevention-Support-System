@@ -41,6 +41,9 @@ import ForgotResetPassword from "../pages/password/ForgotResetPassword";
 import DashboardPage from "../pages/home/admin/HomeAdmin";
 import UserManagementPage from "../pages/home/admin/UserManagement";
 import SystemManagementPage from "../pages/home/admin/SystemManagement";
+import BlogManagement from "../pages/blog/BlogManagement";
+import CourseManagement from "../pages/course/CourseManagement";
+import EventManagement from "../pages/event/EventManagement";
 
 export default function AppRoute() {
   return (
@@ -57,6 +60,7 @@ export default function AppRoute() {
         <Route path="/admin/system" element={<SystemManagementPage />} />
 
         <Route path="/blogs" element={<BlogList />} />
+        <Route path="/blog-management" element={<BlogManagement />} />
         <Route path="/blogs/:id" element={<BlogDetails />} />
         {/* Tạo blog mới tại /blogs/create */}
         <Route path="/blogs/create" element={<BlogCreation />} />
@@ -64,7 +68,9 @@ export default function AppRoute() {
         <Route path="/blogs/create/:id" element={<BlogCreation />} />
 
         <Route path="/courses" element={<CourseList />} />
+        <Route path="/course-management" element={<CourseManagement />} />
         <Route path="/courses/:id" element={<CourseDetails />} />
+        
         {/* Tạo khóa học mới tại /courses/create */}
         <Route path="/courses/create" element={<CourseCreation />} />
         <Route
@@ -75,6 +81,7 @@ export default function AppRoute() {
           path="/courses/:courseID/module/:moduleID/lesson/create"
           element={<LessonCreation />}
         />
+
         {/* Cập nhật khóa học tại /courses/:courseID/update */}
         <Route path="/courses/:courseID/update" element={<CourseCreation />} />
         <Route
@@ -87,6 +94,7 @@ export default function AppRoute() {
         />
 
         <Route path="/events" element={<EventList />} />
+        <Route path="/event-management" element={<EventManagement />} />
         <Route path="/events/:id" element={<EventDetails />} />
         <Route path="/my-events" element={<MyEventList />} />
         <Route path="/events/create" element={<EventCreation />} />

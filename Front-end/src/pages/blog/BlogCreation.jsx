@@ -51,7 +51,7 @@ const BlogCreation = () => {
         const typesData = await getBlogTypes("http://localhost:8080/api/blog/type");
         setTypes(typesData);
 
-        const ageGroupsData = await getAgeGroups("http://localhost:8080/api/course/age-group");
+        const ageGroupsData = await getAgeGroups("http://localhost:8080/api/user/age-group");
         setAgeGroups(ageGroupsData);
 
         if (blogID) {

@@ -17,13 +17,13 @@
     "myPending": "Chờ Duyệt"
   },
   "noBlogsFound": {
-    "message": "Không tìm thấy bài viết nào phù hợp với tiêu chí.",
-    "clearFilters": "Xóa Bộ Lọc"
+    "message": "Không tìm thấy bài viết nào phù hợp với tiêu chí."
   },
   "sidebar": {
     "commonTypesTitle": "Chủ Đề Phổ Biến",
     "popularBlogsTitle": "Bài Viết Nổi Bật",
     "favoriteTagsTitle": "Thẻ Ưa Thích"
   },
-  "ageGroupMessage": "Bạn cần cập nhật thông tin cá nhân để đọc nhiều bài blog phù hợp với độ tuổi của mình"
+  "ageGroupMessage": "Bạn cần cập nhật thông tin cá nhân để đọc nhiều bài blog phù hợp với độ tuổi của mình",
+  "clearFilters": "Xóa Bộ Lọc"
 }

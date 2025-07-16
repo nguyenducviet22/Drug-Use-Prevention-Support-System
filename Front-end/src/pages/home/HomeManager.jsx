@@ -7,9 +7,8 @@ import PendingCard from '../../components/dashboard/PendingCard';
 import LineChart from '../../components/dashboard/LineChart';
 import AnalyticsPreview from '../../components/dashboard/AnalyticsPreview';
 import useFetch from '../../hooks/useFetch';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import Pagination from '../../components/others/Pagination';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next'; // Import useTranslation
 
@@ -18,7 +17,7 @@ function HomeManager() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [itemsPerPage] = useState(4) // Show 4 items per page.
+  const [itemsPerPage] = useState(3)
 
   // --- State phân trang riêng biệt cho từng khu vực ---
   const [blogCurrentPage, setBlogCurrentPage] = useState(1);
@@ -27,10 +26,13 @@ function HomeManager() {
 
   // --- State lưu trữ dữ liệu ---
   const [staffPendingBlogs, setStaffPendingBlogs] = useState([]);
-  const { get: getStaffPendingBlogs, put: putApproveStaffBlog } = useFetch();
+  const { get: getStaffPendingBlogs, put: putApproveStaffBlog, put: putRejectStaffBlog } = useFetch();
 
   const [pendingCourses, setPendingCourses] = useState([]);
-  const { get: getPendingCourses, put: putApproveCourse } = useFetch();
+  const { get: getPendingCourses, put: putApproveCourse, put: putRejectCourse } = useFetch();
+
+  const [pendingEvents, setPendingEvents] = useState([]);
+  const { get: getPendingEvents, put: putApproveEvent, put: putRejectEvent } = useFetch();
 
   const [stat, setStat] = useState({})
   const { get: getStat } = useFetch()
@@ -48,6 +50,9 @@ function HomeManager() {
           const staffPendingBlogsData = await getStaffPendingBlogs(`http://localhost:8080/api/blog/status/PENDING/role/STAFF`);
           setStaffPendingBlogs(staffPendingBlogsData || []);
         }
+
+        const pendingEventsData = await getPendingEvents("http://localhost:8080/api/event/status/PENDING_APPROVAL");
+        setPendingEvents(pendingEventsData || []);
       } catch (error) {
         console.error("Fetch error in HomeManager:", error);
       }
@@ -74,16 +79,16 @@ function HomeManager() {
   );
 
   // --- Logic phân trang cho Event ---
-  // const activeEventList = eventData[eventActiveTab] || [];
-  // const totalEventPages = Math.ceil(activeEventList.length / itemsPerPage);
-  // const currentEventItems = activeEventList.slice(
-  //   (eventCurrentPage - 1) * itemsPerPage,
-  //   eventCurrentPage * itemsPerPage
-  // );
+  const totalEventPages = Math.ceil(pendingEvents.length / itemsPerPage);
+  const currentEventItems = pendingEvents.slice(
+    (eventCurrentPage - 1) * itemsPerPage,
+    eventCurrentPage * itemsPerPage
+  );
 
   const handleView = (id, type) => {
     if (type === 'blog') navigate(`/blogs/${id}`);
     if (type === 'course') navigate(`/courses/${id}`);
+    if (type === 'event') navigate(`/events/${id}`);
   };
 
   const handleApprove = async (id, type) => {
@@ -94,6 +99,9 @@ function HomeManager() {
       } else if (type === 'course') {
         await putApproveCourse({}, {}, `http://localhost:8080/api/course/${id}/AVAILABLE`);
         setPendingCourses(prevCourses => prevCourses.filter(course => course.courseID !== id));
+      } else if (type === 'event') {
+        await putApproveEvent({}, {}, `http://localhost:8080/api/event/${id}/APPROVED`);
+        setPendingEvents(prevEvents => prevEvents.filter(event => event.eventID !== id));
       }
 
       toast.success(t('successfullyApproved', { type: type, id: id }));
@@ -106,11 +114,14 @@ function HomeManager() {
   const handleReject = async (id, type) => {
     try {
       if (type === 'blog') {
-        await putApproveStaffBlog({}, {}, `http://localhost:8080/api/blog/${id}/REJECTED`);
+        await putRejectStaffBlog({}, {}, `http://localhost:8080/api/blog/${id}/REJECTED`);
         setStaffPendingBlogs(prevBlogs => prevBlogs.filter(blog => blog.blogID !== id));
       } else if (type === 'course') {
-        await putApproveCourse({}, {}, `http://localhost:8080/api/course/${id}/REJECTED`);
+        await putRejectCourse({}, {}, `http://localhost:8080/api/course/${id}/REJECTED`);
         setPendingCourses(prevCourses => prevCourses.filter(course => course.courseID !== id));
+      } else if (type === 'event') {
+        await putRejectEvent({}, {}, `http://localhost:8080/api/event/${id}/REJECTED`);
+        setPendingEvents(prevEvents => prevEvents.filter(event => event.eventID !== id));
       }
 
       toast.success(t('successfullyRejected', { type: type, id: id }));
@@ -221,13 +232,11 @@ function HomeManager() {
               onApprove={(id) => handleApprove(id, 'blog')}
               onReject={(id) => handleReject(id, 'blog')}
             />
-            {totalBlogPages > 1 && (
-              <Pagination
-                currentPage={blogCurrentPage}
-                totalPages={totalBlogPages}
-                onPageChange={setBlogCurrentPage}
-              />
-            )}
+            <Link to="/blog-management">
+              <button className="btn btn-primary mt-3">
+                {t('viewAllBlogs')}
+              </button>
+            </Link>
           </Col>
 
           <Col lg={4} className="d-flex flex-column">
@@ -239,32 +248,27 @@ function HomeManager() {
               onApprove={(id) => handleApprove(id, 'course')}
               onReject={(id) => handleReject(id, 'course')}
             />
-            {totalCoursePages > 1 && (
-              <Pagination
-                currentPage={courseCurrentPage}
-                totalPages={totalCoursePages}
-                onPageChange={setCourseCurrentPage}
-              />
-            )}
+            <Link to="/course-management">
+              <button className="btn btn-primary mt-3">
+                {t('viewAllCourses')}
+              </button>
+            </Link>
           </Col>
 
           <Col lg={4} className="d-flex flex-column">
             <PendingCard
               title={t('pendingEvents')}
               count={3}
-              items={[
-                { title: t('communityDrugPreventionSummit2024'), author: "Event Team", date: `3 ${t('hoursAgo')}` },
-                { title: t('youthLeadershipWorkshop'), author: "Amanda Rodriguez", date: `6 ${t('hoursAgo')}` },
-                { title: t('parentTeacherDrugAwarenessMeeting'), author: "School District", date: `1 ${t('dayAgo')}` }
-              ]}
+              items={currentEventItems}
+              onView={(id) => handleView(id, 'event')}
+              onApprove={(id) => handleApprove(id, 'event')}
+              onReject={(id) => handleReject(id, 'event')}
             />
-            {/* {totalEventPages > 1 && (
-              <Pagination
-                currentPage={eventCurrentPage}
-                totalPages={totalEventPages}
-                onPageChange={setEventCurrentPage}
-              />
-            )} */}
+            <Link to="/event-management">
+              <button className="btn btn-primary mt-3">
+                {t('viewAllEvents')}
+              </button>
+            </Link>
           </Col>
         </Row>
 

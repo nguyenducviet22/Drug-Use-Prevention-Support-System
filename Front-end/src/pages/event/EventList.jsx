@@ -262,7 +262,16 @@ const EventList = () => {
           placeholder={t("searchPlaceholder")}
           ageGroupOptions={ageGroupOptions}
           durationOptions={durationOptions}
+          filterFor="events"
         />
+
+        {(searchTerm !== "" || selectedAgeGroup !== "") && (
+          <div className="d-flex justify-content-center mt-3">
+            <Button variant="outline-primary" onClick={clearAllFilters}>
+              {t("clearFilters")}
+            </Button>
+          </div>
+        )}
       </Container>
 
       <Container className="mb-5">
@@ -294,9 +303,6 @@ const EventList = () => {
           {currentEvents.length === 0 ? (
             <div className="text-center py-5">
               <p className="text-muted">{t("noEventsCriteria")}</p>
-              <Button variant="outline-primary" onClick={clearAllFilters}>
-                {t("clearFilters")}
-              </Button>
             </div>
           ) : (
             <>

@@ -1,0 +1,23 @@
+{
+    "eventManagementTitle": "Event Management",
+    "searchEventPlaceholder": "Search by event name...",
+    "clearFilters": "Clear All Filters",
+    "eventList": "Event List",
+    "no.": "No.",
+    "eventName": "Event Name",
+    "location": "Location",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "status": "Status",
+    "ageGroup": "Age Group",
+    "fee": "Fee",
+    "createdBy": "Created By",
+    "createdAt": "Created At",
+    "actions": "Actions",
+    "free": "Free",
+    "successfullyApproved": "Event successfully approved!",
+    "failedToApprove": "Failed to approve event. Please try again.",
+    "successfullyRejected": "Event successfully rejected!",
+    "failedToReject": "Failed to reject event. Please try again.",
+    "noMatchingEvents": "No matching events found for the search criteria."
+}

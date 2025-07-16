@@ -190,7 +190,16 @@ const BlogList = () => {
               onSearch={handleSearch}
               typeOptions={typeOptions}
               placeholder={t("searchFilter.placeholder")}
+              filterFor="blogs"
             />
+
+            {(searchTerm !== "" ||  selectedType !== "") && (
+              <div className="d-flex justify-content-center mt-3">
+                <Button variant="outline-primary" onClick={clearAllFilters}>
+                  {t("clearFilters")}
+                </Button>
+              </div>
+            )}
 
             {/* Blog Posts */}
             <div className="blog-posts">
@@ -277,9 +286,6 @@ const BlogList = () => {
                   {!isLoading && !hasError && currentBlogs.length === 0 ? (
                     <div className="text-center py-5">
                       <p className="text-muted">{t("noBlogsFound.message")}</p>
-                      <Button variant="outline-primary" onClick={clearAllFilters} className="mt-3">
-                        {t("noBlogsFound.clearFilters")}
-                      </Button>
                     </div>
                   ) : (
                     <>

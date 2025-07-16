@@ -1,0 +1,26 @@
+{
+    "blogManagementTitle": "Quản lý bài viết",
+    "searchFilter": {
+        "placeholder": "Tìm kiếm theo tên bài viết..."
+    },
+    "blogsSection": {
+        "clearFilters": "Xóa tất cả bộ lọc",
+        "noMatchingBlogs": "Không tìm thấy bài viết phù hợp với tiêu chí tìm kiếm."
+    },
+    "blogList": "Danh sách bài viết",
+    "stt": "STT",
+    "blogName": "Tên bài viết",
+    "author": "Tác giả",
+    "readingTime": "Thời gian đọc",
+    "minutes": "phút",
+    "blogType": "Loại bài viết",
+    "blogStatus": "Trạng thái",
+    "ageGroup": "Nhóm tuổi",
+    "createdAt": "Ngày tạo",
+    "updatedAt": "Ngày cập nhật",
+    "actions": "Hành động",
+    "successfullyApproved": "Bài viết đã được duyệt thành công!",
+    "failedToApprove": "Duyệt bài viết thất bại. Vui lòng thử lại.",
+    "successfullyRejected": "Bài viết đã bị từ chối thành công!",
+    "failedToReject": "Từ chối bài viết thất bại. Vui lòng thử lại."
+}

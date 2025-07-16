@@ -45,10 +45,13 @@ import pendingCardEn from './locales/en/pendingCard.json';
 import analyticsPreviewEn from './locales/en/analyticsPreview.json';
 import appointmentCardEn from './locales/en/appointmentCard.json';
 import qualificationsEn from './locales/en/qualifications.json';
-//import userDetailsEn from './locales/en/userDetails.json'; // Import new file
 import eventDetailsEn from './locales/en/eventDetails.json';
 import eventListEn from './locales/en/eventList.json';
 import forgotResetPasswordEn from './locales/en/forgotResetPassword.json'; // Import the new namespace
+import userManagementEn from './locales/en/userManagement.json';
+import blogManagementEn from './locales/en/blogManagement.json';
+import courseManagementEn from './locales/en/courseManagement.json';
+import eventManagementEn from './locales/en/eventManagement.json';
 
 import userManagementEn from './locales/en/userManagement.json';
 
@@ -97,10 +100,13 @@ import pendingCardVi from './locales/vi/pendingCard.json';
 import analyticsPreviewVi from './locales/vi/analyticsPreview.json';
 import appointmentCardVi from './locales/vi/appointmentCard.json';
 import qualificationsVi from './locales/vi/qualifications.json';
-//import userDetailsVi from './locales/vi/userDetails.json'; // Import new file
 import eventDetailsVi from './locales/vi/eventDetails.json';
 import eventListVi from './locales/vi/eventList.json';
 import forgotResetPasswordVi from './locales/vi/forgotResetPassword.json'; // Import the new namespace
+import userManagementVi from './locales/vi/userManagement.json';
+import blogManagementVi from './locales/vi/blogManagement.json';
+import courseManagementVi from './locales/vi/courseManagement.json';
+import eventManagementVi from './locales/vi/eventManagement.json';
 
 import userManagementVi from './locales/vi/userManagement.json';
 
@@ -154,12 +160,13 @@ i18n
         analyticsPreview: analyticsPreviewEn,
         appointmentCard: appointmentCardEn,
         qualifications: qualificationsEn,
-        //userDetails: userDetailsEn, // Add new namespace
         eventDetails: eventDetailsEn,
         eventList: eventListEn,
         forgotResetPassword: forgotResetPasswordEn, // Add the new namespace here
-
         userManagement: userManagementEn,
+        blogManagement: blogManagementEn,
+        courseManagement: courseManagementEn,
+        eventManagement: eventManagementEn,
       },
       vi: {
         home: homeVi,
@@ -204,15 +211,16 @@ i18n
         analyticsPreview: analyticsPreviewVi,
         appointmentCard: appointmentCardVi,
         qualifications: qualificationsVi,
-        //userDetails: userDetailsVi, // Add new namespace
         eventDetails: eventDetailsVi,
         eventList: eventListVi,
         forgotResetPassword: forgotResetPasswordVi,
-
         userManagement: userManagementVi,
+        blogManagement: blogManagementVi,
+        courseManagement: courseManagementVi,
+        eventManagement: eventManagementVi,
       }
     },
-    // Ensure 'analyticsPreview' is added to the `ns` array
+
     ns: [
       'home', 'appointmentBooking', 'assessmentList', 'assessmentResult', 'crafftQuestionnaire',
       'availabilityBooking', 'blogCreation', 'blogDetails', 'blogList',
@@ -224,11 +232,9 @@ i18n
       'recommendation', 'reports', 'searchFilter', 'userDetails',
       'homeManager', 'homeStaff', 'homeConsultant', 'lineChart',
       'statusCard', 'pendingCard', 'analyticsPreview', 'appointmentCard',
-      'qualifications', // Add new namespace
-      // 'recommendation', 'reports', 'searchFilter', 'userDetails', 
-      'eventDetails', 'eventList',
-      'qualifications', 'forgotResetPassword', // Added the new namespace here
-      'userManagement',
+      'qualifications', 'eventDetails', 'eventList', 'qualifications',
+      'forgotResetPassword', 'userManagement', 'blogManagement',
+      'courseManagement', 'eventManagement'
     ],
     defaultNS: 'home',
     interpolation: {

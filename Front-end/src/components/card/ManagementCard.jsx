@@ -43,9 +43,9 @@ const ManagementCard = ({
     );
 
     const SimpleCard = ({ item, isPending }) => {
-        const name = item.courseName || item.blogName || item.title || 'No Title';
+        const name = item.courseName || item.blogName || item.eventName || 'No Title';
         const submittedDate = item.updatedAt || 'recently';
-        const id = item.courseID || item.blogID || item.id;
+        const id = item.courseID || item.blogID || item.eventID;
         const author = item.member?.username || 'Unknown Author';
         const type = dataType;
 
@@ -65,8 +65,8 @@ const ManagementCard = ({
                             {item.blogID && item.blogStatus === 'PENDING' && item.member.role !== 'STAFF' && (
                                 <Button
                                     size="sm"
-                                    variant="success"
-                                    className="btn-gradient-success"
+                                    variant="outline-success"
+                                    className="fw-bold"
                                     onClick={() => onApprove && onApprove(id, title.toLowerCase().slice(0, -1))} // Pass ID and type
                                 >
                                     Approve
