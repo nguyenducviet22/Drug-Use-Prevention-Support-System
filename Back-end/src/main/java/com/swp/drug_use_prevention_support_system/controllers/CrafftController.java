@@ -1,7 +1,7 @@
 package com.swp.drug_use_prevention_support_system.controllers;
 
 import com.swp.drug_use_prevention_support_system.domain.entities.AssessmentResult;
-import com.swp.drug_use_prevention_support_system.domain.entities.CrafftSubmissionDTO;
+import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CrafftSubmissionDTO;
 import com.swp.drug_use_prevention_support_system.services.CrafftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

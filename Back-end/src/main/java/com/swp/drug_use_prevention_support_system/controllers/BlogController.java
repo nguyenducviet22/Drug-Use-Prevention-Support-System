@@ -158,7 +158,7 @@ public class BlogController {
     }
 
     @GetMapping("/status/{status}/role/{role}")
-    public ResponseEntity<ApiResponse<List<BlogResponse>>> getBlogsByStatusRole(@PathVariable BlogStatus status,
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> getBlogsByStatusAndRole(@PathVariable BlogStatus status,
                                                                                 @PathVariable Role role) {
         List<BlogResponse> responses = blogService.getBlogsByStatusAndRole(status, role);
         ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()

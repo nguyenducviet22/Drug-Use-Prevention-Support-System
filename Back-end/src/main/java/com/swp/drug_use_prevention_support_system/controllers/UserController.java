@@ -45,7 +45,7 @@ public class UserController {
         UserResponse response = userService.createInternalUser(request);
         ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
                 .data(response)
-                .status(HttpStatus.OK.value())
+                .status(HttpStatus.CREATED.value())
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
