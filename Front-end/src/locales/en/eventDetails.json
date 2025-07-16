@@ -1,7 +1,7 @@
 {
   "notFoundTitle": "Event Not Found",
   "notFoundMessage": "Sorry, this event does not exist or has been removed.",
-  "backToEvents": "Back to Events",
+  "backToEvents": "Back",
   "register": "Register",
   "joined": "Joined",
   "unavailable": "Unavailable",

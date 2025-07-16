@@ -1,0 +1,26 @@
+{
+    "blogManagementTitle": "Blog Management",
+    "searchFilter": {
+        "placeholder": "Search by blog name..."
+    },
+    "blogsSection": {
+        "clearFilters": "Clear All Filters",
+        "noMatchingBlogs": "No matching blogs found for the search criteria."
+    },
+    "blogList": "Blog List",
+    "stt": "No.",
+    "blogName": "Blog Name",
+    "author": "Author",
+    "readingTime": "Reading Time",
+    "minutes": "mins",
+    "blogType": "Blog Type",
+    "blogStatus": "Status",
+    "ageGroup": "Age Group",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "actions": "Actions",
+    "successfullyApproved": "Blog successfully approved!",
+    "failedToApprove": "Failed to approve blog. Please try again.",
+    "successfullyRejected": "Blog successfully rejected!",
+    "failedToReject": "Failed to reject blog. Please try again."
+}

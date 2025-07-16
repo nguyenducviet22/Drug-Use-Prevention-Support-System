@@ -17,12 +17,12 @@ export const useAuth = () => {
             localStorage.setItem("token", response.data.token);
             const loginAccount = await fetchUser();
             const { role } = loginAccount
-            if (role === null) navigate("/");
+            if (role === null) navigate("/profile");
             if (role === "MEMBER") navigate("/");
             if (role === "STAFF") navigate("/staff");
             if (role === "MANAGER") navigate("/manager");
             if (role === "CONSULTANT") navigate("/consultant");
-            if (role === "ADMIN") navigate("/admin");
+            if (role === "ADMIN") navigate("/admin/dashboard");
             toast.success("Login successfully")
         } catch (error) {
             if (error.response) {
@@ -65,8 +65,8 @@ export const useAuth = () => {
             const res = await API.get("/api/user/my-info");
             setUser(res.data.data);
             return res.data.data;
-        } catch (err) {
-            console.error("Auth error:", err);
+        } catch (error) {
+            console.error("Auth error:", error);
             logout();
             return null;
         } finally {

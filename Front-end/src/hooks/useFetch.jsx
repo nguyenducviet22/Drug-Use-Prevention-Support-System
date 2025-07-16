@@ -44,7 +44,21 @@ const useFetch = (defaultUrl) => {
         } catch (jsonError) {
           errorText = await response.text();
         }
-        throw new Error(`Error: ${response.status} - ${errorText}`);
+        // throw new Error(`Error: ${response.status} - ${errorText}`);
+        const err = new Error(`Error: ${response.status} - ${errorText}`);
+        err.status = response.status;
+
+        // Try to extract message if response is JSON
+        try {
+          const parsed = JSON.parse(errorText);
+          if (parsed && parsed.message) {
+            err.messageFromServer = parsed.message;
+          }
+        } catch (e) {
+          // fallback: plain string
+          err.messageFromServer = errorText;
+        }
+        throw err;
       }
 
       // Check content type before parsing JSON
@@ -65,10 +79,10 @@ const useFetch = (defaultUrl) => {
         return null;
       }
 
-    } catch (err) {
-      console.error('Fetch error:', err);
-      setError(err);
-      throw err;
+    } catch (error) {
+      console.error('Fetch error:', error);
+      setError(error);
+      throw error;
     } finally {
       setLoading(false);
     }

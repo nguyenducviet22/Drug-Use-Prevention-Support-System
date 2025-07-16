@@ -32,6 +32,7 @@
         "continueOrCompleted": "You are continuing or have completed this course.",
         "enrollmentInfoNotFound": "Enrollment information not found to continue.",
         "enrollmentSuccess": "Course enrolled successfully!",
+        "enrollmentInform": ". You need to update your personal information",
         "enrollmentFailed": "Failed to enroll. Please try again.",
         "apiError": "An error occurred: {{message}}"
     }

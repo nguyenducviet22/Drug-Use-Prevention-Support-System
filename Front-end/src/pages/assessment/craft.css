@@ -9,6 +9,48 @@ body {
   min-height: 100vh;
 }
 
+/* Progress Indicator */
+.progress-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.step {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.step.completed {
+  background-color: #e9ecef;
+  color: #6c757d;
+}
+
+.step.active {
+  background-color: #3498db;
+  color: white;
+}
+
+.step-line {
+  width: 60px;
+  height: 2px;
+  background-color: #3498db;
+  margin: 0 10px;
+}
+
+.step-number {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+
 .card {
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08), 0 2px 6px rgba(59, 130, 246, 0.04);
   border: 1px solid rgba(59, 130, 246, 0.1);
@@ -138,6 +180,7 @@ a.text-primary:hover {
   font-weight: 600;
   margin-bottom: 8px;
   font-size: 14px;
+  display: inline;
 }
 
 .text-muted {

@@ -1,0 +1,31 @@
+{
+    "courseManagementTitle": "Quản lý khóa học",
+    "searchFilter": {
+        "placeholder": "Tìm kiếm theo tên khóa học..."
+    },
+    "durationOptions": {
+        "lessThan10Mins": "Dưới 10 phút",
+        "lessThan20Mins": "Dưới 20 phút",
+        "lessThan30Mins": "Dưới 30 phút",
+        "moreThan30Mins": "Trên 30 phút"
+    },
+    "coursesSection": {
+        "clearFilters": "Xóa tất cả bộ lọc",
+        "noMatchingCourses": "Không tìm thấy khóa học phù hợp với tiêu chí tìm kiếm."
+    },
+    "courseList": "Danh sách khóa học",
+    "no.": "STT",
+    "courseName": "Tên khóa học",
+    "quantity": "Số lượng",
+    "duration": "Thời lượng",
+    "ageGroup": "Nhóm tuổi",
+    "status": "Trạng thái",
+    "createdAt": "Ngày tạo",
+    "updatedAt": "Ngày cập nhật",
+    "actions": "Hành động",
+    "successfullyApproved": "Khóa học đã được duyệt thành công!",
+    "failedToApprove": "Duyệt khóa học thất bại. Vui lòng thử lại.",
+    "successfullyRejected": "Khóa học đã bị từ chối thành công!",
+    "failedToReject": "Từ chối khóa học thất bại. Vui lòng thử lại.",
+    "fetchError": "Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau."
+}

@@ -31,7 +31,7 @@ const CourseList = () => {
       try {
         const coursesData = await getcourses("http://localhost:8080/api/course/status/AVAILABLE")
         setCourses(coursesData)
-        const ageGroupsData = await getAgeGroups("http://localhost:8080/api/course/age-group")
+        const ageGroupsData = await getAgeGroups("http://localhost:8080/api/user/age-group")
         setAgeGroups(ageGroupsData)
       } catch (error) {
         console.error("Fetch error in CourseList:", error);
@@ -161,7 +161,16 @@ const CourseList = () => {
               ageGroupOptions={ageGroupOptions}
               durationOptions={durationOptions}
               placeholder={t("searchFilter.placeholder")}
+              filterFor="courses"
             />
+
+            {(searchTerm !== "" || selectedAgeGroup !== "" || selectedDuration !== "") && (
+              <div className="d-flex justify-content-center mt-3"> {/* Căn giữa nút */}
+                <Button variant="outline-primary" onClick={clearAllFilters}>
+                  {t("coursesSection.clearFilters")}
+                </Button>
+              </div>
+            )}
           </Container>
 
           {/* Courses Section */}
@@ -200,9 +209,6 @@ const CourseList = () => {
             ) : (
               <div className="text-center py-5">
                 <p className="text-muted">{t("coursesSection.noMatchingCourses")}</p>
-                <Button variant="outline-primary" onClick={clearAllFilters} className="mt-3">
-                  {t("coursesSection.clearFilters")}
-                </Button>
               </div>
             )}
           </Container>

@@ -1,0 +1,31 @@
+{
+    "courseManagementTitle": "Course Management",
+    "searchFilter": {
+        "placeholder": "Search by course name..."
+    },
+    "durationOptions": {
+        "lessThan10Mins": "Less than 10 mins",
+        "lessThan20Mins": "Less than 20 mins",
+        "lessThan30Mins": "Less than 30 mins",
+        "moreThan30Mins": "More than 30 mins"
+    },
+    "coursesSection": {
+        "clearFilters": "Clear All Filters",
+        "noMatchingCourses": "No matching courses found for the search criteria."
+    },
+    "courseList": "Course List",
+    "no.": "No.",
+    "courseName": "Course Name",
+    "quantity": "Quantity",
+    "duration": "Duration",
+    "ageGroup": "Age Group",
+    "status": "Status",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "actions": "Actions",
+    "successfullyApproved": "Course successfully approved!",
+    "failedToApprove": "Failed to approve course. Please try again.",
+    "successfullyRejected": "Course successfully rejected!",
+    "failedToReject": "Failed to reject course. Please try again.",
+    "fetchError": "An error occurred while fetching data. Please try again later."
+}

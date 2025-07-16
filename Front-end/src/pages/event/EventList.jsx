@@ -57,7 +57,7 @@ const EventList = () => {
       const response = await fetch(url);
       const result = await response.json();
       setEvents(result.data);
-    } catch (err) {
+    } catch (error) {
       setError("Failed to fetch events.");
     } finally {
       setLoading(false);
@@ -181,8 +181,8 @@ const EventList = () => {
       if (!response.ok) throw new Error(result.message || t("registerFailed"));
       toast.success(<strong>🎉 {t("registerSuccess")}</strong>);
       fetchStatuses(events); // update button
-    } catch (err) {
-      toast.error(<strong>❌ {err.message || t("registerFailed")}</strong>);
+    } catch (error) {
+      toast.error(<strong>❌ {error.message || t("registerFailed")}</strong>);
     }
   };
 
@@ -203,9 +203,9 @@ const EventList = () => {
         <strong>✅ {t("cancelSuccess", "Cancelled successfully!")}</strong>
       );
       fetchStatuses(events); // update button/status
-    } catch (err) {
+    } catch (error) {
       toast.error(
-        <strong>❌ {err.message || t("cancelFailed", "Cancel failed!")}</strong>
+        <strong>❌ {error.message || t("cancelFailed", "Cancel failed!")}</strong>
       );
     }
   };
@@ -262,7 +262,16 @@ const EventList = () => {
           placeholder={t("searchPlaceholder")}
           ageGroupOptions={ageGroupOptions}
           durationOptions={durationOptions}
+          filterFor="events"
         />
+
+        {(searchTerm !== "" || selectedAgeGroup !== "") && (
+          <div className="d-flex justify-content-center mt-3">
+            <Button variant="outline-primary" onClick={clearAllFilters}>
+              {t("clearFilters")}
+            </Button>
+          </div>
+        )}
       </Container>
 
       <Container className="mb-5">
@@ -294,9 +303,6 @@ const EventList = () => {
           {currentEvents.length === 0 ? (
             <div className="text-center py-5">
               <p className="text-muted">{t("noEventsCriteria")}</p>
-              <Button variant="outline-primary" onClick={clearAllFilters}>
-                {t("clearFilters")}
-              </Button>
             </div>
           ) : (
             <>

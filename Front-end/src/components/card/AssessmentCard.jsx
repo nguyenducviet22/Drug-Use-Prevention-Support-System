@@ -31,7 +31,11 @@ const AssessmentCard = ({ assessment }) => {
   const handleClick = () => {
     if (assessment.assessmentType === "CRAFFT") {
       navigate("/assessment/crafft");
-    } else {
+    } else if(assessment.assessmentType === "ASSIST")
+    {
+      navigate("/assessment/assist");
+    }
+    else {
       window.open(assessment.linkTest);
     }
   };

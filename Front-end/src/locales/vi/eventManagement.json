@@ -1,0 +1,23 @@
+{
+    "eventManagementTitle": "Quản lý sự kiện",
+    "searchEventPlaceholder": "Tìm kiếm theo tên sự kiện...",
+    "clearFilters": "Xóa tất cả bộ lọc",
+    "eventList": "Danh sách sự kiện",
+    "no.": "STT",
+    "eventName": "Tên sự kiện",
+    "location": "Địa điểm",
+    "startDate": "Ngày bắt đầu",
+    "endDate": "Ngày kết thúc",
+    "status": "Trạng thái",
+    "ageGroup": "Nhóm tuổi",
+    "fee": "Phí",
+    "createdBy": "Người tạo",
+    "createdAt": "Ngày tạo",
+    "actions": "Hành động",
+    "free": "Miễn phí",
+    "successfullyApproved": "Sự kiện đã được duyệt thành công!",
+    "failedToApprove": "Duyệt sự kiện thất bại. Vui lòng thử lại.",
+    "successfullyRejected": "Sự kiện đã bị từ chối thành công!",
+    "failedToReject": "Từ chối sự kiện thất bại. Vui lòng thử lại.",
+    "noMatchingEvents": "Không tìm thấy sự kiện nào phù hợp với tiêu chí tìm kiếm."
+}

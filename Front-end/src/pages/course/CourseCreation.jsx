@@ -48,7 +48,7 @@ const CourseCreation = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const ageGroupsData = await getAgeGroups("http://localhost:8080/api/course/age-group");
+        const ageGroupsData = await getAgeGroups("http://localhost:8080/api/user/age-group");
         setAgeGroups(ageGroupsData);
 
         if (courseID) {
@@ -58,9 +58,12 @@ const CourseCreation = () => {
             setImagePreview(courseData.image);
             setUploadedImageUrl(courseData.image);
           }
+
+          const moduleData = await getModules(`http://localhost:8080/api/course/${courseID}/modules`);
+          setModules(moduleData);
         }
-      } catch (err) {
-        console.error("Fetch error in CourseCreation:", err);
+      } catch (error) {
+        console.error("Fetch error in CourseCreation:", error);
         toast.error(t("modulesSection.toastMessages.fetchError"), "danger");
       }
     };
@@ -220,7 +223,7 @@ const CourseCreation = () => {
 
             try {
               const requestBody = { moduleIds: selectedModuleIds, status: "UNAVAILABLE" };
-              const response = await putModulesStatus(`http://localhost:8080/api/module/${courseID}/unavailable`, requestBody, {});
+              const response = await putModulesStatus(requestBody, {}, `http://localhost:8080/api/module/${courseID}/unavailable`);
               toast.success(t("modulesSection.toastMessages.updateModulesStatusSuccess"));
               console.log("Modules set to unavailable:", response);
               setSelectedModuleIds([]);

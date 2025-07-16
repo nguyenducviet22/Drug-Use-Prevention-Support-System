@@ -41,8 +41,8 @@ const HomeExplore = () => {
       );
       const result = await res.json();
       return result;
-    } catch (err) {
-      console.error("Error fetching status for event", eventId, err.message);
+    } catch (error) {
+      console.error("Error fetching status for event", eventId, error.message);
       return { status: "NOT_REGISTERED", full: false };
     }
   };
@@ -108,10 +108,10 @@ const HomeExplore = () => {
         <strong>🎉 {t("registerSuccess") || "Registered Successfully!"}</strong>
       );
       setRegisteredEventIds((prev) => [...prev, normalizedID]);
-    } catch (err) {
+    } catch (error) {
       toast.error(
         <strong>
-          ❌ {err.message || t("registerFailed") || "Registration failed"}
+          ❌ {error.message || t("registerFailed") || "Registration failed"}
         </strong>
       );
     }
@@ -138,10 +138,10 @@ const HomeExplore = () => {
       setRegisteredEventIds((prev) =>
         prev.filter((id) => id !== eventID.toLowerCase())
       );
-    } catch (err) {
+    } catch (error) {
       toast.error(
         <strong>
-          ❌ {err.message || t("cancelFailed") || "Cancel failed!"}
+          ❌ {error.message || t("cancelFailed") || "Cancel failed!"}
         </strong>
       );
     } finally {
@@ -209,8 +209,8 @@ const HomeExplore = () => {
         const joined = Array.isArray(result) ? result : result.data || [];
         const joinedIds = joined.map((e) => e.eventID?.toLowerCase());
         setRegisteredEventIds(joinedIds);
-      } catch (err) {
-        console.error("Failed to fetch joined events:", err.message);
+      } catch (error) {
+        console.error("Failed to fetch joined events:", error.message);
       }
     };
 
@@ -258,10 +258,10 @@ const HomeExplore = () => {
               return (
                 <Col md={6} key={event.eventID} className="mb-4">
                   <Card className="h-100 border-0 shadow-sm event-card">
-                    {event.img && (
+                    {event.image && (
                       <Card.Img
                         variant="top"
-                        src={event.img}
+                        src={event.image}
                         alt={event.eventName}
                         style={{ height: 180, objectFit: "cover" }}
                       />

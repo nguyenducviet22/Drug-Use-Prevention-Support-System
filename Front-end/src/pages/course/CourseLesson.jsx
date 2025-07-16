@@ -131,8 +131,8 @@ const CourseLesson = () => {
             });
           }
         }
-      } catch (err) {
-        console.error("Error fetching initial data:", err);
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
       }
     };
 
@@ -199,8 +199,8 @@ const CourseLesson = () => {
         }
       }
 
-    } catch (err) {
-      console.error("Failed to complete lesson or update enrollment status: ", err);
+    } catch (error) {
+      console.error("Failed to complete lesson or update enrollment status: ", error);
       // Revert optimistic update if API call fails
       setCurrentLessonProgress(prev => ({ ...prev, status: "NOT_STARTED" }));
       setLessonByModuleID(prevMap => {
@@ -257,8 +257,8 @@ const CourseLesson = () => {
         });
       }
 
-    } catch (err) {
-      console.error("Failed to fetch or create progress:", err);
+    } catch (error) {
+      console.error("Failed to fetch or create progress:", error);
       setCurrentLessonProgress(null); // Clear progress on error
     }
   };

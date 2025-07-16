@@ -5,8 +5,7 @@ import './HomeStaff.css'
 import ManagementCard from '../../components/card/ManagementCard';
 import useFetch from '../../hooks/useFetch';
 import { useAuth } from '../../hooks/useAuth';
-import Pagination from '../../components/others/Pagination';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +13,7 @@ function HomeStaff() {
   const { t } = useTranslation('homeStaff');
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [itemsPerPage] = useState(4)
+  const [itemsPerPage] = useState(3)
 
   const [blogActiveTab, setBlogActiveTab] = useState('me');
   const [blogSubTab, setBlogSubTab] = useState('pending');
@@ -39,19 +38,10 @@ function HomeStaff() {
   const { get: getPendingCourses } = useFetch();
   const { get: getApprovedCourses } = useFetch();
 
-  const eventData = {
-    pending: [
-      { id: 1, title: t('youthAwarenessWorkshop'), submittedDate: `1 ${t('weekAgo')}` },
-      { id: 2, title: t('parentEducationSeminar'), submittedDate: `3 ${t('weeksAgo')}` }
-    ],
-    approved: [
-      { id: 3, title: t('teacherTrainingSession'), submittedDate: `1 ${t('weekAgo')}` },
-      { id: 4, title: t('communityOutreachEvent'), submittedDate: `2 ${t('weeksAgo')}` },
-      { id: 5, title: t('eventA'), submittedDate: `1 ${t('dayAgo')}` },
-      { id: 6, title: t('eventB'), submittedDate: `2 ${t('daysAgo')}` },
-      { id: 7, title: t('eventC'), submittedDate: `3 ${t('daysAgo')}` },
-    ]
-  };
+  const [pendingEvents, setPendingEvents] = useState([]);
+  const [approvedEvents, setApprovedEvents] = useState([]);
+  const { get: getPendingEvents } = useFetch();
+  const { get: getApprovedEvents } = useFetch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,8 +62,13 @@ function HomeStaff() {
         setPendingBlogs(pendingBlogsData || []);
         const approvedBlogsData = await getApprovedBlogs("http://localhost:8080/api/blog/status/PUBLISHED/role-except/STAFF");
         setApprovedBlogs(approvedBlogsData || []);
-      } catch (err) {
-        console.error("Fetch error in HomeStaff:", err);
+
+        const pendingEventsData = await getPendingEvents("http://localhost:8080/api/event/status/PENDING_APPROVAL");
+        setPendingEvents(pendingEventsData || []);
+        const approvedEventsData = await getApprovedEvents("http://localhost:8080/api/event/status/APPROVED");
+        setApprovedEvents(approvedEventsData || []);
+      } catch (error) {
+        console.error("Fetch error in HomeStaff:", error);
       }
     };
 
@@ -89,6 +84,11 @@ function HomeStaff() {
   const courseData = {
     pending: pendingCourses,
     approved: approvedCourses
+  };
+
+  const eventData = {
+    pending: pendingEvents,
+    approved: approvedEvents
   };
 
   const handleCourseTabChange = (tab) => {
@@ -135,6 +135,7 @@ function HomeStaff() {
   const handleView = (id, type) => {
     if (type === 'blog') navigate(`/blogs/${id}`)
     if (type === 'course') navigate(`/courses/${id}`)
+    if (type === 'event') navigate(`/events/${id}`)
   }
 
   const handleApprove = async (id, type) => {
@@ -173,13 +174,11 @@ function HomeStaff() {
               onView={(id) => handleView(id, 'course')}
               onAdd={() => handleAdd('courses')}
             />
-            {totalCoursePages > 1 && (
-              <Pagination
-                currentPage={courseCurrentPage}
-                totalPages={totalCoursePages}
-                onPageChange={setCourseCurrentPage}
-              />
-            )}
+            <Link to="/course-management">
+              <button className="btn btn-primary mt-3">
+                {t('viewAllCourses')}
+              </button>
+            </Link>
           </Col>
 
           {/* Event Management */}
@@ -196,15 +195,14 @@ function HomeStaff() {
                 pending: eventData.pending.length,
                 approved: eventData.approved.length,
               }}
+              onView={(id) => handleView(id, 'event')}
               onAdd={() => handleAdd('events')}
             />
-            {totalEventPages > 1 && (
-              <Pagination
-                currentPage={eventCurrentPage}
-                totalPages={totalEventPages}
-                onPageChange={setEventCurrentPage}
-              />
-            )}
+            <Link to="/event-management">
+              <button className="btn btn-primary mt-3">
+                {t('viewAllEvents')}
+              </button>
+            </Link>
           </Col>
 
           {/* Blog Management */}
@@ -238,13 +236,11 @@ function HomeStaff() {
               onViewClick={(id, type) => handleView(id, type)}
               onAdd={() => handleAdd('blogs')}
             />
-            {totalBlogPages > 1 && (
-              <Pagination
-                currentPage={blogCurrentPage}
-                totalPages={totalBlogPages}
-                onPageChange={setBlogCurrentPage}
-              />
-            )}
+            <Link to="/blog-management">
+              <button className="btn btn-primary mt-3">
+                {t('viewAllBlogs')}
+              </button>
+            </Link>
           </Col>
         </Row>
 

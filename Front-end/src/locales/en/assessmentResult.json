@@ -16,11 +16,24 @@
       "userLabel": "User:",
       "assessmentScoreLabel": "Assessment Score:",
       "riskLevelLabel": "Risk Level:",
-      "completedDateTimeLabel": "Completed Date Time:"
+      "completedDateTimeLabel": "Completed Date Time:",
+      "assessmentTypeLabel": "Assessment Type:",
+      "ageGroupLabel": "Age Group",
+      "yesAnswersLabel": "Yes Answers",
+      "outOf": "out of",
+      "detailsTitle": "Assessment Details",
+      "guestUser": "Guest"
     },
+    "scoringExplanationTitle": "CRAFFT Scoring Explanation",
+    "scoringExplanationHow": "How CRAFFT Scoring Works:",
+    "scoringExplanationContent": "Each \"Yes\" answer in Part B of the CRAFFT assessment counts as 1 point. The total possible score is 6 points. Your score of",
+    "scoringExplanationOutOf": "out of",
+    "scoringExplanationIndicates": "indicates a",
+    "scoringExplanationRiskLevel": "risk level for substance use problems.",
     "warningSection": {
       "warningText": "Warning: Possible relapse risk detected",
       "nextStepsTitle": "Next step to do:",
+      "recommendationsTitle": "Recommendations",
       "recommendations": [
         {
           "title": "Take a recommended Course below:",
@@ -35,7 +48,19 @@
           "description": "Connect with relevant educational programs and community activities."
         }
       ]
-    }
-  },
-  "mainResultCard.details.suggestedActionLabel": "Suggested Action: "
+    },
+    "preventionTipsTitle": "Prevention Tips & Strategies",
+    "preventionTips": [
+      "Build positive relationships with family and friends",
+      "Participate in healthy sports and recreational activities",
+      "Learn to manage stress and pressure effectively",
+      "Avoid environments with drug exposure risks",
+      "Seek support when facing life difficulties",
+      "Increase knowledge about drug harm and addiction"
+    ],
+    "downloadReport": "Download Detailed Report",
+    "scheduleConsultation": "Schedule Consultation",
+    "retakeAssessment": "Retake Assessment",
+    "back": "Back"
+  }
 }
