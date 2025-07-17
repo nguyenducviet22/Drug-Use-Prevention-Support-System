@@ -714,6 +714,11 @@ body {
   border-top: 1px solid #dee2e6;
 }
 
+.mh-48
+{
+  min-height: 48px;
+}
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .main-content {

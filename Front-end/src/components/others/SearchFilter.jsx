@@ -106,7 +106,7 @@ const SearchFilter = ({
                   className="filter-select"
                 >
                   {(!selectedStatus || selectedStatus === "__default__") && (
-                    <option value="">{t("chooseAgeGroup")}</option>
+                    <option value="">{t("chooseStatus")}</option>
                   )}
                   {statusOptions.map((option) => (
                     <option key={option.value} value={option.value}>

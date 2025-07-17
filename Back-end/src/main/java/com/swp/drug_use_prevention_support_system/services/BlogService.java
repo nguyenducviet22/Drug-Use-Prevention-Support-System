@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.YearMonth;
 import java.util.*;
 
 @Service
@@ -138,4 +139,29 @@ public class BlogService {
         int wordCount = content.trim().split("\\s+").length;
         return (int) Math.ceil((double) wordCount / WORDS_PER_MINUTE);
     }
+
+    //ADMIN HOMEPAGE
+    @PreAuthorize("hasRole('ADMIN')")
+    public Map<String, Object> getBlogStats() {
+        Map<String, Object> stats = new HashMap<>();
+
+        long totalBlogs = blogRepository.count();
+        long pendingBlogs = blogRepository.countByBlogStatus(BlogStatus.PENDING);
+
+        YearMonth current = YearMonth.now();
+        YearMonth last = current.minusMonths(1);
+
+        int thisMonthBlogs = blogRepository.countBlogsByMonth(current.getYear(), current.getMonthValue());
+        int lastMonthBlogs = blogRepository.countBlogsByMonth(last.getYear(), last.getMonthValue());
+
+        int growth = thisMonthBlogs - lastMonthBlogs;
+        double growthPercent = lastMonthBlogs > 0 ? (double) growth / lastMonthBlogs * 100 : 0;
+
+        stats.put("totalBlogs", totalBlogs);
+        stats.put("pendingBlogs", pendingBlogs);
+        stats.put("growthPercent", Math.round(growthPercent));
+
+        return stats;
+    }
+
 }

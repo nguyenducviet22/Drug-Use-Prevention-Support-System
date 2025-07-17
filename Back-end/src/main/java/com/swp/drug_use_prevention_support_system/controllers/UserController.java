@@ -8,6 +8,8 @@ import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.Gender;
 import com.swp.drug_use_prevention_support_system.domain.enums.Role;
 import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
+import com.swp.drug_use_prevention_support_system.exception.AlreadyRegisteredException;
+import com.swp.drug_use_prevention_support_system.exception.ResourceNotFoundException;
 import com.swp.drug_use_prevention_support_system.services.ExcelService;
 import com.swp.drug_use_prevention_support_system.services.UserService;
 import jakarta.validation.Valid;
@@ -18,9 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/user")
@@ -202,5 +202,105 @@ public class UserController {
     public ResponseEntity<ApiResponse<Void>> deletePermanentUser(@PathVariable String username) {
         userService.deletePermanentUser(username);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/admin/create")
+    public ResponseEntity<ApiResponse<UserResponse>> createAdminUser(@Valid @RequestBody CreateUserRequest request) {
+        // Bạn có thể thêm validation ở controller nếu muốn, ví dụ:
+        if (request.getRole() == null) {
+            // Trả về lỗi 400 Bad Request nếu role bị thiếu
+            return new ResponseEntity<>(
+                    ApiResponse.<UserResponse>builder()
+                            .message("Role is required for admin user creation.")
+                            .status(HttpStatus.BAD_REQUEST.value())
+                            .build(),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+        try {
+            UserResponse response = userService.createUser(request); // Gọi service đã điều chỉnh
+
+            ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
+                    .data(response)
+                    .message("User created successfully by admin.")
+                    .status(HttpStatus.CREATED.value())
+                    .build();
+            return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+        } catch (AlreadyRegisteredException e) {
+            // Xử lý exception khi username đã tồn tại
+            return new ResponseEntity<>(
+                    ApiResponse.<UserResponse>builder()
+                            .message(e.getMessage())
+                            .status(HttpStatus.CONFLICT.value()) // HTTP 409 Conflict
+                            .build(),
+                    HttpStatus.CONFLICT
+            );
+        } catch (Exception e) {
+            return new ResponseEntity<>(
+                    ApiResponse.<UserResponse>builder()
+                            .message("Failed to create user: " + e.getMessage())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .build(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    @PutMapping("/{username}/role") // Example path: /api/user/{username}/role
+    public ResponseEntity<ApiResponse<UserResponse>> updateUserRole(
+            @PathVariable String username,
+            @RequestBody Role newRole) { // Receive the new role directly in the body
+
+        // Basic validation: ensure the newRole is not null
+        if (newRole == null) {
+            return new ResponseEntity<>(
+                    ApiResponse.<UserResponse>builder()
+                            .message("New role cannot be null.")
+                            .status(HttpStatus.BAD_REQUEST.value())
+                            .build(),
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+        try {
+            UserResponse response = userService.updateUserRole(username, newRole);
+
+            ApiResponse<UserResponse> apiResponse = ApiResponse.<UserResponse>builder()
+                    .data(response)
+                    .message("User role updated successfully for " + username)
+                    .status(HttpStatus.OK.value()) // Use OK for successful update
+                    .build();
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(
+                    ApiResponse.<UserResponse>builder()
+                            .message(e.getMessage())
+                            .status(HttpStatus.NOT_FOUND.value()) // HTTP 404 Not Found
+                            .build(),
+                    HttpStatus.NOT_FOUND
+            );
+        } catch (Exception e) {
+            // Catch other potential errors, e.g., permission issues from @PreAuthorize
+            return new ResponseEntity<>(
+                    ApiResponse.<UserResponse>builder()
+                            .message("Failed to update user role: " + e.getMessage())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .build(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    //ADMIN HOMEPAGE
+    @GetMapping("/admin/stats/users")
+    public ResponseEntity<Map<String, Object>> getUserStats() {
+        Map<String, Object> stats = userService.getUserStats();
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/admin/user-demographics")
+    public Map<String, Object> getUserDemographics() {
+        return userService.getUserDemographics();
     }
 }
