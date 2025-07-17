@@ -3,6 +3,7 @@ import { Globe, ArrowUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
 import { useTranslation } from "react-i18next"; // Import useTranslation
+import LogoHorizontalLarge from "../logo/LogoHorizontalLarge";
 
 const Footer = () => {
   const { t } = useTranslation("footer"); // Initialize useTranslation

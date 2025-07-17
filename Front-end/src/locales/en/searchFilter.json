@@ -4,6 +4,7 @@
   "chooseTopic": "Choose Topic",
   "chooseType": "Choose Type",
   "duration": "Duration",
+  "chooseStatus" : "Choose Status",
   "filterButton": "Filter",
   "ageGroupOptions": {
     "toddler": "Toddler (1-3)",

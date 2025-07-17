@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -144,5 +145,11 @@ public class AppointmentController {
                 .data(response)
                 .build();
         return ResponseEntity.ok(apiResponse);
+    }
+
+    //ADMIN HOMEPAGE
+    @GetMapping("/admin/stats/appointments")
+    public ResponseEntity<Map<String, Object>> getAppointmentStats() {
+        return ResponseEntity.ok(appointmentService.getAppointmentStats());
     }
 }

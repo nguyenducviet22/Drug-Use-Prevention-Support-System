@@ -1,6 +1,7 @@
 package com.swp.drug_use_prevention_support_system.services;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateEventRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.SaveAsDraftRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateEventRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.CourseResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EventResponse;
@@ -16,6 +17,7 @@ import com.swp.drug_use_prevention_support_system.repositories.EventRepository;
 import com.swp.drug_use_prevention_support_system.repositories.EventUserRepository;
 import com.swp.drug_use_prevention_support_system.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,12 +53,32 @@ public class EventService {
 
     // Lưu event dưới dạng DRAFT
     @PreAuthorize("hasAnyRole('STAFF')")
-    public EventResponse saveEventAsDraft(CreateEventRequest eventRequest) {
+    public EventResponse saveEventAsDraft(SaveAsDraftRequest eventRequest) {
         Event newEvent = eventMapper.toEntity(eventRequest);
         String loginUsername = userService.getLoginUsername();
         User staff = userService.getUserEntity(loginUsername);
         newEvent.setCreatedByStaff(staff);
         newEvent.setStatus(EventStatus.DRAFT);
+        if (newEvent.getEventName() == null || newEvent.getEventName().trim().isEmpty()) {
+            throw new InvalidEventException("Event name is required even for a draft.");
+        }
+        eventRepository.save(newEvent);
+        return eventMapper.toDto(newEvent);
+    }
+
+    @PreAuthorize("hasAnyRole('STAFF')")
+    @Transactional
+    public EventResponse publishEvent(CreateEventRequest request) {
+        Event newEvent = eventMapper.toEntity(request); // Bạn cần thêm phương thức map này trong EventMapper
+        newEvent.setStatus(EventStatus.PENDING_APPROVAL); // Luôn đặt trạng thái là PENDING_APPROVAL
+        String loginUsername = userService.getLoginUsername();
+        User staff = userService.getUserEntity(loginUsername);
+        newEvent.setCreatedByStaff(staff);
+
+        // Các validation từ PublishEventRequest DTO sẽ đảm bảo dữ liệu hợp lệ
+        // Thêm các logic nghiệp vụ khác nếu cần trước khi lưu
+        // Ví dụ: kiểm tra trùng lặp, tính toán lại endDate nếu duration thay đổi, v.v.
+
         eventRepository.save(newEvent);
         return eventMapper.toDto(newEvent);
     }
@@ -200,7 +222,7 @@ public class EventService {
         eventUserRepository.save(userEvent);
     }
 
-    @PreAuthorize("hasRole('MEMBER')")
+    @PreAuthorize("hasAnyRole('MEMBER', 'STAFF', 'MANAGER')")
     //Lấy status của người đăng kí sự kiện
     public EventStatusResponse getEventStatus(UUID eventId, String username) {
         Optional<EventUser> eventUser = eventUserRepository.findById(new EventUserId(eventId, username));

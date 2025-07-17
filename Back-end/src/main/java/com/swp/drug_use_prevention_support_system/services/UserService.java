@@ -8,11 +8,13 @@ import com.swp.drug_use_prevention_support_system.domain.entities.User;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.Role;
 import com.swp.drug_use_prevention_support_system.domain.enums.UserStatus;
+import com.swp.drug_use_prevention_support_system.exception.AlreadyRegisteredException;
 import com.swp.drug_use_prevention_support_system.exception.ResourceNotFoundException;
 import com.swp.drug_use_prevention_support_system.mappers.UserMapper;
 import com.swp.drug_use_prevention_support_system.repositories.AppointmentRepository;
 import com.swp.drug_use_prevention_support_system.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -24,7 +26,11 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -213,4 +219,89 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
         userRepository.delete(user);
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @Transactional
+    public UserResponse createUser(CreateUserRequest request) { // Đổi tên thành camelCase
+        String username = request.getUsername();
+
+        if (userRepository.existsByUsername(username)) {
+            throw new AlreadyRegisteredException("Username '" + username + "' already exists.");
+        }
+
+        User newUser = userMapper.toEntity(request);
+
+        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        newUser.setStatus(UserStatus.ACTIVE);
+
+        userRepository.save(newUser);
+
+        return userMapper.toDto(newUser);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')") // Only ADMIN or MANAGER can update roles
+    @Transactional
+    public UserResponse updateUserRole(String username, Role newRole) {
+        // 1. Find the user
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+        // 3. Update the role
+        user.setRole(newRole);
+        user.setUpdatedAt(Instant.now()); // Update timestamp
+
+        // 4. Save the updated user
+        userRepository.save(user);
+
+        // 5. Return the updated user DTO
+        return userMapper.toDto(user);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public Map<String, Object> getUserStats() {
+        Map<String, Object> stats = new HashMap<>();
+
+        long totalUsers = userRepository.count();
+        int consultants = userRepository.countByRole(Role.CONSULTANT);
+        int managers = userRepository.countByRole(Role.MANAGER);
+
+        YearMonth lastMonth = YearMonth.now().minusMonths(1);
+        int lastMonthUsers = userRepository.countUsersByMonth(lastMonth.getYear(), lastMonth.getMonthValue());
+
+        long growth = totalUsers - lastMonthUsers;
+        double growthPercent = lastMonthUsers > 0 ? (double) growth / lastMonthUsers * 100 : 0;
+        stats.put("totalUsers", totalUsers);
+        stats.put("consultants", consultants);
+        stats.put("managers", managers);
+        stats.put("growthPercent", Math.round(growthPercent));
+
+        return stats;
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public Map<String, Object> getUserDemographics() {
+        List<Object[]> result = userRepository.countUsersByAgeGroup();
+
+        List<String> labels = new ArrayList<>();
+        List<Long> data = new ArrayList<>();
+
+        for (Object[] row : result) {
+            AgeGroup group = (AgeGroup) row[0];
+            Long count = (Long) row[1];
+
+            switch (group) {
+                case ADOLESCENT -> labels.add("Adolescent");
+                case ADULT -> labels.add("Adult");
+                case SENIOR -> labels.add("Senior");
+                case EVERYONE -> labels.add("Everyone");
+            }
+            data.add(count);
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("labels", labels);
+        response.put("data", data);
+        return response;
+    }
+
+
 }

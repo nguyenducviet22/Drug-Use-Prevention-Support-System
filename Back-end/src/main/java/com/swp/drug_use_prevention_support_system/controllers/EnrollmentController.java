@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -117,5 +118,12 @@ public class EnrollmentController {
                 .data(statuses)
                 .build();
         return ResponseEntity.ok(apiResponse);
+    }
+
+
+    ////ADMIN HOMEPAGE
+    @GetMapping("/admin/completion-by-age-group")
+    public ResponseEntity<Map<String, Object>> getCompletedEnrollmentStats() {
+        return ResponseEntity.ok(enrollmentService.getCompletedEnrollmentByAgeGroup());
     }
 }

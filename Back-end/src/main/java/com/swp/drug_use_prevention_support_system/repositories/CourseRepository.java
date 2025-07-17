@@ -4,6 +4,8 @@ import com.swp.drug_use_prevention_support_system.domain.entities.Course;
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.CourseStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
@@ -21,4 +23,9 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
     List<Course> findByCreatedAtBetween(Instant start, Instant end);
 
     List<Course> findByAgeGroupAndStatusOrderByCreatedAtDesc(AgeGroup ageGroup, CourseStatus courseStatus);
+
+    int countByStatus(CourseStatus status);
+
+    @Query("SELECT COUNT(c) FROM Course c WHERE YEAR(c.createdAt) = :year AND MONTH(c.createdAt) = :month")
+    int countCoursesByMonth(@Param("year") int year, @Param("month") int month);
 }
