@@ -135,7 +135,7 @@ public class AuthenticationService {
         return userMapper.toDto(user);
     }
 
-    private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
+    public SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(secretKey.getBytes());
         SignedJWT signedJWT = SignedJWT.parse(token);
 

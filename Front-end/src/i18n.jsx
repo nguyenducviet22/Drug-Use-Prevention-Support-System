@@ -53,10 +53,6 @@ import blogManagementEn from './locales/en/blogManagement.json';
 import courseManagementEn from './locales/en/courseManagement.json';
 import eventManagementEn from './locales/en/eventManagement.json';
 
-import userManagementEn from './locales/en/userManagement.json';
-
-
-
 // Nếu có tiếng Việt
 import homeVi from './locales/vi/home.json';
 import appointmentBookingVi from './locales/vi/appointmentBooking.json';
@@ -107,8 +103,6 @@ import userManagementVi from './locales/vi/userManagement.json';
 import blogManagementVi from './locales/vi/blogManagement.json';
 import courseManagementVi from './locales/vi/courseManagement.json';
 import eventManagementVi from './locales/vi/eventManagement.json';
-
-import userManagementVi from './locales/vi/userManagement.json';
 
 i18n
   .use(LanguageDetector)

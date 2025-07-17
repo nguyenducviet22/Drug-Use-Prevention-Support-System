@@ -4,7 +4,6 @@ import com.swp.drug_use_prevention_support_system.domain.enums.AppointmentStatus
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-
 import java.util.UUID;
 
 @Data
