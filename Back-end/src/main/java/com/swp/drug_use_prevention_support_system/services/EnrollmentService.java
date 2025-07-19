@@ -5,6 +5,7 @@ import com.swp.drug_use_prevention_support_system.domain.dtos.responses.Enrollme
 import com.swp.drug_use_prevention_support_system.domain.entities.Course;
 import com.swp.drug_use_prevention_support_system.domain.entities.Enrollment;
 import com.swp.drug_use_prevention_support_system.domain.entities.User;
+import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
 import com.swp.drug_use_prevention_support_system.domain.enums.EnrollmentStatus;
 import com.swp.drug_use_prevention_support_system.mappers.EnrollmentMapper;
 import com.swp.drug_use_prevention_support_system.repositories.EnrollmentRepository;
@@ -16,8 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -91,5 +91,28 @@ public class EnrollmentService {
         enrollment.setStatus(status);
         enrollmentRepository.save(enrollment);
         return enrollmentMapper.toDto(enrollment);
+    }
+
+    ////ADMIN HOMEPAGE
+    @PreAuthorize("hasRole('ADMIN')")
+    public Map<String, Object> getCompletedEnrollmentByAgeGroup() {
+        List<Object[]> results = enrollmentRepository.getCompletedEnrollmentCountByAgeGroup();
+
+        // Chuẩn hóa danh sách labels theo tất cả AgeGroup (kể cả 0)
+        Map<String, Integer> ageGroupMap = new LinkedHashMap<>();
+        for (AgeGroup group : AgeGroup.values()) {
+            ageGroupMap.put(group.name(), 0);
+        }
+
+        for (Object[] row : results) {
+            AgeGroup ageGroup = (AgeGroup) row[0];
+            Long count = (Long) row[1];
+            ageGroupMap.put(ageGroup.name(), count.intValue());
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("labels", new ArrayList<>(ageGroupMap.keySet()));
+        response.put("data", new ArrayList<>(ageGroupMap.values()));
+        return response;
     }
 }

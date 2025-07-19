@@ -11,48 +11,52 @@ import { useTranslation } from "react-i18next";
 
 function EventManagement() {
   const navigate = useNavigate();
-  const { user } = useAuth()
-  const { t } = useTranslation('eventManagement');
+  const { user } = useAuth();
+  const { t } = useTranslation("eventManagement");
 
   const [events, setEvents] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedAgeGroup, setSelectedAgeGroup] = useState("");
 
-  const [statuses, setStatuses] = useState([])
-  const [ageGroups, setAgeGroups] = useState([])
+  const [statuses, setStatuses] = useState([]);
+  const [ageGroups, setAgeGroups] = useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const { get, put } = useFetch()
+  const { get, put } = useFetch();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const eventsData = await get('http://localhost:8080/api/event')
-        setEvents(eventsData)
-        const statusesData = await get("http://localhost:8080/api/event/status")
-        setStatuses(statusesData)
-        const ageGroupsData = await get("http://localhost:8080/api/user/age-group")
-        setAgeGroups(ageGroupsData)
+        const eventsData = await get("http://localhost:8080/api/event");
+        setEvents(eventsData);
+        const statusesData = await get(
+          "http://localhost:8080/api/event/status"
+        );
+        setStatuses(statusesData);
+        const ageGroupsData = await get(
+          "http://localhost:8080/api/user/age-group"
+        );
+        setAgeGroups(ageGroupsData);
       } catch (error) {
         console.error("Fetch error in EventManagement:", error);
       }
-    }
-    fetchData()
-  }, [get])
+    };
+    fetchData();
+  }, [get]);
 
   // Tạo options cho SearchFilter từ dữ liệu fetch được
-  const statusOptions = statuses.map(status => ({
+  const statusOptions = statuses.map((status) => ({
     value: status,
-    label: status
-  }))
+    label: status,
+  }));
 
-  const ageGroupOptions = ageGroups.map(ageGroup => ({
+  const ageGroupOptions = ageGroups.map((ageGroup) => ({
     value: ageGroup,
-    label: ageGroup
-  }))
+    label: ageGroup,
+  }));
 
   // Lọc sự kiện dựa trên tiêu chí tìm kiếm và bộ lọc (sử dụng useMemo để tối ưu hiệu suất)
   const filteredEvents = useMemo(() => {
@@ -78,7 +82,9 @@ function EventManagement() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
     // Cuộn lên đầu phần sự kiện khi chuyển trang
-    document.querySelector(".events-section")?.scrollIntoView({ behavior: "smooth" });
+    document
+      .querySelector(".events-section")
+      ?.scrollIntoView({ behavior: "smooth" });
   };
 
   // Xử lý thay đổi bộ lọc (bao gồm cả tìm kiếm)
@@ -123,16 +129,22 @@ function EventManagement() {
   const handleApproveEvent = async (eventId) => {
     if (window.confirm(`Are you sure you want to approve event ${eventId}?`)) {
       try {
-        await put({}, {}, `http://localhost:8080/api/event/${eventId}/APPROVED`);
-        setEvents(prevEvents =>
-          prevEvents.map(event =>
-            event.eventID === eventId ? { ...event, status: 'AVAILABLE' } : event
+        await put(
+          {},
+          {},
+          `http://localhost:8080/api/event/${eventId}/APPROVED`
+        );
+        setEvents((prevEvents) =>
+          prevEvents.map((event) =>
+            event.eventID === eventId
+              ? { ...event, status: "AVAILABLE" }
+              : event
           )
         );
-        toast.success(t('successfullyApproved'));
+        toast.success(t("successfullyApproved"));
       } catch (error) {
         console.error(`Error approving`, error);
-        toast.error(t('failedToApprove'));
+        toast.error(t("failedToApprove"));
       }
     }
   };
@@ -140,17 +152,21 @@ function EventManagement() {
   const handleRejectEvent = async (eventId) => {
     if (window.confirm(`Are you sure you want to reject event ${eventId}?`)) {
       try {
-        await put({}, {}, `http://localhost:8080/api/event/${eventId}/REJECTED`);
-        setEvents(prevEvents =>
-          prevEvents.map(event =>
-            event.eventID === eventId ? { ...event, status: 'REJECTED' } : event
+        await put(
+          {},
+          {},
+          `http://localhost:8080/api/event/${eventId}/REJECTED`
+        );
+        setEvents((prevEvents) =>
+          prevEvents.map((event) =>
+            event.eventID === eventId ? { ...event, status: "REJECTED" } : event
           )
         );
         console.log(`Rejected event with ID: ${eventId}`);
-        toast.success(t('successfullyRejected'));
+        toast.success(t("successfullyRejected"));
       } catch (error) {
         console.error(`Error rejecting:`, error);
-        toast.error(t('failedToReject'));
+        toast.error(t("failedToReject"));
       }
     }
   };
@@ -185,7 +201,9 @@ function EventManagement() {
       />
 
       {/* Nút Clear Filters hiển thị có điều kiện */}
-      {(searchTerm !== "" || selectedStatus !== "" || selectedAgeGroup !== "") && (
+      {(searchTerm !== "" ||
+        selectedStatus !== "" ||
+        selectedAgeGroup !== "") && (
         <div className="d-flex justify-content-center mt-3">
           <Button variant="outline-primary" onClick={clearAllFilters}>
             {t("clearFilters")}
@@ -194,17 +212,25 @@ function EventManagement() {
       )}
 
       <div className="d-flex align-items-center mb-4">
-        <Button variant="outline-success" size="sm" onClick={handleAddEvent} className="ms-auto">
+        <Button
+          variant="outline-success"
+          size="sm"
+          onClick={handleAddEvent}
+          className="ms-auto"
+        >
           <PlusCircle size={16} className="me-1" /> Add
         </Button>
       </div>
 
-      <Container className="mb-5 events-section"> {/* Thêm class để cuộn */}
+      <Container className="mb-5 events-section">
+        {" "}
+        {/* Thêm class để cuộn */}
         {filteredEvents.length > 0 ? (
           <>
             <Card>
               <Card.Header>
-                {t("eventList")} <Badge bg="secondary">{filteredEvents.length}</Badge>
+                {t("eventList")}{" "}
+                <Badge bg="secondary">{filteredEvents.length}</Badge>
               </Card.Header>
               <Card.Body style={{ padding: 0 }}>
                 <div
@@ -213,10 +239,15 @@ function EventManagement() {
                     position: "relative",
                   }}
                 >
-                  <Table bordered hover className="table-sticky-header" style={{ marginBottom: 0 }}>
+                  <Table
+                    bordered
+                    hover
+                    className="table-sticky-header"
+                    style={{ marginBottom: 0 }}
+                  >
                     <thead>
                       <tr>
-                        <th>{t("stt")}</th>
+                        <th>{t("STT")}</th>
                         <th>{t("eventName")}</th>
                         <th>{t("location")}</th>
                         <th>{t("startDate")}</th>
@@ -230,81 +261,116 @@ function EventManagement() {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentEvents.map((event, index) => ( // Sử dụng currentEvents cho rendering
-                        <tr key={event.eventID}>
-                          <td>{startIndex + index + 1}</td> {/* Chỉ số đúng cho trang hiện tại */}
-                          <td>{event.eventName}</td>
-                          <td>{event.location}</td>
-                          <td>{formatDateTime(event.startDate)}</td>
-                          <td>{formatDateTime(event.endDate)}</td>
-                          <td>
-                            <Badge
-                              bg={
-                                (['APPROVED', 'NOT_STARTED', 'ONGOING'].includes(event.status))
-                                  ? "success"
-                                  : (['DRAFT', 'PENDING_APPROVAL'].includes(event.status))
+                      {currentEvents.map(
+                        (
+                          event,
+                          index // Sử dụng currentEvents cho rendering
+                        ) => (
+                          <tr key={event.eventID}>
+                            <td>{startIndex + index + 1}</td>{" "}
+                            {/* Chỉ số đúng cho trang hiện tại */}
+                            <td>{event.eventName}</td>
+                            <td>{event.location}</td>
+                            <td>{formatDateTime(event.startDate)}</td>
+                            <td>{formatDateTime(event.endDate)}</td>
+                            <td>
+                              <Badge
+                                bg={
+                                  [
+                                    "APPROVED",
+                                    "NOT_STARTED",
+                                    "ONGOING",
+                                  ].includes(event.status)
+                                    ? "success"
+                                    : ["DRAFT", "PENDING_APPROVAL"].includes(
+                                        event.status
+                                      )
                                     ? "warning"
                                     : "danger"
-                              }
-                            >
-                              {event.status}
-                            </Badge>
-                          </td>
-                          <td>{event.ageGroup}</td>
-                          <td>
-                            {event.fee === 0 ? t("free") : `${event.fee.toLocaleString('vi-VN')} VND`}
-                          </td>
-                          <td>{event.createdByStaff ? event.createdByStaff.fullName : "N/A"}</td>
-                          <td>{formatDateTime(event.createdAt)}</td>
-                          <td>
-                            <div className="d-flex align-items-center gap-2 flex-shrink-0">
-                              <Button
-                                variant="outline-primary"
-                                size="sm"
-                                className="fw-bold"
-                                onClick={() => handleViewEvent(event.eventID)}
+                                }
                               >
-                                View
-                              </Button>
-
-                              {user?.role === 'STAFF' && (
+                                {event.status}
+                              </Badge>
+                            </td>
+                            <td>{event.ageGroup}</td>
+                            <td>
+                              {event.fee != null && event.fee !== 0
+                                ? `${Number(event.fee).toLocaleString(
+                                    "vi-VN"
+                                  )} VND`
+                                : t("free")}
+                            </td>
+                            <td>
+                              {event.createdByStaff
+                                ? event.createdByStaff.fullName
+                                : "N/A"}
+                            </td>
+                            <td>{formatDateTime(event.createdAt)}</td>
+                            <td>
+                              <div className="d-flex align-items-center gap-2 flex-shrink-0">
                                 <Button
-                                  variant="outline-success"
+                                  variant="outline-primary"
                                   size="sm"
                                   className="fw-bold"
-                                  onClick={() => handleEditEvent(event.eventID)}
+                                  onClick={() => handleViewEvent(event.eventID)}
                                 >
-                                  Edit
+                                  View
                                 </Button>
-                              )}
 
-                              {(['PENDING_APPROVAL', 'CANCELLED', 'REJECTED'].includes(event.status)) &&
-                                user?.role === 'MANAGER' && (
+                                {user?.role === "STAFF" && (
                                   <Button
                                     variant="outline-success"
                                     size="sm"
                                     className="fw-bold"
-                                    onClick={() => handleApproveEvent(event.eventID)}
+                                    onClick={() =>
+                                      handleEditEvent(event.eventID)
+                                    }
                                   >
-                                    Approve
+                                    Edit
                                   </Button>
                                 )}
 
-                              {(['PENDING_APPROVAL', 'APPROVED', 'NOT_STARTED', 'ONGOING'].includes(event.status)) &&
-                                user?.role === 'MANAGER' && (
-                                  <Button
-                                    variant="outline-danger"
-                                    size="sm"
-                                    className="fw-bold"
-                                    onClick={() => handleRejectEvent(event.eventID)}
-                                  >
-                                    Reject
-                                  </Button>
-                                )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
+                                {[
+                                  "PENDING_APPROVAL",
+                                  "CANCELLED",
+                                  "REJECTED",
+                                ].includes(event.status) &&
+                                  user?.role === "MANAGER" && (
+                                    <Button
+                                      variant="outline-success"
+                                      size="sm"
+                                      className="fw-bold"
+                                      onClick={() =>
+                                        handleApproveEvent(event.eventID)
+                                      }
+                                    >
+                                      Approve
+                                    </Button>
+                                  )}
+
+                                {[
+                                  "PENDING_APPROVAL",
+                                  "APPROVED",
+                                  "NOT_STARTED",
+                                  "ONGOING",
+                                ].includes(event.status) &&
+                                  user?.role === "MANAGER" && (
+                                    <Button
+                                      variant="outline-danger"
+                                      size="sm"
+                                      className="fw-bold"
+                                      onClick={() =>
+                                        handleRejectEvent(event.eventID)
+                                      }
+                                    >
+                                      Reject
+                                    </Button>
+                                  )}
+                              </div>
+                            </td>
+                          </tr>
+                        )
+                      )}
                     </tbody>
                   </Table>
                 </div>

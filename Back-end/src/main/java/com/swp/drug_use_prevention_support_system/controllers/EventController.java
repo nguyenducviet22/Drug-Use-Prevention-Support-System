@@ -1,6 +1,7 @@
 package com.swp.drug_use_prevention_support_system.controllers;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateEventRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.SaveAsDraftRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateEventRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EventResponse;
@@ -40,11 +41,22 @@ public class EventController {
     }
 
     @PostMapping("/draft")
-    public ResponseEntity<ApiResponse<EventResponse>> saveEventAsDraft(@Valid @RequestBody CreateEventRequest request) {
+    public ResponseEntity<ApiResponse<EventResponse>> saveEventAsDraft(@Valid @RequestBody SaveAsDraftRequest request) {
         EventResponse response = eventService.saveEventAsDraft(request);
         ApiResponse<EventResponse> apiResponse = ApiResponse.<EventResponse>builder()
                 .data(response)
                 .status(HttpStatus.CREATED.value())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/publish") // Endpoint mới cho việc xuất bản
+    public ResponseEntity<ApiResponse<EventResponse>> publishEvent(@Valid @RequestBody CreateEventRequest request) {
+        EventResponse response = eventService.publishEvent(request);
+        ApiResponse<EventResponse> apiResponse = ApiResponse.<EventResponse>builder()
+                .data(response)
+                .status(HttpStatus.CREATED.value())
+                .message("Event submitted for approval successfully.")
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }

@@ -18,7 +18,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.YearMonth;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -126,5 +129,29 @@ public class CourseService {
             }
         }
         return totalDuration;
+    }
+
+    //ADMIN HOMEPAGE
+    @PreAuthorize("hasRole('ADMIN')")
+    public Map<String, Object> getCourseStats() {
+        Map<String, Object> stats = new HashMap<>();
+
+        long totalCourses = courseRepository.count();
+        long activeCourses = courseRepository.countByStatus(CourseStatus.AVAILABLE);
+
+        YearMonth current = YearMonth.now();
+        YearMonth last = current.minusMonths(1);
+
+        int thisMonthCourses = courseRepository.countCoursesByMonth(current.getYear(), current.getMonthValue());
+        int lastMonthCourses = courseRepository.countCoursesByMonth(last.getYear(), last.getMonthValue());
+
+        int growth = thisMonthCourses - lastMonthCourses;
+        double growthPercent = lastMonthCourses > 0 ? (double) growth / lastMonthCourses * 100 : 0;
+
+        stats.put("totalCourses", totalCourses);
+        stats.put("activeCourses", activeCourses);
+        stats.put("growthPercent", Math.round(growthPercent));
+
+        return stats;
     }
 }

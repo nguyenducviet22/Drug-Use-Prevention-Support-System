@@ -4,6 +4,7 @@
   "chooseTopic": "Chọn Chủ Đề",
   "chooseType": "Chọn Loại",
   "duration": "Thời lượng",
+  "chooseStatus" : "Chọn Trạng Thái",
   "filterButton": "Lọc",
   "ageGroupOptions": {
     "toddler": "Trẻ mới biết đi (1-3)",

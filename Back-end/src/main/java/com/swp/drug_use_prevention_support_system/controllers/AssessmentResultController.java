@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -73,4 +74,17 @@ public class AssessmentResultController {
         googleSheetsService.importDataFromSheet();
         return ResponseEntity.ok("Google sheet data saved Assessment Results into DB");
     }
+
+    //ADMIN HOMEPAGE
+    @GetMapping("/high-risk")
+    public ResponseEntity<Map<String, Object>> getHighRiskStats() {
+        Map<String, Object> stats = assessmentResultService.getHighRiskStats();
+        return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/admin/assessment-risk-stats")
+    public ResponseEntity<?> getAssessmentRiskStats() {
+        return ResponseEntity.ok(assessmentResultService.getAssessmentRiskStats());
+    }
+
 }

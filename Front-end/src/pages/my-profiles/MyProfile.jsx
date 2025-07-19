@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import { User, Home, BarChart2, Users, Info, ChevronRight, ArrowLeft, Award } from "lucide-react";
+import {
+  User,
+  Home,
+  BarChart2,
+  Users,
+  Info,
+  ChevronRight,
+  ArrowLeft,
+  Award,
+} from "lucide-react";
 import "./MyProfile.css";
 import AccountOverview from "../../components/member/AccountOverview";
 import UserDetails from "../../components/member/UserDetails";
@@ -33,19 +42,25 @@ const MyProfile = () => {
         label: t("navigation.userDetails"),
         icon: <User size={18} className="me-2" />,
       },
-      {
-        id: "reports",
-        label: t("navigation.reports"),
-        icon: <BarChart2 size={18} className="me-2" />,
-      },
+      // Chỉ thêm mục Reports nếu KHÔNG phải admin
+      ...(userRole !== "ADMIN"
+        ? [
+            {
+              id: "reports",
+              label: t("navigation.reports"),
+              icon: <BarChart2 size={18} className="me-2" />,
+            },
+          ]
+        : []),
       {
         id: "back-home",
         label: t("navigation.backHome"),
         icon: <Home size={18} className="me-2" />,
-        link: "/",
+        link: userRole === "ADMIN" ? "/admin/dashboard" : "/",
       },
     ];
 
+    // Thêm tùy chọn riêng theo vai trò
     if (userRole === "MEMBER") {
       baseItems.splice(2, 0, {
         id: "family-information",
@@ -59,6 +74,7 @@ const MyProfile = () => {
         icon: <Award size={18} className="me-2" />,
       });
     }
+
     return baseItems;
   };
 
@@ -118,10 +134,13 @@ const MyProfile = () => {
               {navigationItems.map((item) => (
                 <div
                   key={item.id}
-                  className={`sidebar-nav-item d-flex align-items-center ${activeSection === item.id ? "active" : ""
-                    }`}
+                  className={`sidebar-nav-item d-flex align-items-center ${
+                    activeSection === item.id ? "active" : ""
+                  }`}
                   onClick={() =>
-                    item.link ? (window.location.href = item.link) : setActiveSection(item.id)
+                    item.link
+                      ? (window.location.href = item.link)
+                      : setActiveSection(item.id)
                   }
                 >
                   {item.icon}

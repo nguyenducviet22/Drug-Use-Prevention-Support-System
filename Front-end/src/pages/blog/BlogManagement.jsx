@@ -259,7 +259,8 @@ function BlogManagement() {
                                                             </Button>
 
                                                             {(['PENDING', 'UNAVAILABLE', 'REJECTED'].includes(blog.blogStatus)) &&
-                                                                (['STAFF', 'MANAGER'].includes(blog.member.role)) && (
+                                                                ((blog.member.role === 'MEMBER' && user?.role === 'STAFF') ||
+                                                                    (blog.member.role === 'STAFF' && user?.role === 'MANAGER')) && (
                                                                     <Button
                                                                         variant="outline-success"
                                                                         size="sm"
@@ -271,7 +272,8 @@ function BlogManagement() {
                                                                 )}
 
                                                             {(['PENDING', 'PUBLISHED'].includes(blog.blogStatus)) &&
-                                                                (['STAFF', 'MANAGER'].includes(blog.member.role)) && (
+                                                                ((blog.member.role === 'MEMBER' && user?.role === 'STAFF') ||
+                                                                    (blog.member.role === 'STAFF' && user?.role === 'MANAGER')) && (
                                                                     <Button
                                                                         variant="outline-danger"
                                                                         size="sm"
