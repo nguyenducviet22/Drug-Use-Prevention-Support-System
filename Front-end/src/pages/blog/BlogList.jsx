@@ -31,7 +31,6 @@ const BlogList = () => {
   const { loading: loadingMyDrafts, error: errorMyDrafts, get: getMyDrafts } = useFetch();
   const { loading: loadingMyPending, error: errorMyPending, get: getMyPending } = useFetch();
   const { error: errorBlogTypes, loading: loadingBlogTypes, get: getBlogTypes } = useFetch();
-  const popularTags = ["#antidrug", "#daily", "#knowledge", "#success", "#friends"]
 
   useEffect(() => {
     const fetchData = async () => {
@@ -127,12 +126,6 @@ const BlogList = () => {
     setSelectedType(type);
     setCurrentPage(1);
   };
-
-  const handleTagFilter = (tag) => {
-    setSearchTerm(tag.replace('#', ''));
-    setCurrentPage(1);
-  };
-
 
   const clearAllFilters = () => {
     setSearchTerm("")
@@ -346,20 +339,6 @@ const BlogList = () => {
                       </small>
                     </div>
                   ))}
-                </div>
-              </div>
-
-              {/* Popular Tags */}
-              <div className="sidebar-section">
-                <h5 className="sidebar-title">{t("sidebar.favoriteTagsTitle")}</h5>
-                <div className="sidebar-content">
-                  <div className="popular-tags">
-                    {popularTags.map((tag) => (
-                      <button key={tag} className="tag-button" onClick={() => handleTagFilter(tag)}>
-                        {tag}
-                      </button>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>

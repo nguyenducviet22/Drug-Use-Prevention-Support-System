@@ -161,39 +161,39 @@ function BlogManagement() {
 
     return (
         <div className="blog-management-content">
-            <h1>{t("blogManagementTitle")}</h1>
+            <Container className="mb-5 blogs-section">
+                <h1>{t("blogManagementTitle")}</h1>
 
-            <SearchFilter
-                filterFor="blogs"
-                searchTerm={searchTerm}
-                selectedAgeGroup={selectedAgeGroup}
-                selectedType={selectedType}
-                selectedStatus={selectedStatus}
-                onSearchChange={(value) => handleFilterChange("searchTerm", value)}
-                onAgeGroupChange={(value) => handleFilterChange("ageGroup", value)}
-                onTypeChange={(value) => handleFilterChange("type", value)}
-                onStatusChange={(value) => handleFilterChange("status", value)}
-                ageGroupOptions={ageGroupOptions}
-                typeOptions={typeOptions}
-                statusOptions={statusOptions}
-                placeholder={t("searchFilter.placeholder")}
-            />
+                <SearchFilter
+                    filterFor="blogs"
+                    searchTerm={searchTerm}
+                    selectedAgeGroup={selectedAgeGroup}
+                    selectedType={selectedType}
+                    selectedStatus={selectedStatus}
+                    onSearchChange={(value) => handleFilterChange("searchTerm", value)}
+                    onAgeGroupChange={(value) => handleFilterChange("ageGroup", value)}
+                    onTypeChange={(value) => handleFilterChange("type", value)}
+                    onStatusChange={(value) => handleFilterChange("status", value)}
+                    ageGroupOptions={ageGroupOptions}
+                    typeOptions={typeOptions}
+                    statusOptions={statusOptions}
+                    placeholder={t("searchFilter.placeholder")}
+                />
 
-            {(searchTerm !== "" || selectedAgeGroup !== "" || selectedType !== "" || selectedStatus !== "") && (
-                <div className="d-flex justify-content-center mt-3">
-                    <Button variant="outline-primary" onClick={clearAllFilters}>
-                        {t("blogsSection.clearFilters")}
+                {(searchTerm !== "" || selectedAgeGroup !== "" || selectedType !== "" || selectedStatus !== "") && (
+                    <div className="d-flex justify-content-center mt-3">
+                        <Button variant="outline-primary" onClick={clearAllFilters}>
+                            {t("blogsSection.clearFilters")}
+                        </Button>
+                    </div>
+                )}
+
+                <div className="d-flex align-items-center mb-4">
+                    <Button variant="outline-success" size="sm" onClick={handleAddBlog} className="ms-auto">
+                        <PlusCircle size={16} className="me-1" /> Add
                     </Button>
                 </div>
-            )}
 
-            <div className="d-flex align-items-center mb-4">
-                <Button variant="outline-success" size="sm" onClick={handleAddBlog} className="ms-auto">
-                    <PlusCircle size={16} className="me-1" /> Add
-                </Button>
-            </div>
-
-            <Container className="mb-5 blogs-section">
                 {filteredBlogs.length > 0 ? (
                     <>
                         <Card>
@@ -259,7 +259,7 @@ function BlogManagement() {
                                                             </Button>
 
                                                             {(['PENDING', 'UNAVAILABLE', 'REJECTED'].includes(blog.blogStatus)) &&
-                                                                ((blog.member.role === 'MEMBER' && user?.role === 'STAFF') ||
+                                                                ((['MEMBER', 'CONSULTANT'].includes(blog.member.role) && user?.role === 'STAFF') ||
                                                                     (blog.member.role === 'STAFF' && user?.role === 'MANAGER')) && (
                                                                     <Button
                                                                         variant="outline-success"
@@ -272,7 +272,7 @@ function BlogManagement() {
                                                                 )}
 
                                                             {(['PENDING', 'PUBLISHED'].includes(blog.blogStatus)) &&
-                                                                ((blog.member.role === 'MEMBER' && user?.role === 'STAFF') ||
+                                                                ((['MEMBER', 'CONSULTANT'].includes(blog.member.role) && user?.role === 'STAFF') ||
                                                                     (blog.member.role === 'STAFF' && user?.role === 'MANAGER')) && (
                                                                     <Button
                                                                         variant="outline-danger"

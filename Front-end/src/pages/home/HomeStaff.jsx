@@ -138,9 +138,13 @@ function HomeStaff() {
     if (type === 'event') navigate(`/events/${id}`)
   }
 
+  const handleEdit = (id, type) => {
+    if (type === 'course') navigate(`/courses/${id}/update`)
+  }
+
   const handleApprove = async (id, type) => {
     try {
-      await putApproveBlog({}, {}, `http://localhost:8080/api/blog/${id}/status/PUBLISHED`);
+      await putApproveBlog({}, {}, `http://localhost:8080/api/blog/${id}/PUBLISHED`);
       setPendingBlogs(prevBlogs => prevBlogs.filter(blog => blog.blogID !== id));
       toast.success(t('successfullyApproved', { type: type, id: id }));
     } catch (error) {
@@ -171,6 +175,7 @@ function HomeStaff() {
                 pending: pendingCourses.length,
                 approved: approvedCourses.length,
               }}
+              onEdit={(id) => handleEdit(id, 'course')}
               onView={(id) => handleView(id, 'course')}
               onAdd={() => handleAdd('courses')}
             />
@@ -241,97 +246,6 @@ function HomeStaff() {
                 {t('viewAllBlogs')}
               </button>
             </Link>
-          </Col>
-        </Row>
-
-        {/* Where You Left Off Section */}
-        <Row className="g-4 mt-4">
-          <Col lg={6}>
-            <Card className="custom-shadow">
-              <Card.Body>
-                <div className="d-flex align-items-center mb-4">
-                  <div
-                    className="d-flex align-items-center justify-content-center me-3 bg-primary bg-opacity-10 text-primary rounded"
-                    style={{ width: '40px', height: '40px' }}
-                  >
-                    <Play size={20} />
-                  </div>
-                  <Card.Title className="mb-0 h5">{t('whereYouLeftOff')}</Card.Title>
-                </div>
-
-                <Card className="bg-primary bg-opacity-10 border-0">
-                  <Card.Body>
-                    <div className="d-flex align-items-start">
-                      <div
-                        className="d-flex align-items-center justify-content-center me-4 bg-primary bg-opacity-25 text-primary rounded"
-                        style={{ width: '48px', height: '48px' }}
-                      >
-                        <BookOpen size={24} />
-                      </div>
-                      <div className="flex-grow-1">
-                        <Card.Title className="h6 mb-2">{t('understandingPeerPressureInTeens')}</Card.Title>
-                        <Card.Text className="text-muted small mb-3">
-                          {t('peerPressureDescription')}
-                        </Card.Text>
-                        <div className="d-flex justify-content-between align-items-center">
-                          <small className="text-muted">{t('lastEdited', { time: `2 ${t('hoursAgo')}` })}</small>
-                          <Button variant="primary">{t('continue')}</Button>
-                        </div>
-                      </div>
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Card.Body>
-            </Card>
-          </Col>
-
-          {/* Upcoming Events */}
-          <Col lg={6}>
-            <Card className="custom-shadow">
-              <Card.Body>
-                <div className="d-flex align-items-center mb-4">
-                  <div
-                    className="d-flex align-items-center justify-content-center me-3 bg-info bg-opacity-10 text-info rounded"
-                    style={{ width: '40px', height: '40px' }}
-                  >
-                    <Calendar size={20} />
-                  </div>
-                  <Card.Title className="mb-0 h5">{t('upcomingEventsResponsibilities')}</Card.Title>
-                </div>
-
-                <div className="d-flex flex-column gap-3">
-                  <Card className="bg-primary bg-opacity-10 border-0">
-                    <Card.Body className="d-flex align-items-center p-3">
-                      <div className="bg-primary rounded me-3" style={{ width: '4px', height: '48px' }}></div>
-                      <div>
-                        <div className="text-primary small fw-medium">Jun 15, 2024 • 2:00 PM</div>
-                        <div className="fw-medium">{t('youthAwarenessWorkshop')}</div>
-                      </div>
-                    </Card.Body>
-                  </Card>
-
-                  <Card className="bg-success bg-opacity-10 border-0">
-                    <Card.Body className="d-flex align-items-center p-3">
-                      <div className="bg-success rounded me-3" style={{ width: '4px', height: '48px' }}></div>
-                      <div>
-                        <div className="text-success small fw-medium">Jul 2, 2024 • 10:00 AM</div>
-                        <div className="fw-medium">{t('parentEducationSeminar')}</div>
-                      </div>
-                    </Card.Body>
-                  </Card>
-
-                  <Card className="bg-info bg-opacity-10 border-0">
-                    <Card.Body className="d-flex align-items-center p-3">
-                      <div className="bg-info rounded me-3" style={{ width: '4px', height: '48px' }}></div>
-                      <div>
-                        <div className="text-info small fw-medium">Jul 8, 2024 • 1:30 PM</div>
-                        <div className="fw-medium">{t('teacherTrainingSession')}</div>
-                      </div>
-                    </Card.Body>
-                  </Card>
-                </div>
-              </Card.Body>
-            </Card>
           </Col>
         </Row>
       </Container>

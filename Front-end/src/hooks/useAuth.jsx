@@ -25,6 +25,7 @@ export const useAuth = () => {
             if (role === "ADMIN") navigate("/admin/dashboard");
             toast.success("Login successfully")
         } catch (error) {
+            console.error("Error during login:", error);
             if (error.response) {
                 setError(error.response.data.message || "Login failed.");
             } else if (error.request) {

@@ -1,6 +1,7 @@
 package com.swp.drug_use_prevention_support_system.controllers;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateEventRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.SaveAsDraftRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateEventRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EventResponse;
@@ -177,7 +178,7 @@ class EventControllerTest {
     // --- 2. saveEventAsDraft tests ---
     @Test
     void testSaveEventAsDraft_Success() {
-        CreateEventRequest request = CreateEventRequest.builder()
+        SaveAsDraftRequest request = SaveAsDraftRequest.builder()
                 .eventName("Draft Event")
                 .duration(30)
                 .quantity(50)
@@ -208,7 +209,7 @@ class EventControllerTest {
 
     @Test
     void testSaveEventAsDraft_InvalidInput_EventNameBlank() {
-        CreateEventRequest invalidRequest = CreateEventRequest.builder()
+        SaveAsDraftRequest invalidRequest = SaveAsDraftRequest.builder()
                 .eventName("") // Blank name
                 .duration(30)
                 .quantity(50)
@@ -230,7 +231,7 @@ class EventControllerTest {
 
     @Test
     void testSaveEventAsDraft_InvalidInput_QuantityNegative() {
-        CreateEventRequest invalidRequest = CreateEventRequest.builder()
+        SaveAsDraftRequest invalidRequest = SaveAsDraftRequest.builder()
                 .eventName("Draft Event")
                 .duration(30)
                 .quantity(-10) // Negative quantity
@@ -252,7 +253,7 @@ class EventControllerTest {
 
     @Test
     void testSaveEventAsDraft_InvalidInput_EndDateInPast() {
-        CreateEventRequest invalidRequest = CreateEventRequest.builder()
+        SaveAsDraftRequest invalidRequest = SaveAsDraftRequest.builder()
                 .eventName("Draft Event")
                 .duration(30)
                 .quantity(50)
@@ -274,7 +275,7 @@ class EventControllerTest {
 
     @Test
     void testSaveEventAsDraft_InvalidInput_LocationNull() {
-        CreateEventRequest invalidRequest = CreateEventRequest.builder()
+        SaveAsDraftRequest invalidRequest = SaveAsDraftRequest.builder()
                 .eventName("Draft Event")
                 .duration(30)
                 .quantity(50)

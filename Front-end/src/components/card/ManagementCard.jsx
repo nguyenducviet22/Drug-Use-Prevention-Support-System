@@ -14,6 +14,7 @@ const ManagementCard = ({
     counts,
     dataType,
     onApprove,
+    onEdit,
     onView,
     onAdd // Add the new onAdd prop
 }) => {
@@ -58,7 +59,7 @@ const ManagementCard = ({
                             <Card.Text className="text-muted small mb-0">
                                 <span className="fw-medium">By {author}</span>
                                 <span className="mx-2">•</span>
-                                <span>{submittedDate}</span>
+                                <span>{new Date(submittedDate).toLocaleDateString()} - {new Date(submittedDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                             </Card.Text>
                         </div>
                         <div className="d-flex align-items-center gap-2 flex-shrink-0">
@@ -70,6 +71,11 @@ const ManagementCard = ({
                                     onClick={() => onApprove && onApprove(id, title.toLowerCase().slice(0, -1))} // Pass ID and type
                                 >
                                     Approve
+                                </Button>
+                            )}
+                            {item.courseID && (
+                                <Button variant="outline-primary" size="sm" onClick={() => onEdit(id, type)}>
+                                    Edit
                                 </Button>
                             )}
                             <Button variant="outline-primary" size="sm" onClick={() => onView(id, type)}>

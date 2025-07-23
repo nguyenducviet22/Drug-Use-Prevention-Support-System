@@ -1,33 +1,33 @@
 {
-  "backButton": "Hủy",
+  "backButton": "Hủy bỏ",
   "header": {
     "title": "Tạo Blog Của Riêng Bạn",
     "subtitle": "Chia sẻ kiến thức và kinh nghiệm trong phòng chống ma túy"
   },
   "form": {
     "alert": {
-      "success": "Bài đăng đã được lưu dưới dạng bản nháp thành công!",
-      "publishSuccess": "Bài đăng đã được xuất bản thành công!",
-      "publishError": "Đã xảy ra lỗi khi xuất bản bài đăng. Vui lòng thử lại.",
+      "success": "Blog đã được lưu nháp thành công!",
+      "publishSuccess": "Blog đã được xuất bản thành công!",
+      "publishError": "Đã xảy ra lỗi khi xuất bản blog. Vui lòng thử lại.",
       "previewMessage": "Đang mở bản xem trước...",
-      "loginRequired": "Vui lòng đăng nhập để đăng bài viết của bạn.",
+      "loginRequired": "Vui lòng đăng nhập để đăng blog của bạn.",
       "imageSizeError": "Kích thước hình ảnh phải nhỏ hơn 5MB.",
-      "imageUploading": "Ảnh đang được tải lên, vui lòng đợi...",
-      "imageUploadRequired": "Vui lòng tải ảnh lên trước khi lưu.",
-      "imageUploadRequiredPublish": "Vui lòng tải ảnh lên trước khi xuất bản.",
-      "imageUploadForPreview": "Vui lòng tải ảnh lên để xem trước đầy đủ.",
+      "imageUploading": "Hình ảnh đang tải lên, vui lòng đợi...",
+      "imageUploadRequired": "Vui lòng tải lên một hình ảnh trước khi lưu.",
+      "imageUploadRequiredPublish": "Vui lòng tải lên một hình ảnh trước khi xuất bản.",
+      "imageUploadForPreview": "Vui lòng tải lên hình ảnh để xem trước đầy đủ.",
       "validation": {
-        "blogNameRequired": "Vui lòng nhập tên bài đăng.",
-        "blogTypeRequired": "Vui lòng chọn chủ đề.",
+        "blogNameRequired": "Vui lòng nhập tên blog.",
+        "blogTypeRequired": "Vui lòng chọn một chủ đề.",
         "descriptionRequired": "Vui lòng nhập mô tả.",
-        "contentRequired": "Vui lòng nhập nội dung bài đăng.",
-        "imageRequired": "Vui lòng tải lên một hình ảnh cho blog của bạn.",
-        "failedToCreate": "Không thể tạo bài đăng. Vui lòng thử lại."
+        "contentRequired": "Vui lòng nhập nội dung blog.",
+        "imageRequired": "Vui lòng tải lên hình ảnh cho blog của bạn.",
+        "failedToCreate": "Không thể tạo blog. Vui lòng thử lại."
       }
     },
-    "blogNamePlaceholder": "Nhập tên bài đăng",
-    "selectTopic": "Chọn chủ đề",
-    "selectAgeGroup": "Chọn nhóm tuổi",
+    "blogNamePlaceholder": "Nhập tên Blog",
+    "selectTopic": "Chọn Chủ đề",
+    "selectAgeGroup": "Chọn Nhóm tuổi",
     "byAuthor": "bởi {{author}}",
     "imageUpload": {
       "clickToUpload": "Nhấp để tải ảnh lên",
@@ -37,12 +37,12 @@
       "altText": "Ảnh xem trước blog"
     },
     "descriptionLabel": "Mô tả",
-    "descriptionPlaceholder": "Viết mô tả ngắn gọn về nội dung bài đăng",
+    "descriptionPlaceholder": "Viết mô tả ngắn gọn về nội dung blog",
     "blogContentLabel": "Nội dung Blog",
     "blogContentPlaceholder": "Bắt đầu viết blog của bạn...",
     "buttons": {
       "save": "Lưu",
-      "view": "Xem trước",
+      "view": "Xem",
       "publish": "Xuất bản",
       "publishing": "Đang xuất bản..."
     },
@@ -54,10 +54,10 @@
       "GENERAL": "Tổng hợp"
     },
     "ageGroupOptions": {
-      "toddler": "Trẻ mới biết đi (1-3)",
-      "preschool": "Mẫu giáo (3-5)",
-      "school_age": "Tuổi đi học (6-12)",
-      "teenager": "Thanh thiếu niên (13-18)"
+      "ADOLESCENT": "Thanh thiếu niên (13-18)",
+      "ADULT": "Người lớn (26-64)",
+      "SENIOR": "Người cao tuổi (65+)",
+      "EVERYONE": "Mọi lứa tuổi"
     }
   }
 }

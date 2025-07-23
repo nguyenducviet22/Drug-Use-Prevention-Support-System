@@ -15,38 +15,26 @@ const CourseList = () => {
   const { t } = useTranslation("courseList"); // Khai báo useTranslation
 
   const [courses, setCourses] = useState([])
-  const [ageGroups, setAgeGroups] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState("")
   const [selectedDuration, setSelectedDuration] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 6 // Show 6 courses per page (2 rows of 3)
   const navigate = useNavigate()
 
   const { error: errorCourses, loading: loadingCourses, get: getcourses } = useFetch();
-  const { error: errorAgeGroup, loading: loadingAgeGroups, get: getAgeGroups } = useFetch();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const coursesData = await getcourses("http://localhost:8080/api/course/status/AVAILABLE")
         setCourses(coursesData)
-        const ageGroupsData = await getAgeGroups("http://localhost:8080/api/user/age-group")
-        setAgeGroups(ageGroupsData)
       } catch (error) {
         console.error("Fetch error in CourseList:", error);
       }
     }
     fetchData()
-  }, [getcourses, getAgeGroups]);
+  }, [getcourses]);
   console.log(courses);
-  console.log(ageGroups);
-
-  // Filter options
-  const ageGroupOptions = ageGroups.map(ageGroup => ({
-    value: ageGroup,
-    label: ageGroup
-  }))
 
   const durationOptions = [
     { value: 3, label: t("durationOptions.lessThan3Hours") },
@@ -64,7 +52,6 @@ const CourseList = () => {
   const filteredCourses = useMemo(() => {
     return courses.filter((course) => {
       const matchesName = course.courseName && course.courseName.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesAgeGroup = selectedAgeGroup === "" || course.ageGroup === selectedAgeGroup;
       const duration = course.duration;
       let matchesDuration = true;
       if (selectedDuration !== "") {
@@ -81,9 +68,9 @@ const CourseList = () => {
           matchesDuration = true;
         }
       }
-      return matchesName && matchesAgeGroup && matchesDuration;
+      return matchesName && matchesDuration;
     })
-  }, [courses, searchTerm, selectedAgeGroup, selectedDuration])
+  }, [courses, searchTerm, selectedDuration])
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredCourses.length / itemsPerPage)
@@ -101,9 +88,6 @@ const CourseList = () => {
   const handleFilterChange = (filterType, value) => {
     setCurrentPage(1)
     switch (filterType) {
-      case "ageGroup":
-        setSelectedAgeGroup(value)
-        break
       case "duration":
         setSelectedDuration(value)
         break
@@ -114,7 +98,6 @@ const CourseList = () => {
 
   const clearAllFilters = () => {
     setSearchTerm("")
-    setSelectedAgeGroup("")
     setSelectedDuration("")
     setCurrentPage(1)
   }
@@ -129,8 +112,8 @@ const CourseList = () => {
 
   return (
     <Container className="py-5">
-      <LoadingSpinner loading={loadingCourses || loadingAgeGroups} />
-      <ErrorMessage error={errorCourses || errorAgeGroup} />
+      <LoadingSpinner loading={loadingCourses} />
+      <ErrorMessage error={errorCourses} />
 
       {courses.length === 0 && !loadingCourses && !errorCourses ? ( // Added !loadingCourses and !errorCourses conditions
         <NotFound
@@ -152,19 +135,16 @@ const CourseList = () => {
             {/* Search Filter Section */}
             <SearchFilter
               searchTerm={searchTerm}
-              selectedAgeGroup={selectedAgeGroup}
               selectedDuration={selectedDuration}
               onSearchChange={setSearchTerm}
-              onAgeGroupChange={(value) => handleFilterChange("ageGroup", value)}
               onDurationChange={(value) => handleFilterChange("duration", value)}
               onSearch={handleSearch}
-              ageGroupOptions={ageGroupOptions}
               durationOptions={durationOptions}
               placeholder={t("searchFilter.placeholder")}
               filterFor="courses"
             />
 
-            {(searchTerm !== "" || selectedAgeGroup !== "" || selectedDuration !== "") && (
+            {(searchTerm !== "" || selectedDuration !== "") && (
               <div className="d-flex justify-content-center mt-3"> {/* Căn giữa nút */}
                 <Button variant="outline-primary" onClick={clearAllFilters}>
                   {t("coursesSection.clearFilters")}

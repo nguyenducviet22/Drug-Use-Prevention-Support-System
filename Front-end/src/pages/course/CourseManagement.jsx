@@ -179,35 +179,35 @@ function CourseManagement() {
 
     return (
         <div className="course-management-content">
-            <h1>{t("courseManagementTitle")}</h1>
-
-            {/* Search Filter Section */}
-            <SearchFilter
-                searchTerm={searchTerm}
-                selectedAgeGroup={selectedAgeGroup}
-                selectedDuration={selectedDuration}
-                selectedStatus={selectedStatus}
-                onSearchChange={(value) => handleFilterChange("searchTerm", value)} // Updated to use handleFilterChange
-                onAgeGroupChange={(value) => handleFilterChange("ageGroup", value)}
-                onDurationChange={(value) => handleFilterChange("duration", value)}
-                onStatusChange={(value) => handleFilterChange("status", value)}
-                ageGroupOptions={ageGroupOptions}
-                durationOptions={durationOptions}
-                statusOptions={statusOptions}
-                placeholder={t("searchFilter.placeholder")}
-                filterFor="courses"
-            />
-
-            {(searchTerm !== "" || selectedAgeGroup !== "" || selectedDuration !== "" || selectedStatus !== "") && (
-                <div className="d-flex justify-content-center mt-3">
-                    <Button variant="outline-primary" onClick={clearAllFilters}>
-                        {t("coursesSection.clearFilters")}
-                    </Button>
-                </div>
-            )}
-
-            {/* Courses Section */}
             <Container className="mb-5 courses-section">
+                <h1>{t("courseManagementTitle")}</h1>
+
+                {/* Search Filter Section */}
+                <SearchFilter
+                    searchTerm={searchTerm}
+                    selectedAgeGroup={selectedAgeGroup}
+                    selectedDuration={selectedDuration}
+                    selectedStatus={selectedStatus}
+                    onSearchChange={(value) => handleFilterChange("searchTerm", value)} // Updated to use handleFilterChange
+                    onAgeGroupChange={(value) => handleFilterChange("ageGroup", value)}
+                    onDurationChange={(value) => handleFilterChange("duration", value)}
+                    onStatusChange={(value) => handleFilterChange("status", value)}
+                    ageGroupOptions={ageGroupOptions}
+                    durationOptions={durationOptions}
+                    statusOptions={statusOptions}
+                    placeholder={t("searchFilter.placeholder")}
+                    filterFor="courses"
+                />
+
+                {(searchTerm !== "" || selectedAgeGroup !== "" || selectedDuration !== "" || selectedStatus !== "") && (
+                    <div className="d-flex justify-content-center mt-3">
+                        <Button variant="outline-primary" onClick={clearAllFilters}>
+                            {t("coursesSection.clearFilters")}
+                        </Button>
+                    </div>
+                )}
+
+                {/* Courses Section */}
                 <div className="d-flex align-items-center mb-4">
                     <Button variant="outline-success" size="sm" onClick={handleAddCourse} className="ms-auto">
                         <PlusCircle size={16} className="me-1" /> Add

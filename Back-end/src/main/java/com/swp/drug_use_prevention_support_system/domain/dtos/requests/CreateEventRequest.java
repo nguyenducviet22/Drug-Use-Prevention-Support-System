@@ -1,6 +1,7 @@
 package com.swp.drug_use_prevention_support_system.domain.dtos.requests;
 
 import com.swp.drug_use_prevention_support_system.domain.enums.AgeGroup;
+import com.swp.drug_use_prevention_support_system.domain.enums.EventStatus;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
@@ -30,6 +31,9 @@ public class CreateEventRequest {
     String description;
 
     String image;
+
+    @NotNull(message = "Status is required")
+    EventStatus status;
 
     @NotNull(message = "Age group is required")
     AgeGroup ageGroup;

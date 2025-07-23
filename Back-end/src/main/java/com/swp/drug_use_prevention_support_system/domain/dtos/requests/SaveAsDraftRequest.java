@@ -18,7 +18,7 @@ public class SaveAsDraftRequest {
     // eventName thường là bắt buộc ngay cả với draft để định danh
     @NotBlank(message = "Event name must not be blank.")
     String eventName;
-
+    EventStatus status;
     String subTitle;
     Integer duration;
     Integer quantity;
