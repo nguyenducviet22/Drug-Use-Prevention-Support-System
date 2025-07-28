@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -93,18 +94,6 @@ public class CourseController {
         return ResponseEntity.ok("Excel file data saved Courses into DB");
     }
 
-    @GetMapping("/age-group")
-    public ResponseEntity<ApiResponse<List<String>>> getAllCourseAgeGroups() {
-        List<String> groups = Arrays.stream(AgeGroup.values())
-                .map(Enum::name)
-                .toList();
-        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
-                .status(HttpStatus.OK.value())
-                .data(groups)
-                .build();
-        return ResponseEntity.ok(apiResponse);
-    }
-
     @GetMapping("/status")
     public ResponseEntity<ApiResponse<List<String>>> getAllCourseStatuses() {
         List<String> statuses = Arrays.stream(CourseStatus.values())
@@ -156,5 +145,11 @@ public class CourseController {
                 .data(responses)
                 .build();
         return ResponseEntity.ok(apiResponse);
+    }
+
+    //ADMIN HOMEPAGE
+    @GetMapping("/admin/stats/courses")
+    public ResponseEntity<Map<String, Object>> getCourseStats() {
+        return ResponseEntity.ok(courseService.getCourseStats());
     }
 }

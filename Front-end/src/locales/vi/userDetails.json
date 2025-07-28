@@ -25,10 +25,20 @@
     "addressLabel": "Địa chỉ",
     "addressPlaceholder": "Nhập địa chỉ của bạn",
     "validation": {
-      "fullNameRequired": "Họ và tên là bắt buộc",
-      "phoneNumberRequired": "Số điện thoại là bắt buộc",
-      "dobRequired": "Ngày sinh là bắt buộc",
-      "genderRequired": "Giới tính là bắt buộc"
+      "fullNameRequired": "Họ và tên là bắt buộc.",
+      "fullNameInvalid": "Họ và tên chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt.",
+      "jobTitleRequired": "Chức danh công việc là bắt buộc.",
+      "jobTitleInvalid": "Chức danh chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt.",
+      "phoneNumberRequired": "Số điện thoại là bắt buộc.",
+      "phoneNumberInvalidFormat": "Số điện thoại phải theo định dạng xxx-xxx-xxxx hoặc xxx-xxxx-xxxx.",
+      "dobRequired": "Ngày sinh là bắt buộc.",
+      "dobTooYoung": "Bạn phải ít nhất 6 tuổi.",
+      "genderRequired": "Vui lòng chọn giới tính.",
+      "emailRequired": "Email là bắt buộc.",
+      "emailInvalid": "Email không đúng định dạng.",
+      "emailLocalInvalid": "Phần tên email không được chứa ký tự đặc biệt.",
+      "emailDomainInvalid": "Email không được chứa ký tự đặc biệt sau @gmail.com.",
+      "addressRequired": "Địa chỉ là bắt buộc."
     },
     "alert": {
       "success": "Cập nhật thông tin người dùng thành công!",

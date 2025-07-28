@@ -17,13 +17,13 @@
         "myPending": "My Pending"
     },
     "noBlogsFound": {
-        "message": "No blogs found matching your criteria.",
-        "clearFilters": "Clear Filters"
+        "message": "No blogs found matching your criteria."
     },
     "sidebar": {
         "commonTypesTitle": "Common Types",
         "popularBlogsTitle": "Popular Blogs",
         "favoriteTagsTitle": "Favorite Tags"
     },
-    "ageGroupMessage": "You need to update your personal information to get more relevant age blogs"
+    "ageGroupMessage": "You need to update your personal information to get more relevant age blogs",
+    "clearFilters": "Clear Filters"
 }

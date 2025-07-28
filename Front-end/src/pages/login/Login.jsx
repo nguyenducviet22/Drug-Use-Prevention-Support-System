@@ -1,12 +1,20 @@
-import { useState } from "react"
-import { Container, Row, Col, Card, Form, Button, InputGroup } from "react-bootstrap"
-import { Link } from "react-router-dom"
-import "./Login.css"
-import { useAuth } from "../../hooks/useAuth"
-import BackButton from "../../components/BackButton"
-import { toast } from "react-toastify"
+import { useState } from "react";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Form,
+  Button,
+  InputGroup,
+} from "react-bootstrap";
+import { Link } from "react-router-dom";
+import "./Login.css";
+import { useAuth } from "../../hooks/useAuth";
+import BackButton from "../../components/BackButton";
+import { ToastContainer, toast } from "react-toastify";
 import { useTranslation } from "react-i18next"; // Import useTranslation
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const { t } = useTranslation("loginPage"); // Khai báo useTranslation
@@ -14,57 +22,63 @@ export default function Login() {
   const { login, register, authLoading, error } = useAuth();
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
-  const [showRegisterConfirmPassword, setShowRegisterConfirmPassword] = useState(false);
+  const [showRegisterConfirmPassword, setShowRegisterConfirmPassword] =
+    useState(false);
 
-  const API_GOOGLE_LOGIN_URL = 'http://localhost:8080/oauth2/authorization/google';
+  const API_GOOGLE_LOGIN_URL =
+    "http://localhost:8080/oauth2/authorization/google";
 
-  const [activeTab, setActiveTab] = useState("login")
+  const [activeTab, setActiveTab] = useState("login");
   const [loginData, setLoginData] = useState({
     username: "",
     password: "",
     rememberMe: false,
-  })
+  });
   const [registerData, setRegisterData] = useState({
     username: "",
     password: "",
     confirmPassword: "",
-  })
+  });
 
   const handleLoginChange = (e) => {
-    const { name, value, type, checked } = e.target
+    const { name, value, type, checked } = e.target;
     setLoginData({
       ...loginData,
       [name]: type === "checkbox" ? checked : value,
-    })
-  }
+    });
+  };
 
   const handleRegisterChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setRegisterData({
       ...registerData,
       [name]: value,
-    })
-  }
+    });
+  };
 
   const handleLoginSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     await login(loginData.username, loginData.password);
-    console.log("Login attempt:", loginData)
-  }
+    console.log("Login attempt:", loginData);
+  };
 
   const handleRegisterSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (registerData.password !== registerData.confirmPassword) {
-      toast.error(t("registerForm.passwordMismatch"))
-      return
+      toast.error(t("registerForm.passwordMismatch"));
+      return;
     }
-    await register(registerData.username, registerData.password, registerData.confirmPassword);
-    console.log("Register attempt:", registerData)
-  }
+    await register(
+      registerData.username,
+      registerData.password,
+      registerData.confirmPassword
+    );
+    console.log("Register attempt:", registerData);
+  };
 
   const handleGoogleLogin = () => {
     window.location.href = API_GOOGLE_LOGIN_URL;
-  }
+  };
 
   if (authLoading) {
     return (
@@ -75,7 +89,7 @@ export default function Login() {
           </div>
         </div>
       </Container>
-    )
+    );
   }
 
   return (
@@ -86,21 +100,45 @@ export default function Login() {
             <Card className="login-card border-0 shadow-lg h-100">
               <Row className="g-0 h-100">
                 {/* Left Side - Branding */}
-                <Col md={6} className="login-brand-section d-flex align-items-center justify-content-center">
+                <Col
+                  md={6}
+                  className="login-brand-section d-flex align-items-center justify-content-center"
+                >
                   <div className="text-center text-white">
                     <div className="brand-logo mb-4">
-                      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" className="mb-3">
-                        <path d="M16 16L48 48M48 16L16 48" stroke="white" strokeWidth="4" strokeLinecap="round" />
-                        <path d="M32 8L56 32L32 56L8 32L32 8Z" stroke="white" strokeWidth="3" fill="none" />
+                      <svg
+                        width="64"
+                        height="64"
+                        viewBox="0 0 64 64"
+                        fill="none"
+                        className="mb-3"
+                      >
+                        <path
+                          d="M16 16L48 48M48 16L16 48"
+                          stroke="white"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M32 8L56 32L32 56L8 32L32 8Z"
+                          stroke="white"
+                          strokeWidth="3"
+                          fill="none"
+                        />
                       </svg>
-                      <h1 className="brand-title fw-bold mb-3">{t("brand.title")}</h1>
+                      <h1 className="brand-title fw-bold mb-3">
+                        {t("brand.title")}
+                      </h1>
                       <p className="brand-subtitle">{t("brand.subtitle")}</p>
                     </div>
                   </div>
                 </Col>
 
                 {/* Right Side - Login/Register Form */}
-                <Col md={6} className="login-form-section d-flex align-items-center">
+                <Col
+                  md={6}
+                  className="login-form-section d-flex align-items-center"
+                >
                   <div className="w-100 p-5">
                     <BackButton label={t("backButton")} />
 
@@ -108,14 +146,22 @@ export default function Login() {
                     <div className="login-tabs mb-4">
                       <div className="d-flex gap-2">
                         <Button
-                          variant={activeTab === "login" ? "primary" : "outline-secondary"}
+                          variant={
+                            activeTab === "login"
+                              ? "primary"
+                              : "outline-secondary"
+                          }
                           className="flex-fill"
                           onClick={() => setActiveTab("login")}
                         >
                           {t("tabs.login")}
                         </Button>
                         <Button
-                          variant={activeTab === "register" ? "primary" : "outline-secondary"}
+                          variant={
+                            activeTab === "register"
+                              ? "primary"
+                              : "outline-secondary"
+                          }
                           className="flex-fill"
                           onClick={() => setActiveTab("register")}
                         >
@@ -130,7 +176,12 @@ export default function Login() {
                       className="w-100 mb-4 google-login-btn"
                       onClick={handleGoogleLogin}
                     >
-                      <svg width="18" height="18" viewBox="0 0 24 24" className="me-2">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        className="me-2"
+                      >
                         <path
                           fill="#4285F4"
                           d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -153,14 +204,18 @@ export default function Login() {
 
                     {/* Divider */}
                     <div className="divider mb-4">
-                      <span className="divider-text text-muted">{t("dividerText")}</span>
+                      <span className="divider-text text-muted">
+                        {t("dividerText")}
+                      </span>
                     </div>
 
                     {/* Login Form */}
                     {activeTab === "login" && (
                       <Form onSubmit={handleLoginSubmit}>
                         <Form.Group className="mb-3">
-                          <Form.Label className="fw-semibold text-dark">{t("loginForm.usernameLabel")}</Form.Label>
+                          <Form.Label className="fw-semibold text-dark">
+                            {t("loginForm.usernameLabel")}
+                          </Form.Label>
                           <Form.Control
                             type="text"
                             name="username"
@@ -173,7 +228,9 @@ export default function Login() {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                          <Form.Label className="fw-semibold text-dark">{t("loginForm.passwordLabel")}</Form.Label>
+                          <Form.Label className="fw-semibold text-dark">
+                            {t("loginForm.passwordLabel")}
+                          </Form.Label>
                           <InputGroup>
                             <Form.Control
                               type={showLoginPassword ? "text" : "password"}
@@ -184,8 +241,17 @@ export default function Login() {
                               className="form-control-custom-with-toggle"
                               required
                             />
-                            <InputGroup.Text className="password-toggle-btn" onClick={() => setShowLoginPassword(!showLoginPassword)}>
-                              {showLoginPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            <InputGroup.Text
+                              className="password-toggle-btn"
+                              onClick={() =>
+                                setShowLoginPassword(!showLoginPassword)
+                              }
+                            >
+                              {showLoginPassword ? (
+                                <EyeOff size={20} />
+                              ) : (
+                                <Eye size={20} />
+                              )}
                             </InputGroup.Text>
                           </InputGroup>
                         </Form.Group>
@@ -201,12 +267,19 @@ export default function Login() {
                           />
                         </Form.Group>
 
-                        <Button type="submit" variant="primary" className="w-100 login-submit-btn mb-3">
+                        <Button
+                          type="submit"
+                          variant="primary"
+                          className="w-100 login-submit-btn mb-3"
+                        >
                           {t("loginForm.submitButton")}
                         </Button>
 
                         <div className="text-center">
-                          <Link to="/forgot-password" className="text-muted text-decoration-none small">
+                          <Link
+                            to="/forgot-password"
+                            className="text-muted text-decoration-none small"
+                          >
                             {t("loginForm.forgotPassword")}
                           </Link>
                         </div>
@@ -217,7 +290,9 @@ export default function Login() {
                     {activeTab === "register" && (
                       <Form onSubmit={handleRegisterSubmit}>
                         <Form.Group className="mb-3">
-                          <Form.Label className="fw-semibold text-dark">{t("registerForm.usernameLabel")}</Form.Label>
+                          <Form.Label className="fw-semibold text-dark">
+                            {t("registerForm.usernameLabel")}
+                          </Form.Label>
                           <Form.Control
                             type="text"
                             name="username"
@@ -230,42 +305,78 @@ export default function Login() {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                          <Form.Label className="fw-semibold text-dark">{t("registerForm.passwordLabel")}</Form.Label>
+                          <Form.Label className="fw-semibold text-dark">
+                            {t("registerForm.passwordLabel")}
+                          </Form.Label>
                           <InputGroup>
                             <Form.Control
                               type={showRegisterPassword ? "text" : "password"}
                               name="password"
-                              placeholder={t("registerForm.passwordPlaceholder")}
+                              placeholder={t(
+                                "registerForm.passwordPlaceholder"
+                              )}
                               value={registerData.password}
                               onChange={handleRegisterChange}
                               className="form-control-custom-with-toggle"
                               required
                             />
-                            <InputGroup.Text className="password-toggle-btn" onClick={() => setShowRegisterPassword(!showRegisterPassword)}>
-                              {showRegisterPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            <InputGroup.Text
+                              className="password-toggle-btn"
+                              onClick={() =>
+                                setShowRegisterPassword(!showRegisterPassword)
+                              }
+                            >
+                              {showRegisterPassword ? (
+                                <EyeOff size={20} />
+                              ) : (
+                                <Eye size={20} />
+                              )}
                             </InputGroup.Text>
                           </InputGroup>
                         </Form.Group>
 
                         <Form.Group className="mb-4">
-                          <Form.Label className="fw-semibold text-dark">{t("registerForm.confirmPasswordLabel")}</Form.Label>
+                          <Form.Label className="fw-semibold text-dark">
+                            {t("registerForm.confirmPasswordLabel")}
+                          </Form.Label>
                           <InputGroup>
                             <Form.Control
-                              type={showRegisterConfirmPassword ? "text" : "password"}
+                              type={
+                                showRegisterConfirmPassword
+                                  ? "text"
+                                  : "password"
+                              }
                               name="confirmPassword"
-                              placeholder={t("registerForm.confirmPasswordPlaceholder")}
+                              placeholder={t(
+                                "registerForm.confirmPasswordPlaceholder"
+                              )}
                               value={registerData.confirmPassword}
                               onChange={handleRegisterChange}
                               className="form-control-custom-with-toggle"
                               required
                             />
-                            <InputGroup.Text className="password-toggle-btn" onClick={() => setShowRegisterConfirmPassword(!showRegisterConfirmPassword)}>
-                              {showRegisterConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            <InputGroup.Text
+                              className="password-toggle-btn"
+                              onClick={() =>
+                                setShowRegisterConfirmPassword(
+                                  !showRegisterConfirmPassword
+                                )
+                              }
+                            >
+                              {showRegisterConfirmPassword ? (
+                                <EyeOff size={20} />
+                              ) : (
+                                <Eye size={20} />
+                              )}
                             </InputGroup.Text>
                           </InputGroup>
                         </Form.Group>
 
-                        <Button type="submit" variant="primary" className="w-100 login-submit-btn mb-3">
+                        <Button
+                          type="submit"
+                          variant="primary"
+                          className="w-100 login-submit-btn mb-3"
+                        >
                           {t("registerForm.submitButton")}
                         </Button>
                       </Form>
@@ -276,7 +387,8 @@ export default function Login() {
             </Card>
           </Col>
         </Row>
+        <ToastContainer position="top-right" autoClose={3000} />
       </Container>
     </div>
-  )
+  );
 }

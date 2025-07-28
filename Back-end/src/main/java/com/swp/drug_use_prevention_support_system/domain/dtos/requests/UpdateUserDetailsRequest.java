@@ -16,7 +16,10 @@ public class UpdateUserDetailsRequest {
     String fullName;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^(\\+0?1\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Invalid phone number format")
+    @Pattern(
+            regexp = "^(\\d{3}-\\d{3}-\\d{4}|\\d{3}-\\d{4}-\\d{4})$",
+            message = "Phone number must be in format xxx-xxx-xxxx or xxx-xxxx-xxxx"
+    )
     String phoneNumber;
 
     @NotBlank(message = "Relationship is required")

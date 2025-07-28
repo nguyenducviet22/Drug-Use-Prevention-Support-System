@@ -1,6 +1,6 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
 
 // Import các file JSON của bạn
 import homeEn from './locales/en/home.json';
@@ -45,12 +45,14 @@ import pendingCardEn from './locales/en/pendingCard.json';
 import analyticsPreviewEn from './locales/en/analyticsPreview.json';
 import appointmentCardEn from './locales/en/appointmentCard.json';
 import qualificationsEn from './locales/en/qualifications.json';
-//import userDetailsEn from './locales/en/userDetails.json'; // Import new file
 import eventDetailsEn from './locales/en/eventDetails.json';
 import eventListEn from './locales/en/eventList.json';
 import forgotResetPasswordEn from './locales/en/forgotResetPassword.json'; // Import the new namespace
-
 import userManagementEn from './locales/en/userManagement.json';
+import blogManagementEn from './locales/en/blogManagement.json';
+import courseManagementEn from './locales/en/courseManagement.json';
+import eventManagementEn from './locales/en/eventManagement.json';
+import createEventPageEn from './locales/en/createEventPage.json'; 
 
 
 
@@ -97,18 +99,20 @@ import pendingCardVi from './locales/vi/pendingCard.json';
 import analyticsPreviewVi from './locales/vi/analyticsPreview.json';
 import appointmentCardVi from './locales/vi/appointmentCard.json';
 import qualificationsVi from './locales/vi/qualifications.json';
-//import userDetailsVi from './locales/vi/userDetails.json'; // Import new file
 import eventDetailsVi from './locales/vi/eventDetails.json';
 import eventListVi from './locales/vi/eventList.json';
 import forgotResetPasswordVi from './locales/vi/forgotResetPassword.json'; // Import the new namespace
-
 import userManagementVi from './locales/vi/userManagement.json';
+import blogManagementVi from './locales/vi/blogManagement.json';
+import courseManagementVi from './locales/vi/courseManagement.json';
+import eventManagementVi from './locales/vi/eventManagement.json';
+import createEventPageVi from './locales/vi/createEventPage.json';
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    fallbackLng: 'vi',
+    fallbackLng: "vi",
     debug: true,
     resources: {
       en: {
@@ -154,12 +158,14 @@ i18n
         analyticsPreview: analyticsPreviewEn,
         appointmentCard: appointmentCardEn,
         qualifications: qualificationsEn,
-        //userDetails: userDetailsEn, // Add new namespace
         eventDetails: eventDetailsEn,
         eventList: eventListEn,
-        forgotResetPassword: forgotResetPasswordEn, // Add the new namespace here
-
+        forgotResetPassword: forgotResetPasswordEn, 
         userManagement: userManagementEn,
+        blogManagement: blogManagementEn,
+        courseManagement: courseManagementEn,
+        eventManagement: eventManagementEn,
+        createEventPage: createEventPageEn, 
       },
       vi: {
         home: homeVi,
@@ -204,36 +210,74 @@ i18n
         analyticsPreview: analyticsPreviewVi,
         appointmentCard: appointmentCardVi,
         qualifications: qualificationsVi,
-        //userDetails: userDetailsVi, // Add new namespace
         eventDetails: eventDetailsVi,
         eventList: eventListVi,
         forgotResetPassword: forgotResetPasswordVi,
-
         userManagement: userManagementVi,
-      }
+        blogManagement: blogManagementVi,
+        courseManagement: courseManagementVi,
+        eventManagement: eventManagementVi,
+        createEventPage: createEventPageVi,
+      },
     },
-    // Ensure 'analyticsPreview' is added to the `ns` array
+
     ns: [
-      'home', 'appointmentBooking', 'assessmentList', 'assessmentResult', 'crafftQuestionnaire',
-      'availabilityBooking', 'blogCreation', 'blogDetails', 'blogList',
-      'courseCreation', 'courseDetails', 'courseLesson', 'courseList',
-      'lessonCreation', 'loginPage', 'moduleCreation', 'myProfile',
-      'notFound', 'accountOverview', 'assessmentCard', 'blogCard',
-      'courseCard', 'eventCard', 'familyInformation', 'footer',
-      'homeExplore', 'homeMe', 'navbar', 'pagination',
-      'recommendation', 'reports', 'searchFilter', 'userDetails',
-      'homeManager', 'homeStaff', 'homeConsultant', 'lineChart',
-      'statusCard', 'pendingCard', 'analyticsPreview', 'appointmentCard',
-      'qualifications', // Add new namespace
-      // 'recommendation', 'reports', 'searchFilter', 'userDetails', 
-      'eventDetails', 'eventList',
-      'qualifications', 'forgotResetPassword', // Added the new namespace here
-      'userManagement',
+      "home",
+      "appointmentBooking",
+      "assessmentList",
+      "assessmentResult",
+      "crafftQuestionnaire",
+      "availabilityBooking",
+      "blogCreation",
+      "blogDetails",
+      "blogList",
+      "courseCreation",
+      "courseDetails",
+      "courseLesson",
+      "courseList",
+      "lessonCreation",
+      "loginPage",
+      "moduleCreation",
+      "myProfile",
+      "notFound",
+      "accountOverview",
+      "assessmentCard",
+      "blogCard",
+      "courseCard",
+      "eventCard",
+      "familyInformation",
+      "footer",
+      "homeExplore",
+      "homeMe",
+      "navbar",
+      "pagination",
+      "recommendation",
+      "reports",
+      "searchFilter",
+      "userDetails",
+      "homeManager",
+      "homeStaff",
+      "homeConsultant",
+      "lineChart",
+      "statusCard",
+      "pendingCard",
+      "analyticsPreview",
+      "appointmentCard",
+      "qualifications",
+      "eventDetails",
+      "eventList",
+      "qualifications",
+      "forgotResetPassword",
+      "userManagement",
+      "blogManagement",
+      "courseManagement",
+      "eventManagement",
+      "createEventPage"
     ],
-    defaultNS: 'home',
+    defaultNS: "home",
     interpolation: {
-      escapeValue: false
-    }
+      escapeValue: false,
+    },
   });
 
 export default i18n;

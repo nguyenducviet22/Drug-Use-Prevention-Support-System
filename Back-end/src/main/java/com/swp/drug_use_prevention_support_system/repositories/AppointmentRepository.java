@@ -36,4 +36,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> findByConsultantUsernameAndAppointmentDateTimeBetweenOrderByAppointmentDateTimeDesc(String username, Instant startOfDay, Instant endOfDay);
 
     List<Appointment> findByConsultantUsernameOrderByAppointmentDateTimeAsc(String username);
+
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE YEAR(a.createdAt) = :year AND MONTH(a.createdAt) = :month")
+    int countAppointmentsByMonth(@Param("year") int year, @Param("month") int month);
+
 }

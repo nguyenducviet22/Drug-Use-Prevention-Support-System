@@ -6,8 +6,8 @@
     "backLinkText": "Back to Assessments"
   },
   "progressIndicator": {
-    "step1": "1",
-    "step2": "2"
+    "step1": "Completed",
+    "step2": "Results"
   },
   "mainResultCard": {
     "completionTitle": "Completed",

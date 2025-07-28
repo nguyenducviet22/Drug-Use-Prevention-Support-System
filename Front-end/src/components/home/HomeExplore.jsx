@@ -54,7 +54,7 @@ const HomeExplore = () => {
     "http://localhost:8080/api/course/age-group/EVERYONE"
   );
   const { loading: loadingEvents, get: getEvents } = useFetch(
-    "http://localhost:8080/api/event/upcoming"
+    "http://localhost:8080/api/event/age-group/EVERYONE"
   );
 
   const handleAttend = async (eventID) => {

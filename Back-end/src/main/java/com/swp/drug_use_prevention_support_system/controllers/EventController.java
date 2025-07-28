@@ -1,6 +1,7 @@
 package com.swp.drug_use_prevention_support_system.controllers;
 
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.CreateEventRequest;
+import com.swp.drug_use_prevention_support_system.domain.dtos.requests.SaveAsDraftRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.requests.UpdateEventRequest;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.ApiResponse;
 import com.swp.drug_use_prevention_support_system.domain.dtos.responses.EventResponse;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,11 +41,22 @@ public class EventController {
     }
 
     @PostMapping("/draft")
-    public ResponseEntity<ApiResponse<EventResponse>> saveEventAsDraft(@Valid @RequestBody CreateEventRequest request) {
+    public ResponseEntity<ApiResponse<EventResponse>> saveEventAsDraft(@Valid @RequestBody SaveAsDraftRequest request) {
         EventResponse response = eventService.saveEventAsDraft(request);
         ApiResponse<EventResponse> apiResponse = ApiResponse.<EventResponse>builder()
                 .data(response)
                 .status(HttpStatus.CREATED.value())
+                .build();
+        return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/publish") // Endpoint mới cho việc xuất bản
+    public ResponseEntity<ApiResponse<EventResponse>> publishEvent(@Valid @RequestBody CreateEventRequest request) {
+        EventResponse response = eventService.publishEvent(request);
+        ApiResponse<EventResponse> apiResponse = ApiResponse.<EventResponse>builder()
+                .data(response)
+                .status(HttpStatus.CREATED.value())
+                .message("Event submitted for approval successfully.")
                 .build();
         return new ResponseEntity<>(apiResponse, HttpStatus.CREATED);
     }
@@ -56,6 +69,18 @@ public class EventController {
                 .status(HttpStatus.OK.value())
                 .build();
         return ResponseEntity.ok(apiResponses);
+    }
+
+    @GetMapping("/visible")
+    public ResponseEntity<ApiResponse<List<EventResponse>>> getVisibleEvents() {
+        List<EventResponse> responses = eventService.getActiveAndExpiredEvents();
+
+        ApiResponse<List<EventResponse>> apiResponse = ApiResponse.<List<EventResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/upcoming")
@@ -113,9 +138,9 @@ public class EventController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}/{status}")
     public ResponseEntity<ApiResponse<EventResponse>> updateEventStatus(@PathVariable UUID id,
-                                                                      @RequestParam EventStatus status) {
+                                                                        @PathVariable EventStatus status) {
         EventResponse response = eventService.updateEventStatus(id, status);
         ApiResponse<EventResponse> apiResponse = ApiResponse.<EventResponse>builder()
                 .data(response)
@@ -176,5 +201,52 @@ public class EventController {
         }
         excelService.importEventsFromExcel(file.getInputStream());
         return ResponseEntity.ok("Excel file data saved Events into DB");
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<ApiResponse<List<EventResponse>>> getEventsByStatus(@PathVariable EventStatus status) {
+        List<EventResponse> responses = eventService.getEventsByStatus(status);
+        ApiResponse<List<EventResponse>> apiResponse = ApiResponse.<List<EventResponse>>builder()
+                .status(HttpStatus.OK.value())
+                .data(responses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<ApiResponse<List<String>>> getAllEventStatuses() {
+        List<String> statuses = Arrays.stream(EventStatus.values())
+                .map(Enum::name)
+                .toList();
+        ApiResponse<List<String>> apiResponse = ApiResponse.<List<String>>builder()
+                .status(HttpStatus.OK.value())
+                .data(statuses)
+                .build();
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    ///Manager APPROVE REJECT EVENT
+    @PutMapping("/{eventId}/approve")
+    public ResponseEntity<ApiResponse<EventResponse>> approveEvent(@PathVariable UUID eventId) {
+        EventResponse approvedEvent = eventService.approveEvent(eventId);
+
+        ApiResponse<EventResponse> response = ApiResponse.<EventResponse>builder()
+                .data(approvedEvent)
+                .status(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{eventId}/reject")
+    public ResponseEntity<ApiResponse<EventResponse>> rejectEvent(@PathVariable UUID eventId) {
+        EventResponse approvedEvent = eventService.rejectEvent(eventId);
+
+        ApiResponse<EventResponse> response = ApiResponse.<EventResponse>builder()
+                .data(approvedEvent)
+                .status(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }

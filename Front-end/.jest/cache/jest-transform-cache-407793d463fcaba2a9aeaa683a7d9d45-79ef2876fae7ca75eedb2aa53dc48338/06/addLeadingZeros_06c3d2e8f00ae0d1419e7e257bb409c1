@@ -1,0 +1,8 @@
+92c96255dae86ad45f4663b69a3eff48
+"use strict";
+exports.addLeadingZeros = addLeadingZeros;
+function addLeadingZeros(number, targetLength) {
+  const sign = number < 0 ? "-" : "";
+  const output = Math.abs(number).toString().padStart(targetLength, "0");
+  return sign + output;
+}

@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -147,6 +148,16 @@ public class BlogController {
         return ResponseEntity.ok(apiResponses);
     }
 
+    @GetMapping("/role/{role}")
+    public ResponseEntity<ApiResponse<List<BlogResponse>>> getBlogsByRole(@PathVariable Role role) {
+        List<BlogResponse> responses = blogService.getBlogsByRole(role);
+        ApiResponse<List<BlogResponse>> apiResponses = ApiResponse.<List<BlogResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+        return ResponseEntity.ok(apiResponses);
+    }
+
     @GetMapping("/status/{status}/role/{role}")
     public ResponseEntity<ApiResponse<List<BlogResponse>>> getBlogsByStatusRole(@PathVariable BlogStatus status,
                                                                                 @PathVariable Role role) {
@@ -167,4 +178,11 @@ public class BlogController {
                 .build();
         return ResponseEntity.ok(apiResponses);
     }
+
+    //ADMIN HOMEPAGE
+    @GetMapping("/admin/stats/blogs")
+    public ResponseEntity<Map<String, Object>> getBlogStats() {
+        return ResponseEntity.ok(blogService.getBlogStats());
+    }
+
 }

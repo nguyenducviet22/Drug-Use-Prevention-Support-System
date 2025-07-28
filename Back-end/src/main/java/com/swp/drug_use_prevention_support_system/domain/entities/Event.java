@@ -32,6 +32,7 @@ public class Event {
     Integer duration;
     Integer quantity;
     String description;
+    @Column(columnDefinition = "TEXT")
     String image;
     @Enumerated(EnumType.STRING)
     EventStatus status;

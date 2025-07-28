@@ -5,7 +5,13 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import "./EventCard.css";
 
-const EventCard = ({ event, onJoinEvent, onViewDetails, statusInfo, onCancelEvent }) => {
+const EventCard = ({
+  event,
+  onJoinEvent,
+  onViewDetails,
+  statusInfo,
+  onCancelEvent,
+}) => {
   const { t, i18n } = useTranslation("eventCard");
   const lang = i18n.language;
   const [cancelLoading, setCancelLoading] = useState(false);
@@ -91,7 +97,10 @@ const EventCard = ({ event, onJoinEvent, onViewDetails, statusInfo, onCancelEven
             </div>
           </div>
 
-          <p className="event-description">{description}</p>
+          <div
+            className="event-description"
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
 
           <div className="event-actions">
             <Button
@@ -115,7 +124,9 @@ const EventCard = ({ event, onJoinEvent, onViewDetails, statusInfo, onCancelEven
                 }}
                 disabled={cancelLoading}
               >
-                {cancelLoading ? t("cancellingButton", "Cancelling...") : t("cancelButton", "Cancel")}
+                {cancelLoading
+                  ? t("cancellingButton", "Cancelling...")
+                  : t("cancelButton", "Cancel")}
               </Button>
             )}
 

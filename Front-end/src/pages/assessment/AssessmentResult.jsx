@@ -137,12 +137,12 @@ const AssessmentResult = () => {
         <Container fluid className="py-5 position-relative">
           <Row className="justify-content-center mb-5">
             <Col xs="auto">
-              <div className="progress-indicator d-flex align-items-center">
+              <div className="d-flex align-items-center">
                 <div className="text-center me-4">
                   <div className="progress-step completed">
                     <Check size={28} />
                   </div>
-                  <small className="text-white fw-bold mt-2 d-block">
+                  <small className="text-slate-important mt-2 d-block" >
                     {t("progressIndicator.step1")}
                   </small>
                 </div>
@@ -154,7 +154,7 @@ const AssessmentResult = () => {
                   <div className="progress-step active">
                     <Activity size={28} />
                   </div>
-                  <small className="text-white fw-bold mt-2 d-block">
+                  <small className="mt-2 d-block text-slate-important">
                     {t("progressIndicator.step2")}
                   </small>
                 </div>
@@ -636,7 +636,7 @@ const AssessmentResult = () => {
                 <div className="progress-step completed">
                   <Check size={28} />
                 </div>
-                <small className="text-white fw-bold mt-2 d-block">
+                <small className="text-slate-important fw-bold mt-2 d-block">
                   {t("progressIndicator.step1")}
                 </small>
               </div>
@@ -648,7 +648,7 @@ const AssessmentResult = () => {
                 <div className="progress-step active">
                   <Activity size={28} />
                 </div>
-                <small className="text-white fw-bold mt-2 d-block">
+                <small className="text-slate-important fw-bold mt-2 d-block">
                   {t("progressIndicator.step2")}
                 </small>
               </div>

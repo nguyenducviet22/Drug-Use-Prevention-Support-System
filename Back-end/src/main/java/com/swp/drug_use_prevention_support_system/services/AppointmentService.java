@@ -15,6 +15,7 @@ import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -188,5 +189,25 @@ public class AppointmentService {
 
     private Appointment getMemberAppointmentEntityByAppointmentDateTime(String username, Instant time) {
         return appointmentRepository.findByMemberUsernameAndAppointmentDateTime(username, time);
+    }
+
+    ////ADMIN HOMEPAGE
+    @PreAuthorize("hasRole('ADMIN')")
+    public Map<String, Object> getAppointmentStats() {
+        Map<String, Object> stats = new HashMap<>();
+
+        YearMonth current = YearMonth.now();
+        YearMonth last = current.minusMonths(1);
+
+        int thisMonthCount = appointmentRepository.countAppointmentsByMonth(current.getYear(), current.getMonthValue());
+        int lastMonthCount = appointmentRepository.countAppointmentsByMonth(last.getYear(), last.getMonthValue());
+
+        int growth = thisMonthCount - lastMonthCount;
+        double growthPercent = lastMonthCount > 0 ? (double) growth / lastMonthCount * 100 : 0;
+
+        stats.put("totalAppointments", thisMonthCount);
+        stats.put("growthPercent", Math.round(growthPercent));
+
+        return stats;
     }
 }

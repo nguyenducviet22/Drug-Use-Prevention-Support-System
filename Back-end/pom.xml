@@ -190,6 +190,39 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <excludes>
+                        <!--                        <exclude>com/swp/drug_use_prevention_support_system/DrugUsePreventionSupportSystemApplication</exclude>-->
+                        <exclude>com/swp/drug_use_prevention_support_system/config/**</exclude>
+                        <exclude>com/swp/drug_use_prevention_support_system/context/**</exclude>
+                        <exclude>com/swp/drug_use_prevention_support_system/domain/**</exclude>
+                        <exclude>com/swp/drug_use_prevention_support_system/exception/**</exclude>
+                        <exclude>com/swp/drug_use_prevention_support_system/mappers/**</exclude>
+                        <exclude>com/swp/drug_use_prevention_support_system/repositories/**</exclude>
+                        <exclude>com/swp/drug_use_prevention_support_system/security/**</exclude>
+                        <exclude>com/swp/drug_use_prevention_support_system/validators/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

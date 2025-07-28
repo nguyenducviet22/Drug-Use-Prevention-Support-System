@@ -1,0 +1,13 @@
+82c56195546f85b6cad8c6ae8223b875
+"use strict";
+exports.normalizeInterval = normalizeInterval;
+var _index = require("./normalizeDates.cjs");
+
+function normalizeInterval(context, interval) {
+  const [start, end] = (0, _index.normalizeDates)(
+    context,
+    interval.start,
+    interval.end,
+  );
+  return { start, end };
+}

@@ -245,11 +245,12 @@ const Qualifications = () => {
                                                     variant="outline-secondary"
                                                     size="sm"
                                                     className="me-2"
+                                                    aria-label="edit-qualification"
                                                     onClick={() => handleEditQualification(qualification.qualificationID)}
                                                 >
                                                     <Edit size={14} />
                                                 </Button>
-                                                <Button variant="outline-danger" size="sm" onClick={() => handleDeleteQualification(qualification.qualificationID)}>
+                                                <Button variant="outline-danger" size="sm" aria-label="delete-qualification" onClick={() => handleDeleteQualification(qualification.qualificationID)}>
                                                     <Trash2 size={14} />
                                                 </Button>
                                             </div>
@@ -430,6 +431,8 @@ const Qualifications = () => {
                                     accept="image/*"
                                     onChange={handleImageSelect}
                                     className="d-none"
+                                    id="certificateImage"
+                                    data-testid="certificate-image-input"
                                 />
                                 {isUploadingImage && <Alert variant="info" className="mt-2">{t("form.imageUpload.uploading")}</Alert>}
                                 {imageUploadError && <Alert variant="danger" className="mt-2">{t("form.imageUpload.error", { error: imageUploadError })}</Alert>}

@@ -28,14 +28,21 @@
     "addressLabel": "Address",
     "addressPlaceholder": "Enter your address",
     "validation": {
-      "fullNameRequired": "Full name is required",
-      "phoneNumberRequired": "Phone number is required",
-      "dobRequired": "Date of birth is required",
-      "genderRequired": "Gender is required",
-      "emailRequired": "Email is required",
-      "jobTitleRequired": "Job title is required",
-      "addressRequired": "Address is required"
-    },
+    "fullNameRequired": "Full name is required.",
+    "fullNameInvalid": "Full name may only contain letters and spaces, no numbers or special characters.",
+    "jobTitleRequired": "Job title is required.",
+    "jobTitleInvalid": "Job title may only contain letters and spaces, no numbers or special characters.",
+    "phoneNumberRequired": "Phone number is required.",
+    "phoneNumberInvalidFormat": "Phone number must follow the format xxx-xxx-xxxx or xxx-xxxx-xxxx.",
+    "dobRequired": "Date of birth is required.",
+    "dobTooYoung": "You must be at least 6 years old.",
+    "genderRequired": "Please select a gender.",
+    "emailRequired": "Email is required.",
+    "emailInvalid": "Email format is invalid.",
+    "emailLocalInvalid": "The email name part may not contain special characters.",
+    "emailDomainInvalid": "Email may not contain special characters after @gmail.com.",
+    "addressRequired": "Address is required."
+  },
     "alert": {
       "success": "User details updated successfully!",
       "failure": "Failed to update user details."
