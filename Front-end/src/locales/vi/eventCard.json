@@ -9,5 +9,6 @@
   "cancelButton": "Hủy",
   "cancellingButton": "Đang hủy...",
   "cancelSuccess": "Hủy thành công!",
-  "cancelFailed": "Hủy thất bại!"
+  "cancelFailed": "Hủy thất bại!",
+   "notStarted" :"Chưa Bắt Đầu"
 }

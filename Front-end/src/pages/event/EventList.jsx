@@ -159,7 +159,11 @@ const EventList = () => {
       return;
     }
 
-    if (user.ageGroup !== targetEvent.ageGroup) {
+    // Kiểm tra nếu sự kiện có AgeGroup là "EVERYONE"
+    if (
+      targetEvent.ageGroup !== "EVERYONE" &&
+      user.ageGroup !== targetEvent.ageGroup
+    ) {
       toast.error(<strong>❌ {t("unsuitableAge")}</strong>);
       return;
     }
@@ -205,7 +209,9 @@ const EventList = () => {
       fetchStatuses(events); // update button/status
     } catch (error) {
       toast.error(
-        <strong>❌ {error.message || t("cancelFailed", "Cancel failed!")}</strong>
+        <strong>
+          ❌ {error.message || t("cancelFailed", "Cancel failed!")}
+        </strong>
       );
     }
   };

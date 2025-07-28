@@ -6,8 +6,8 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class CreateSurveyRequest {
-    private UUID eventId;
-    private SurveyType type;
+public class SurveyCreateRequest {
     private String formLink;
+    private SurveyType type;
+    private UUID eventID;
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from './Logo';
+import Logo from './LogoLight';
 
 const LogoHorizontalLarge = () => (
   <div style={{
