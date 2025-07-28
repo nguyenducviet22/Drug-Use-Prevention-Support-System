@@ -130,7 +130,7 @@ function HomeConsultant() {
           {/* Enhanced Member Progress Tracker */}
           <Col lg={6} className="mb-4">
             <Card className="card-custom h-100">
-              <Card.Header className="card-header-custom">
+              <Card.Header className="card-header-custom bg-primary">
                 <h5 className="mb-0">
                   <TrendingUp className="me-2" size={20} />
                   {t('memberTracker')}

@@ -40,6 +40,8 @@ const AppointmentCard = ({ appointments = [] }) => {
                 <div className="appointment-time mt-3">
                   <div className="fw-semibold text-primary">
                     {appointment.appointmentDateTime}
+                    <Calendar size={16} className="meta-icon" />
+                    {new Date(appointment.appointmentDateTime).toLocaleDateString()} - {new Date(appointment.appointmentDateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
               </div>

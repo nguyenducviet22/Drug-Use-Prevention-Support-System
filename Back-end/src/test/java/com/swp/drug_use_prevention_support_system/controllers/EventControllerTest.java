@@ -856,4 +856,45 @@ class EventControllerTest {
         assertTrue(statuses.contains(EventStatus.APPROVED.name()));
         assertEquals(HttpStatus.OK.value(), response.getBody().getStatus());
     }
+
+    @Test
+    void publishEvent_shouldReturnCreatedStatusAndSuccessMessage() {
+        // Given
+        // Tạo một đối tượng CreateEventRequest giả định
+        CreateEventRequest request = CreateEventRequest.builder()
+                .eventName("Test Event")
+                .description("This is a test event.")
+                .build();
+
+        // Tạo một đối tượng EventResponse giả định mà service sẽ trả về
+        EventResponse mockResponse = EventResponse.builder()
+                .eventName("Test Event")
+                .status(EventStatus.APPROVED)
+                .build();
+
+        // Khi eventService.publishEvent được gọi với bất kỳ CreateEventRequest nào,
+        // nó sẽ trả về mockResponse
+        when(eventService.publishEvent(any(CreateEventRequest.class))).thenReturn(mockResponse);
+
+        // When
+        // Gọi phương thức publishEvent của controller
+        ResponseEntity<ApiResponse<EventResponse>> responseEntity = eventController.publishEvent(request);
+
+        // Then
+        // Kiểm tra mã trạng thái HTTP
+        assertNotNull(responseEntity);
+        assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+
+        // Kiểm tra nội dung của ApiResponse
+        ApiResponse<EventResponse> apiResponse = responseEntity.getBody();
+        assertNotNull(apiResponse);
+        assertEquals(HttpStatus.CREATED.value(), apiResponse.getStatus());
+        assertEquals("Event submitted for approval successfully.", apiResponse.getMessage());
+        assertNotNull(apiResponse.getData());
+        assertEquals(mockResponse.getEventName(), apiResponse.getData().getEventName());
+        assertEquals(mockResponse.getStatus(), apiResponse.getData().getStatus());
+
+        // Xác minh rằng eventService.publishEvent đã được gọi chính xác một lần
+        verify(eventService).publishEvent(any(CreateEventRequest.class));
+    }
 }
