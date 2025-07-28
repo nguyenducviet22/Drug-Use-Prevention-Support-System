@@ -1,8 +1,8 @@
-import { useState } from "react"
-import { Row, Col, Form } from "react-bootstrap"
-import { Search } from "lucide-react"
-import "./SearchFilter.css"
-import { useTranslation } from "react-i18next" // Import useTranslation
+import { useState } from "react";
+import { Row, Col, Form } from "react-bootstrap";
+import { Search } from "lucide-react";
+import "./SearchFilter.css";
+import { useTranslation } from "react-i18next";
 
 const SearchFilter = ({
   searchTerm = "",
@@ -21,11 +21,11 @@ const SearchFilter = ({
   durationOptions = [],
   typeOptions = [],
   statusOptions = [],
-  placeholder = "", // Placeholder will be handled by translation
+  placeholder = "",
   className = "",
-  filterFor = ""
+  filterFor = "",
 }) => {
-  const { t } = useTranslation("searchFilter"); // Initialize useTranslation
+  const { t } = useTranslation("searchFilter");
   const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
 
   const handleSearchSubmit = (e) => {
@@ -70,7 +70,10 @@ const SearchFilter = ({
         </Row>
 
         <Row className="mb-4">
-          {(filterFor === "blogs" || filterFor === "courses" || filterFor === "events") &&
+          {(filterFor === "blogs" ||
+            filterFor === "courses" ||
+            filterFor === "events" ||
+            filterFor === "surveys") &&
             ageGroupOptions.length > 0 && (
               <Col md={4} className="mb-3 mb-md-0">
                 <Form.Select
@@ -81,7 +84,8 @@ const SearchFilter = ({
                   size="lg"
                   className="filter-select"
                 >
-                  {(!selectedAgeGroup || selectedAgeGroup === "__default__") && (
+                  {(!selectedAgeGroup ||
+                    selectedAgeGroup === "__default__") && (
                     <option value="">{t("chooseAgeGroup")}</option>
                   )}
                   {ageGroupOptions.map((option) => (
@@ -93,8 +97,10 @@ const SearchFilter = ({
               </Col>
             )}
 
-
-          {(filterFor === "blogs" || filterFor === "courses" || filterFor === "events") &&
+          {(filterFor === "blogs" ||
+            filterFor === "courses" ||
+            filterFor === "events" ||
+            filterFor === "surveys") &&
             statusOptions.length > 0 && (
               <Col md={4} className="mb-3 mb-md-0">
                 <Form.Select
@@ -146,7 +152,6 @@ const SearchFilter = ({
                 size="lg"
                 className="filter-select"
               >
-                {/* Chỉ render option mặc định nếu selectedDuration là "" hoặc "__default__" và KHÔNG có option "All Durations" */}
                 {(!selectedDuration || selectedDuration === "__default__") &&
                   !durationOptions.some(
                     (opt) => opt.value === selectedDuration

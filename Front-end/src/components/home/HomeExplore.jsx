@@ -11,6 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../hooks/useAuth";
 import { useTranslation } from "react-i18next";
+import DOMPurify from "dompurify";
 
 const getRandomItems = (array, count) => {
   const shuffled = [...array].sort(() => 0.5 - Math.random());
@@ -154,7 +155,7 @@ const HomeExplore = () => {
       .then((data) => {
         setRandomBlogs(getRandomItems(data, 2));
       })
-      .catch(() => { });
+      .catch(() => {});
 
     getEveryoneCourses()
       .then((data) => {
@@ -177,7 +178,7 @@ const HomeExplore = () => {
     });
   }, [getEveryoneBlogs, getEveryoneCourses, getEvents]);
 
-    const handleReadMore = (blogId) => {
+  const handleReadMore = (blogId) => {
     navigate(`/blogs/${blogId}`);
   };
 
@@ -313,7 +314,12 @@ const HomeExplore = () => {
                       )}
 
                       {event.description && (
-                        <p className="mt-3">{event.description}</p>
+                        <p
+                          className="mt-3"
+                          dangerouslySetInnerHTML={{
+                            __html: DOMPurify.sanitize(event.description),
+                          }}
+                        />
                       )}
 
                       <div className="d-flex justify-content-center gap-4 mt-4 flex-wrap">
@@ -378,9 +384,11 @@ const HomeExplore = () => {
           <Row>
             {randomCourses.map((course) => (
               <Col md={4} key={course.courseID} className="mb-4">
-                <CourseCard course={course}
+                <CourseCard
+                  course={course}
                   onEnrollClick={handleCoursesClick}
-                  onDetailsClick={handleCoursesClick} />
+                  onDetailsClick={handleCoursesClick}
+                />
               </Col>
             ))}
           </Row>

@@ -184,9 +184,14 @@ public class EventService {
             throw new EventFullException("This event has reached its maximum number of participants.");
         }
 
-        if (event.getAgeGroup() != AgeGroup.EVERYONE &&
-                user.getAgeGroup() != event.getAgeGroup()) {
-            throw new AgeGroupMismatchException("Your age group does not match this event.");
+        if (event.getAgeGroup() != AgeGroup.EVERYONE) {
+            if (user.getAgeGroup() != event.getAgeGroup()) {
+                throw new AgeGroupMismatchException("Your age group does not match this event.");
+            }
+        }
+
+        if( event.getStatus() != EventStatus.NOT_STARTED) {
+            throw new InvalidEventException("You can only register for events that have not started yet.");
         }
 
         EventUserId id = new EventUserId(eventId, username);
@@ -280,10 +285,23 @@ public class EventService {
                 .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasRole('MEMBER')")
+    @PreAuthorize("hasRole('MEMBER') or !isAuthenticated()")
     public List<EventResponse> getEventsByAgeGroup(AgeGroup ageGroup) {
-        List<AgeGroup> groups = List.of(ageGroup, AgeGroup.EVERYONE);
+        // Kiểm tra nếu người dùng chưa đăng nhập, trả về các sự kiện dành cho tất cả mọi người (AgeGroup.EVERYONE)
+        if (SecurityContextHolder.getContext().getAuthentication() == null ||
+                !SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+            // Người dùng chưa đăng nhập, chỉ lấy các sự kiện với AgeGroup = "EVERYONE"
+            List<Event> events = eventRepository.findByAgeGroupInAndStatus(
+                    List.of(AgeGroup.EVERYONE),
+                    EventStatus.NOT_STARTED
+            );
+            return events.stream()
+                    .map(eventMapper::toDto)
+                    .collect(Collectors.toList());
+        }
 
+        // Nếu người dùng đã đăng nhập (MEMBER), có thể lấy các sự kiện cho nhóm tuổi của họ
+        List<AgeGroup> groups = List.of(ageGroup, AgeGroup.EVERYONE);
         List<Event> events = eventRepository.findByAgeGroupInAndStatus(
                 groups,
                 EventStatus.NOT_STARTED
@@ -293,6 +311,7 @@ public class EventService {
                 .map(eventMapper::toDto)
                 .collect(Collectors.toList());
     }
+
 
     @PreAuthorize("hasRole('MEMBER')")
     public List<EventResponse> getEventsByMember(String memberId) {

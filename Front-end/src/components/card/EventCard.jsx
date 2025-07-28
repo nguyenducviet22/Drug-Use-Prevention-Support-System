@@ -48,6 +48,18 @@ const EventCard = ({
     buttonVariant = "";
     disabled = true;
     buttonClass = "btn-expired";
+  } else if (eventStatus === "NOT_STARTED") {
+    if (isFull) {
+      buttonLabel = t("fullButton", "Full");
+      buttonVariant = "outline-secondary";
+      disabled = true;
+      buttonClass = "btn-full";
+    } else {
+      buttonLabel = t("joinNowButton", "Join Now");
+      buttonVariant = "primary";
+      disabled = false;
+      buttonClass = "";
+    }
   } else if (userStatus === "CANCELLED") {
     buttonLabel = t("cancelledButton", "Cancelled");
     buttonVariant = "outline-dark";

@@ -19,6 +19,10 @@ const Home = () => {
   const [assessment, setAssessment] = useState({})
   const { get: getCrafftAssessment } = useFetch()
 
+  const handleButtonClick = () => {
+    navigate('/assessment/crafft');
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -91,7 +95,7 @@ const Home = () => {
           <Container className="text-center mb-4">
             <p className="text-muted mb-3">{t("loggedOutSection.smallTestText")}</p>
             <Button variant="dark" size="lg" className="px-4 logged-out-explore-button"
-              onClick={() => window.open(assessment.linkTest)}
+              onClick={handleButtonClick}
             >
               {t("loggedOutSection.smallTestButton")}
             </Button>

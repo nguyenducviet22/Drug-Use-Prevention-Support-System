@@ -38,4 +38,6 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     List<Event> findByStartDateAfterAndStatus(LocalDateTime time, EventStatus status);
 
     List<Event> findByAgeGroupInAndStatus(List<AgeGroup> ageGroups, EventStatus status);
+
+    List<Event> findByStatus(EventStatus status);
 }

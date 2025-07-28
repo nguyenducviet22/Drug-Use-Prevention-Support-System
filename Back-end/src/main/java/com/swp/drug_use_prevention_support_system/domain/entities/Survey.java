@@ -21,20 +21,14 @@ public class Survey {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "survey_id")
     UUID surveyID;
+
+    @Column(length = 512)
+    String formLink;
+
     @Enumerated(EnumType.STRING)
     SurveyType type;
-    @Enumerated(EnumType.STRING)
-    SurveyStatus status;
-    String feedback;
-    String description;
-    Instant surveyDate;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
     Event event;
-
-    @PrePersist
-    protected void onCreate() {
-        this.surveyDate = Instant.now();
-    }
 }

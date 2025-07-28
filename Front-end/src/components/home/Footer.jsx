@@ -2,11 +2,11 @@ import { Container } from "react-bootstrap";
 import { Globe, ArrowUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
-import { useTranslation } from "react-i18next"; // Import useTranslation
-import LogoHorizontalLarge from "../logo/LogoHorizontalLarge";
+import { useTranslation } from "react-i18next";
+import Logo from "../logo/LogoDark"; // Import Logo component
 
 const Footer = () => {
-  const { t } = useTranslation("footer"); // Initialize useTranslation
+  const { t } = useTranslation("footer");
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -34,12 +34,8 @@ const Footer = () => {
       <div className="footer-content">
         <Container>
           <div className="footer-brand mb-5">
-            <Link to="/" className="footer-logo">
-              <svg width="40" height="40" viewBox="0 0 32 32" fill="none" className="me-2">
-                <path d="M8 8L24 24M24 8L8 24" stroke="white" strokeWidth="3" strokeLinecap="round" />
-                <path d="M16 4L28 16L16 28L4 16L16 4Z" stroke="white" strokeWidth="2" fill="none" />
-              </svg>
-              <span className="brand-text">ReNewMe</span>
+            <Link to="/" className="footer-logo" style={{ textDecoration: 'none' }}>
+              <Logo size="medium" variant="horizontal" theme="dark" />
             </Link>
           </div>
 

@@ -29,5 +29,10 @@
   "cancelButton": "Cancel",
   "cancellingButton": "Cancelling...",
   "cancelSuccess": "Cancelled successfully!",
-  "cancelFail": "Cancel failed!"
+  "cancelFail": "Cancel failed!",
+  "notStarted" : "Not Started",
+  "draft": "Draft",
+  "pendingApproval": "Pending Approval",
+  "rejected": "Rejected",
+  "approved": "Approved"
 }

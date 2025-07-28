@@ -37,7 +37,6 @@ const EventDetails = ({ isPreview }) => {
       return;
     }
     if (!isPreview) {
-      // ...fetch như cũ...
       setLoading(true);
       const fetchEvent = async () => {
         try {
@@ -133,6 +132,18 @@ const EventDetails = ({ isPreview }) => {
     registerLabel = t("joined");
     registerVariant = "secondary";
     registerDisabled = true;
+  } else if (eventStatus === "DRAFT") {
+    registerLabel = t("draft");
+    registerVariant = "outline-secondary";
+    registerDisabled = true;
+  } else if (eventStatus === "PENDING_APPROVAL") {
+    registerLabel = t("pendingApproval");
+    registerVariant = "outline-warning";
+    registerDisabled = true;
+  } else if (eventStatus === "REJECTED") {
+    registerLabel = t("rejected");
+    registerVariant = "outline-danger";
+    registerDisabled = true;
   } else if (eventStatus === "CANCELLED") {
     registerLabel = t("unavailable");
     registerVariant = "outline-danger";
@@ -141,14 +152,16 @@ const EventDetails = ({ isPreview }) => {
     registerLabel = t("expired");
     registerVariant = "custom-expired";
     registerDisabled = true;
-  } else if (userStatus === "NOT_REGISTERED") {
-    registerLabel = t("register");
-    registerVariant = "primary";
-    registerDisabled = false;
-  } else if (statusInfo?.full) {
-    registerLabel = t("full");
-    registerVariant = "outline-danger";
-    registerDisabled = true;
+  } else if (eventStatus === "NOT_STARTED" || eventStatus === "APPROVED" || eventStatus === "ONGOING") {
+    if (userStatus === "NOT_REGISTERED" && !statusInfo?.full) {
+      registerLabel = t("register");
+      registerVariant = "primary";
+      registerDisabled = false;
+    } else if (statusInfo?.full) {
+      registerLabel = t("full");
+      registerVariant = "outline-danger";
+      registerDisabled = true;
+    }
   }
 
   return (
@@ -198,11 +211,9 @@ const EventDetails = ({ isPreview }) => {
 
           <div className="event-content">
             <h2 className="content-heading">{t("introduction")}</h2>
-            {/* Áp dụng dangerouslySetInnerHTML cho description */}
             <div dangerouslySetInnerHTML={{ __html: description }} />
 
             <h2 className="content-heading">{t("programContent")}</h2>
-            {/* Áp dụng dangerouslySetInnerHTML cho details */}
             <div dangerouslySetInnerHTML={{ __html: details }} />
           </div>
         </Col>
@@ -302,7 +313,7 @@ const EventDetails = ({ isPreview }) => {
                         );
                         setStatusInfo((prev) => ({
                           ...prev,
-                          status: "NOT_REGISTERED", // hoặc fetch lại status mới nhất từ backend
+                          status: "NOT_REGISTERED",
                         }));
                       } catch (err) {
                         toast.error(
@@ -354,21 +365,43 @@ const EventDetails = ({ isPreview }) => {
               <div className="detail-label">{t("status")}:</div>
               <div
                 className={`detail-value ${
-                  statusInfo?.full ? "status-full" : "status-available"
+                  statusInfo?.full
+                    ? "status-full"
+                    : eventStatus === "DRAFT"
+                    ? "status-draft"
+                    : eventStatus === "PENDING_APPROVAL"
+                    ? "status-pending-approval"
+                    : eventStatus === "REJECTED"
+                    ? "status-rejected"
+                    : eventStatus === "CANCELLED"
+                    ? "status-cancelled"
+                    : eventStatus === "EXPIRED"
+                    ? "status-expired"
+                    : eventStatus === "NOT_STARTED"
+                    ? "status-not-started"
+                    : "status-available"
                 }`}
               >
                 <CircleDot size={18} className="detail-icon" />
                 <span>
                   {userStatus === "REGISTERED"
                     ? t("joined")
+                    : eventStatus === "DRAFT"
+                    ? t("draft")
+                    : eventStatus === "PENDING_APPROVAL"
+                    ? t("pendingApproval")
+                    : eventStatus === "REJECTED"
+                    ? t("rejected")
                     : eventStatus === "CANCELLED"
                     ? t("unavailable")
                     : eventStatus === "EXPIRED"
                     ? t("expired")
-                    : userStatus === "NOT_REGISTERED"
-                    ? t("ongoing")
-                    : statusInfo?.full
-                    ? t("full")
+                    : eventStatus === "NOT_STARTED"
+                    ? t("notStarted")
+                    : eventStatus === "APPROVED" || eventStatus === "ONGOING"
+                    ? statusInfo?.full
+                      ? t("full")
+                      : t("ongoing")
                     : t("ongoing")}
                 </span>
               </div>

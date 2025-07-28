@@ -9,5 +9,6 @@
   "cancelButton": "Cancel",
   "cancellingButton": "Cancelling...",
   "cancelSuccess": "Cancelled successfully!",
-  "cancelFailed": "Cancel failed!"
+  "cancelFailed": "Cancel failed!",
+  "notStarted" :"Not Started"
 }

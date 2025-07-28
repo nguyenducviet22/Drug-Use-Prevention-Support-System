@@ -29,5 +29,10 @@
   "cancelButton": "Hủy",
   "cancellingButton": "Đang hủy...",
   "cancelSuccess": "Hủy thành công!",
-  "cancelFail": "Hủy thất bại!"
+  "cancelFail": "Hủy thất bại!",
+  "notStarted" : "Chưa bắt đầu",
+  "draft": "Bản nháp",
+  "pendingApproval": "Đang chờ phê duyệt",
+  "rejected": "Bị từ chối",
+  "approved": "Đã phê duyệt"
 }

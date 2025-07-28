@@ -12,6 +12,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { LogOut, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "./LanguageSwitcher";
+import Logo from "../logo/LogoLight"; // Import Logo component
 
 export default function Navbar() {
   const { t, i18n } = useTranslation("navbar");
@@ -76,24 +77,10 @@ export default function Navbar() {
           as={Link}
           to="/"
           className="d-flex align-items-center"
+          style={{ textDecoration: 'none' }}
         >
-          <div className="logo-icon me-2">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-              <path
-                d="M8 8L24 24M24 8L8 24"
-                stroke="#333"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-              <path
-                d="M16 4L28 16L16 28L4 16L16 4Z"
-                stroke="#333"
-                strokeWidth="2"
-                fill="none"
-              />
-            </svg>
-          </div>
-          <span className="fw-bold fs-4 text-dark">ReNewMe</span>
+          {/* Replace the old SVG logo with the new Logo component */}
+          <Logo size="small" variant="horizontal" />
         </BootstrapNavbar.Brand>
 
         <BootstrapNavbar.Toggle aria-controls="basic-navbar-nav" />
