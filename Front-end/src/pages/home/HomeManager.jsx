@@ -1,23 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
-import { Users, Calendar, BookOpen, FileText, MessageSquare, UserCheck, Award, Target, ChevronRight } from 'lucide-react';
-import './HomeManager.css'
-import StatusCard from '../../components/dashboard/StatusCard';
-import PendingCard from '../../components/dashboard/PendingCard';
-import LineChart from '../../components/dashboard/LineChart';
-import AnalyticsPreview from '../../components/dashboard/AnalyticsPreview';
-import useFetch from '../../hooks/useFetch';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { toast } from 'react-toastify';
-import { useTranslation } from 'react-i18next'; // Import useTranslation
+import React, { useEffect, useState } from "react";
+import { Container, Row, Col } from "react-bootstrap";
+import {
+  Users,
+  Calendar,
+  BookOpen,
+  FileText,
+  MessageSquare,
+  UserCheck,
+  Award,
+  Target,
+  ChevronRight,
+} from "lucide-react";
+import "./HomeManager.css";
+import StatusCard from "../../components/dashboard/StatusCard";
+import PendingCard from "../../components/dashboard/PendingCard";
+import LineChart from "../../components/dashboard/LineChart";
+import AnalyticsPreview from "../../components/dashboard/AnalyticsPreview";
+import useFetch from "../../hooks/useFetch";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 function HomeManager() {
-  const { t } = useTranslation('homeManager'); // Initialize useTranslation with the 'homeManager' namespace
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const { user } = useAuth()
-  const navigate = useNavigate()
-  const [itemsPerPage] = useState(3)
+  const { t } = useTranslation("homeManager"); // Initialize useTranslation with the 'homeManager' namespace
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [itemsPerPage] = useState(3);
 
   // --- State phân trang riêng biệt cho từng khu vực ---
   const [blogCurrentPage, setBlogCurrentPage] = useState(1);
@@ -32,34 +42,67 @@ function HomeManager() {
   const { get: getPendingCourses, put: putApproveCourse, put: putRejectCourse } = useFetch();
 
   const [pendingEvents, setPendingEvents] = useState([]);
-  const { get: getPendingEvents, put: putApproveEvent, put: putRejectEvent } = useFetch();
+  const {
+    get: getPendingEvents,
+    put: putApproveEvent,
+    put: putRejectEvent,
+  } = useFetch();
 
-  const [stat, setStat] = useState({})
-  const { get: getStat } = useFetch()
+  const [stat, setStat] = useState({});
+  const { get: getStat } = useFetch();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const statData = await getStat("http://localhost:8080/api/report")
-        setStat(statData)
+        // Fetch stats
+        const statResponse = await getStat("http://localhost:8080/api/report");
+        console.log("Stat Response:", statResponse);
+        setStat(statResponse?.data || statResponse || {});
 
-        const pendingCoursesData = await getPendingCourses("http://localhost:8080/api/course/status/PENDING");
-        setPendingCourses(pendingCoursesData || []);
+        // Fetch pending courses
+        const pendingCoursesResponse = await getPendingCourses(
+          "http://localhost:8080/api/course/status/PENDING"
+        );
+        console.log("Pending Courses Response:", pendingCoursesResponse);
+        setPendingCourses(pendingCoursesResponse?.data || []);
 
+        // Fetch pending blogs (if user is authenticated)
         if (user) {
-          const staffPendingBlogsData = await getStaffPendingBlogs(`http://localhost:8080/api/blog/status/PENDING/role/STAFF`);
-          setStaffPendingBlogs(staffPendingBlogsData || []);
+          const staffPendingBlogsResponse = await getStaffPendingBlogs(
+            `http://localhost:8080/api/blog/status/PENDING/role/STAFF`
+          );
+          console.log(
+            "Staff Pending Blogs Response:",
+            staffPendingBlogsResponse
+          );
+          setStaffPendingBlogs(staffPendingBlogsResponse?.data || []);
+        } else {
+          setStaffPendingBlogs([]);
         }
 
-        const pendingEventsData = await getPendingEvents("http://localhost:8080/api/event/status/PENDING_APPROVAL");
-        setPendingEvents(pendingEventsData || []);
+        // Fetch pending events
+        const pendingEventsResponse = await getPendingEvents(
+          "http://localhost:8080/api/event/status/PENDING_APPROVAL"
+        );
+        const events =
+          pendingEventsResponse?.data ?? pendingEventsResponse ?? [];
+        console.log("✅ Fetched Events:", events);
+
+        setPendingEvents(events);
       } catch (error) {
         console.error("Fetch error in HomeManager:", error);
       }
-    }
+    };
 
-    fetchData()
-  }, [getStat, getPendingCourses, getStaffPendingBlogs, user]);
+    fetchData();
+  }, [
+    getStat,
+    getPendingCourses,
+    getStaffPendingBlogs,
+    getPendingEvents,
+    user,
+  ]);
+  console.log("Pendinggg Events", pendingEvents);
   console.log(stat);
   console.log(staffPendingBlogs);
   console.log(pendingCourses);
@@ -86,54 +129,89 @@ function HomeManager() {
   );
 
   const handleView = (id, type) => {
-    if (type === 'blog') navigate(`/blogs/${id}`);
-    if (type === 'course') navigate(`/courses/${id}`);
-    if (type === 'event') navigate(`/events/${id}`);
+    if (type === "blog") navigate(`/blogs/${id}`);
+    if (type === "course") navigate(`/courses/${id}`);
+    if (type === "event") navigate(`/events/${id}`);
   };
 
   const handleApprove = async (id, type) => {
     try {
-      if (type === 'blog') {
-        await putApproveStaffBlog({}, {}, `http://localhost:8080/api/blog/${id}/PUBLISHED`);
-        setStaffPendingBlogs(prevBlogs => prevBlogs.filter(blog => blog.blogID !== id));
-      } else if (type === 'course') {
-        await putApproveCourse({}, {}, `http://localhost:8080/api/course/${id}/AVAILABLE`);
-        setPendingCourses(prevCourses => prevCourses.filter(course => course.courseID !== id));
-      } else if (type === 'event') {
-        await putApproveEvent({}, {}, `http://localhost:8080/api/event/${id}/APPROVED`);
-        setPendingEvents(prevEvents => prevEvents.filter(event => event.eventID !== id));
+      if (type === "blog") {
+        await putApproveStaffBlog(
+          {},
+          {},
+          `http://localhost:8080/api/blog/${id}/PUBLISHED`
+        );
+        setStaffPendingBlogs((prevBlogs) =>
+          prevBlogs.filter((blog) => blog.blogID !== id)
+        );
+      } else if (type === "course") {
+        await putApproveCourse(
+          {},
+          {},
+          `http://localhost:8080/api/course/${id}/AVAILABLE`
+        );
+        setPendingCourses((prevCourses) =>
+          prevCourses.filter((course) => course.courseID !== id)
+        );
+      } else if (type === "event") {
+        await putApproveEvent(
+          {},
+          {},
+          `http://localhost:8080/api/event/${id}/approve`
+        );
+        setPendingEvents((prevEvents) =>
+          prevEvents.filter((event) => event.eventID !== id)
+        );
       }
 
-      toast.success(t('successfullyApproved', { type: type, id: id }));
+      toast.success(t("successfullyApproved", { type: type, id: id }));
     } catch (error) {
       console.error(`Error approving ${type} with ID ${id}:`, error);
-      toast.error(t('failedToApprove', { type: type, id: id }));
+      toast.error(t("failedToApprove", { type: type, id: id }));
     }
   };
 
   const handleReject = async (id, type) => {
     try {
-      if (type === 'blog') {
-        await putRejectStaffBlog({}, {}, `http://localhost:8080/api/blog/${id}/REJECTED`);
-        setStaffPendingBlogs(prevBlogs => prevBlogs.filter(blog => blog.blogID !== id));
-      } else if (type === 'course') {
-        await putRejectCourse({}, {}, `http://localhost:8080/api/course/${id}/REJECTED`);
-        setPendingCourses(prevCourses => prevCourses.filter(course => course.courseID !== id));
-      } else if (type === 'event') {
-        await putRejectEvent({}, {}, `http://localhost:8080/api/event/${id}/REJECTED`);
-        setPendingEvents(prevEvents => prevEvents.filter(event => event.eventID !== id));
+      if (type === "blog") {
+        await putRejectStaffBlog(
+          {},
+          {},
+          `http://localhost:8080/api/blog/${id}/REJECTED`
+        );
+        setStaffPendingBlogs((prevBlogs) =>
+          prevBlogs.filter((blog) => blog.blogID !== id)
+        );
+      } else if (type === "course") {
+        await putRejectCourse(
+          {},
+          {},
+          `http://localhost:8080/api/course/${id}/REJECTED`
+        );
+        setPendingCourses((prevCourses) =>
+          prevCourses.filter((course) => course.courseID !== id)
+        );
+      } else if (type === "event") {
+        await putRejectEvent(
+          {},
+          {},
+          `http://localhost:8080/api/event/${id}/reject`
+        );
+        setPendingEvents((prevEvents) =>
+          prevEvents.filter((event) => event.eventID !== id)
+        );
       }
 
-      toast.success(t('successfullyRejected', { type: type, id: id }));
+      toast.success(t("successfullyRejected", { type: type, id: id }));
     } catch (error) {
       console.error(`Error rejecting ${type} with ID ${id}:`, error);
-      toast.error(t('failedToReject', { type: type, id: id }));
+      toast.error(t("failedToReject", { type: type, id: id }));
     }
   };
 
   return (
-    <div style={{ minHeight: '100vh' }}>
-
+    <div style={{ minHeight: "100vh" }}>
       <Container fluid className="px-4 py-4">
         {/* Top Section: Chart on left, Stats on right */}
         <Row className="g-4 mb-4">
@@ -147,7 +225,7 @@ function HomeManager() {
             <Row className="g-3">
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title={t('totalMembers')}
+                  title={t("totalMembers")}
                   value={stat.totalMembers}
                   change={12}
                   icon={Users}
@@ -156,7 +234,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title={t('staffMembers')}
+                  title={t("staffMembers")}
                   value={stat.staffMembers}
                   change={8}
                   icon={UserCheck}
@@ -165,7 +243,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title={t('consultants')}
+                  title={t("consultants")}
                   value={stat.consultants}
                   change={5}
                   icon={Award}
@@ -174,7 +252,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title={t('monthlyConsultations')}
+                  title={t("monthlyConsultations")}
                   value={stat.monthlyConsultations}
                   change={15}
                   icon={MessageSquare}
@@ -183,7 +261,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title={t('activeCourses')}
+                  title={t("activeCourses")}
                   value={stat.activeCourses}
                   change={-2}
                   icon={BookOpen}
@@ -192,7 +270,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title={t('blogs')}
+                  title={t("blogs")}
                   value={stat.blogs}
                   change={18}
                   icon={FileText}
@@ -201,7 +279,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title={t('events')}
+                  title={t("events")}
                   value={stat.events}
                   change={22}
                   icon={Calendar}
@@ -210,7 +288,7 @@ function HomeManager() {
               </Col>
               <Col xs={3} lg={6}>
                 <StatusCard
-                  title={t('courses')}
+                  title={t("courses")}
                   value={stat.courses}
                   change={10}
                   icon={Target}
@@ -225,12 +303,13 @@ function HomeManager() {
         <Row className="g-4 mb-4">
           <Col lg={4} className="d-flex flex-column">
             <PendingCard
-              title={t('pendingBlogs')}
+              title={t("pendingBlogs")}
+              type="blog" // Add type prop
               count={staffPendingBlogs.length}
               items={currentBlogItems}
-              onView={(id) => handleView(id, 'blog')}
-              onApprove={(id) => handleApprove(id, 'blog')}
-              onReject={(id) => handleReject(id, 'blog')}
+              onView={(id) => handleView(id, "blog")}
+              onApprove={(id) => handleApprove(id, "blog")}
+              onReject={(id) => handleReject(id, "blog")}
             />
             <Link to="/blog-management">
               <button className="btn btn-primary mt-3">
@@ -238,15 +317,15 @@ function HomeManager() {
               </button>
             </Link>
           </Col>
-
           <Col lg={4} className="d-flex flex-column">
             <PendingCard
-              title={t('pendingCourses')}
+              title={t("pendingCourses")}
+              type="course" // Add type prop
               count={pendingCourses.length}
               items={currentCourseItems}
-              onView={(id) => handleView(id, 'course')}
-              onApprove={(id) => handleApprove(id, 'course')}
-              onReject={(id) => handleReject(id, 'course')}
+              onView={(id) => handleView(id, "course")}
+              onApprove={(id) => handleApprove(id, "course")}
+              onReject={(id) => handleReject(id, "course")}
             />
             <Link to="/course-management">
               <button className="btn btn-primary mt-3">
@@ -254,19 +333,19 @@ function HomeManager() {
               </button>
             </Link>
           </Col>
-
           <Col lg={4} className="d-flex flex-column">
             <PendingCard
-              title={t('pendingEvents')}
-              count={3}
+              title={t("pendingEvents")}
+              type="event" // Add type prop
+              count={pendingEvents.length}
               items={currentEventItems}
-              onView={(id) => handleView(id, 'event')}
-              onApprove={(id) => handleApprove(id, 'event')}
-              onReject={(id) => handleReject(id, 'event')}
+              onView={(id) => handleView(id, "event")}
+              onApprove={(id) => handleApprove(id, "event")}
+              onReject={(id) => handleReject(id, "event")}
             />
             <Link to="/event-management">
               <button className="btn btn-primary mt-3">
-                {t('viewAllEvents')}
+                {t("viewAllEvents")}
               </button>
             </Link>
           </Col>
@@ -280,11 +359,14 @@ function HomeManager() {
                 <div className="icon-gradient-primary p-3 rounded-3 text-white me-3">
                   <Users size={24} />
                 </div>
-                <h5 className="fw-bold text-dark mb-0">{t('userManagement')}</h5>
+                <h5 className="fw-bold text-dark mb-0">
+                  {t("userManagement")}
+                </h5>
               </div>
-              <p className="text-muted mb-4">{t('manageUsersDescription')}</p>
+              <p className="text-muted mb-4">{t("manageUsersDescription")}</p>
               <div className="d-flex align-items-center text-primary fw-semibold">
-                {t('accessDashboard')} <ChevronRight size={16} className="ms-1" />
+                {t("accessDashboard")}{" "}
+                <ChevronRight size={16} className="ms-1" />
               </div>
             </div>
           </Col>

@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -69,7 +70,7 @@ public class UserDetailsController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserDetailsResponse>> updateUserDetails(@PathVariable UUID id,
-                                                                              @RequestBody UpdateUserDetailsRequest request) {
+                                                                              @RequestBody @Validated UpdateUserDetailsRequest request) {
         UserDetailsResponse response = userDetailsService.updateUserDetails(id, request);
         ApiResponse<UserDetailsResponse> apiResponse = ApiResponse.<UserDetailsResponse>builder()
                 .data(response)

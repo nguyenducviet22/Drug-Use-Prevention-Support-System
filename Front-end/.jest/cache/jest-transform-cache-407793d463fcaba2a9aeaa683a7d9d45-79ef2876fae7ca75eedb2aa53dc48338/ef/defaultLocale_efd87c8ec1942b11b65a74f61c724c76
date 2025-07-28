@@ -1,0 +1,9 @@
+dec4f0a770b47298f41df2d421f08938
+"use strict";
+Object.defineProperty(exports, "defaultLocale", {
+  enumerable: true,
+  get: function () {
+    return _index.enUS;
+  },
+});
+var _index = require("../locale/en-US.cjs");

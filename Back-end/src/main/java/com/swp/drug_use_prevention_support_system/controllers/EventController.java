@@ -71,6 +71,18 @@ public class EventController {
         return ResponseEntity.ok(apiResponses);
     }
 
+    @GetMapping("/visible")
+    public ResponseEntity<ApiResponse<List<EventResponse>>> getVisibleEvents() {
+        List<EventResponse> responses = eventService.getActiveAndExpiredEvents();
+
+        ApiResponse<List<EventResponse>> apiResponse = ApiResponse.<List<EventResponse>>builder()
+                .data(responses)
+                .status(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity.ok(apiResponse);
+    }
+
     @GetMapping("/upcoming")
     public ResponseEntity<ApiResponse<List<EventResponse>>> getUpcomingEvents() {
         List<EventResponse> upcomingEvents = eventService.getUpcomingEvents();
@@ -211,5 +223,30 @@ public class EventController {
                 .data(statuses)
                 .build();
         return ResponseEntity.ok(apiResponse);
+    }
+
+    ///Manager APPROVE REJECT EVENT
+    @PutMapping("/{eventId}/approve")
+    public ResponseEntity<ApiResponse<EventResponse>> approveEvent(@PathVariable UUID eventId) {
+        EventResponse approvedEvent = eventService.approveEvent(eventId);
+
+        ApiResponse<EventResponse> response = ApiResponse.<EventResponse>builder()
+                .data(approvedEvent)
+                .status(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{eventId}/reject")
+    public ResponseEntity<ApiResponse<EventResponse>> rejectEvent(@PathVariable UUID eventId) {
+        EventResponse approvedEvent = eventService.rejectEvent(eventId);
+
+        ApiResponse<EventResponse> response = ApiResponse.<EventResponse>builder()
+                .data(approvedEvent)
+                .status(HttpStatus.OK.value())
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 }

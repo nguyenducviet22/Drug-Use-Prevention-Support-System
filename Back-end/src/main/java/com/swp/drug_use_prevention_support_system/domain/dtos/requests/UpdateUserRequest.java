@@ -30,7 +30,7 @@ public class UpdateUserRequest {
     Gender gender;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^(\\+0?1\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", message = "Invalid phone number format")
+    @Pattern(regexp = "^(\\+0?1\\s)?(\\d{3}-\\d{3}-\\d{4}|\\d{3}-\\d{4}-\\d{4})$", message = "Invalid phone number format")
     String phoneNumber;
 
     @NotBlank(message = "Job is required")

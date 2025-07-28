@@ -52,7 +52,7 @@ const EventList = () => {
       const url =
         activeTab === "ONGOING"
           ? "http://localhost:8080/api/event/upcoming"
-          : "http://localhost:8080/api/event";
+          : "http://localhost:8080/api/event/visible";
 
       const response = await fetch(url);
       const result = await response.json();

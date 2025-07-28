@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Container, Card, Button, Table, Badge } from "react-bootstrap";
+import {
+  Container,
+  Card,
+  Button,
+  Table,
+  Badge,
+  Modal,
+  Form,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import SearchFilter from "../../components/others/SearchFilter";
@@ -25,29 +33,38 @@ function EventManagement() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  // State for Edit Status modal
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedEventId, setSelectedEventId] = useState(null);
+  const [newStatus, setNewStatus] = useState("");
+
   const { get, put } = useFetch();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const eventsData = await get("http://localhost:8080/api/event");
-        setEvents(eventsData);
+        setEvents(eventsData?.data || eventsData || []);
         const statusesData = await get(
           "http://localhost:8080/api/event/status"
         );
-        setStatuses(statusesData);
+        setStatuses(statusesData?.data || statusesData || []);
         const ageGroupsData = await get(
           "http://localhost:8080/api/user/age-group"
         );
-        setAgeGroups(ageGroupsData);
+        setAgeGroups(ageGroupsData?.data || ageGroupsData || []);
       } catch (error) {
         console.error("Fetch error in EventManagement:", error);
+        toast.error(
+          t("fetchError", {
+            defaultValue: "Failed to fetch data. Please try again.",
+          })
+        );
       }
     };
     fetchData();
-  }, [get]);
+  }, [get, t]);
 
-  // Tạo options cho SearchFilter từ dữ liệu fetch được
   const statusOptions = statuses.map((status) => ({
     value: status,
     label: status,
@@ -58,22 +75,19 @@ function EventManagement() {
     label: ageGroup,
   }));
 
-  // Lọc sự kiện dựa trên tiêu chí tìm kiếm và bộ lọc (sử dụng useMemo để tối ưu hiệu suất)
   const filteredEvents = useMemo(() => {
     return events.filter((event) => {
       const matchesSearch = event.eventName
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
       const matchesStatus =
-        selectedStatus === "" || event.status === selectedStatus; // Sử dụng selectedStatus
+        selectedStatus === "" || event.status === selectedStatus;
       const matchesAgeGroup =
-        selectedAgeGroup === "" || event.ageGroup === selectedAgeGroup; // Sử dụng selectedAgeGroup
-
+        selectedAgeGroup === "" || event.ageGroup === selectedAgeGroup;
       return matchesSearch && matchesStatus && matchesAgeGroup;
     });
   }, [events, searchTerm, selectedStatus, selectedAgeGroup]);
 
-  // Tính toán phân trang
   const totalPages = Math.ceil(filteredEvents.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -81,15 +95,13 @@ function EventManagement() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    // Cuộn lên đầu phần sự kiện khi chuyển trang
     document
       .querySelector(".events-section")
       ?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Xử lý thay đổi bộ lọc (bao gồm cả tìm kiếm)
   const handleFilterChange = (filterType, value) => {
-    setCurrentPage(1); // Reset về trang đầu tiên khi bộ lọc thay đổi
+    setCurrentPage(1);
     switch (filterType) {
       case "searchTerm":
         setSearchTerm(value);
@@ -109,41 +121,74 @@ function EventManagement() {
     setSearchTerm("");
     setSelectedStatus("");
     setSelectedAgeGroup("");
-    setCurrentPage(1); // Reset về trang đầu tiên
+    setCurrentPage(1);
   };
 
-  const handleViewEvent = (eventId) => {
-    console.log(`Xem sự kiện với ID: ${eventId}`);
-    navigate(`/events/${eventId}`);
+  const handleViewEvent = (eventID) => {
+    console.log(`Xem sự kiện với ID: ${eventID}`);
+    navigate(`/events/${eventID}`);
   };
 
-  const handleEditEvent = (eventId) => {
-    console.log(`Chỉnh sửa sự kiện với ID: ${eventId}`);
-    navigate(`/events/edit/${eventId}`);
+  const handleEditEvent = (eventID) => {
+    console.log(`Chỉnh sửa sự kiện với ID: ${eventID}`);
+    navigate(`/events/edit/${eventID}`);
   };
 
-  const handleAddEvent = () => {
-    navigate("/events/create");
+  const handleEditStatus = (eventID, currentStatus) => {
+    setSelectedEventId(eventID);
+    setNewStatus(currentStatus);
+    setShowEditModal(true);
+  };
+
+  const handleStatusUpdate = async () => {
+    if (!selectedEventId || !newStatus) {
+      toast.error(
+        t("invalidStatusUpdate", { defaultValue: "Invalid event or status" })
+      );
+      return;
+    }
+    try {
+      await put(
+        {},
+        {},
+        `http://localhost:8080/api/event/${selectedEventId}/${newStatus}`
+      );
+      setEvents((prevEvents) =>
+        prevEvents.map((event) =>
+          event.eventID === selectedEventId
+            ? { ...event, status: newStatus }
+            : event
+        )
+      );
+      toast.success(t("successfullyUpdatedStatus", { status: newStatus }));
+      setShowEditModal(false);
+      setSelectedEventId(null);
+      setNewStatus("");
+    } catch (error) {
+      console.error(
+        `Error updating event status for ID ${selectedEventId}:`,
+        error
+      );
+      toast.error(
+        t("failedToUpdateStatus", {
+          defaultValue: "Failed to update event status",
+        })
+      );
+    }
   };
 
   const handleApproveEvent = async (eventId) => {
     if (window.confirm(`Are you sure you want to approve event ${eventId}?`)) {
       try {
-        await put(
-          {},
-          {},
-          `http://localhost:8080/api/event/${eventId}/APPROVED`
-        );
+        await put({}, {}, `http://localhost:8080/api/event/${eventId}/approve`);
         setEvents((prevEvents) =>
           prevEvents.map((event) =>
-            event.eventID === eventId
-              ? { ...event, status: "AVAILABLE" }
-              : event
+            event.eventID === eventId ? { ...event, status: "APPROVED" } : event
           )
         );
         toast.success(t("successfullyApproved"));
       } catch (error) {
-        console.error(`Error approving`, error);
+        console.error(`Error approving event ${eventId}:`, error);
         toast.error(t("failedToApprove"));
       }
     }
@@ -152,26 +197,20 @@ function EventManagement() {
   const handleRejectEvent = async (eventId) => {
     if (window.confirm(`Are you sure you want to reject event ${eventId}?`)) {
       try {
-        await put(
-          {},
-          {},
-          `http://localhost:8080/api/event/${eventId}/REJECTED`
-        );
+        await put({}, {}, `http://localhost:8080/api/event/${eventId}/reject`);
         setEvents((prevEvents) =>
           prevEvents.map((event) =>
             event.eventID === eventId ? { ...event, status: "REJECTED" } : event
           )
         );
-        console.log(`Rejected event with ID: ${eventId}`);
         toast.success(t("successfullyRejected"));
       } catch (error) {
-        console.error(`Error rejecting:`, error);
+        console.error(`Error rejecting event ${eventId}:`, error);
         toast.error(t("failedToReject"));
       }
     }
   };
 
-  // Hàm định dạng ngày giờ để hiển thị
   const formatDateTime = (isoString) => {
     if (!isoString) return "N/A";
     try {
@@ -182,25 +221,28 @@ function EventManagement() {
     }
   };
 
+  // Filter statuses for the Edit Status modal
+  const allowedStatuses = statuses.filter(
+    (status) => status !== "DRAFT" && status !== "PENDING_APPROVAL"
+  );
+
   return (
     <div className="event-management-content">
       <h1>{t("eventManagementTitle")}</h1>
 
-      {/* Thay thế Card chứa Form bằng SearchFilter component */}
       <SearchFilter
-        filterFor="events" // Loại đối tượng đang lọc
+        filterFor="events"
         searchTerm={searchTerm}
         selectedStatus={selectedStatus}
         selectedAgeGroup={selectedAgeGroup}
         onSearchChange={(value) => handleFilterChange("searchTerm", value)}
         onStatusChange={(value) => handleFilterChange("status", value)}
         onAgeGroupChange={(value) => handleFilterChange("ageGroup", value)}
-        statusOptions={statusOptions} // Truyền options
-        ageGroupOptions={ageGroupOptions} // Truyền options
+        statusOptions={statusOptions}
+        ageGroupOptions={ageGroupOptions}
         placeholder={t("searchEventPlaceholder")}
       />
 
-      {/* Nút Clear Filters hiển thị có điều kiện */}
       {(searchTerm !== "" ||
         selectedStatus !== "" ||
         selectedAgeGroup !== "") && (
@@ -215,16 +257,14 @@ function EventManagement() {
         <Button
           variant="outline-success"
           size="sm"
-          onClick={handleAddEvent}
+          onClick={() => navigate("/events/create")}
           className="ms-auto"
         >
-          <PlusCircle size={16} className="me-1" /> Add
+          <PlusCircle size={16} className="me-1" /> {t("addEvent")}
         </Button>
       </div>
 
       <Container className="mb-5 events-section">
-        {" "}
-        {/* Thêm class để cuộn */}
         {filteredEvents.length > 0 ? (
           <>
             <Card>
@@ -233,12 +273,7 @@ function EventManagement() {
                 <Badge bg="secondary">{filteredEvents.length}</Badge>
               </Card.Header>
               <Card.Body style={{ padding: 0 }}>
-                <div
-                  style={{
-                    maxHeight: "150vh",
-                    position: "relative",
-                  }}
-                >
+                <div style={{ maxHeight: "150vh", position: "relative" }}>
                   <Table
                     bordered
                     hover
@@ -261,81 +296,85 @@ function EventManagement() {
                       </tr>
                     </thead>
                     <tbody>
-                      {currentEvents.map(
-                        (
-                          event,
-                          index // Sử dụng currentEvents cho rendering
-                        ) => (
-                          <tr key={event.eventID}>
-                            <td>{startIndex + index + 1}</td>{" "}
-                            {/* Chỉ số đúng cho trang hiện tại */}
-                            <td>{event.eventName}</td>
-                            <td>{event.location}</td>
-                            <td>{formatDateTime(event.startDate)}</td>
-                            <td>{formatDateTime(event.endDate)}</td>
-                            <td>
-                              <Badge
-                                bg={
-                                  [
-                                    "APPROVED",
-                                    "NOT_STARTED",
-                                    "ONGOING",
-                                  ].includes(event.status)
-                                    ? "success"
-                                    : ["DRAFT", "PENDING_APPROVAL"].includes(
-                                        event.status
-                                      )
-                                    ? "warning"
-                                    : "danger"
-                                }
+                      {currentEvents.map((event, index) => (
+                        <tr key={event.eventID}>
+                          <td>{startIndex + index + 1}</td>
+                          <td>{event.eventName}</td>
+                          <td>{event.location}</td>
+                          <td>{formatDateTime(event.startDate)}</td>
+                          <td>{formatDateTime(event.endDate)}</td>
+                          <td>
+                            <Badge
+                              bg={
+                                ["APPROVED", "NOT_STARTED", "ONGOING"].includes(
+                                  event.status
+                                )
+                                  ? "success"
+                                  : ["DRAFT", "PENDING_APPROVAL"].includes(
+                                      event.status
+                                    )
+                                  ? "warning"
+                                  : "danger"
+                              }
+                            >
+                              {event.status}
+                            </Badge>
+                          </td>
+                          <td>{event.ageGroup}</td>
+                          <td>
+                            {event.fee != null && event.fee !== 0
+                              ? `${Number(event.fee).toLocaleString(
+                                  "vi-VN"
+                                )} VND`
+                              : t("free")}
+                          </td>
+                          <td>
+                            {event.createdByStaff
+                              ? event.createdByStaff.fullName
+                              : "N/A"}
+                          </td>
+                          <td>{formatDateTime(event.createdAt)}</td>
+                          <td>
+                            <div className="d-flex align-items-center gap-2 flex-shrink-0">
+                              <Button
+                                variant="outline-primary"
+                                size="sm"
+                                className="fw-bold"
+                                onClick={() => handleViewEvent(event.eventID)}
                               >
-                                {event.status}
-                              </Badge>
-                            </td>
-                            <td>{event.ageGroup}</td>
-                            <td>
-                              {event.fee != null && event.fee !== 0
-                                ? `${Number(event.fee).toLocaleString(
-                                    "vi-VN"
-                                  )} VND`
-                                : t("free")}
-                            </td>
-                            <td>
-                              {event.createdByStaff
-                                ? event.createdByStaff.fullName
-                                : "N/A"}
-                            </td>
-                            <td>{formatDateTime(event.createdAt)}</td>
-                            <td>
-                              <div className="d-flex align-items-center gap-2 flex-shrink-0">
+                                {t("view")}
+                              </Button>
+
+                              {user?.role === "STAFF" && (
                                 <Button
-                                  variant="outline-primary"
+                                  variant="outline-success"
                                   size="sm"
                                   className="fw-bold"
-                                  onClick={() => handleViewEvent(event.eventID)}
+                                  onClick={() => handleEditEvent(event.eventID)}
                                 >
-                                  View
+                                  {t("edit")}
                                 </Button>
+                              )}
 
-                                {user?.role === "STAFF" && (
-                                  <Button
-                                    variant="outline-success"
-                                    size="sm"
-                                    className="fw-bold"
-                                    onClick={() =>
-                                      handleEditEvent(event.eventID)
-                                    }
-                                  >
-                                    Edit
-                                  </Button>
-                                )}
+                              {user?.role === "MANAGER" && (
+                                <Button
+                                  variant="outline-warning"
+                                  size="sm"
+                                  className="fw-bold"
+                                  onClick={() =>
+                                    handleEditStatus(
+                                      event.eventID,
+                                      event.status
+                                    )
+                                  }
+                                >
+                                  {t("editStatus")}
+                                </Button>
+                              )}
 
-                                {[
-                                  "PENDING_APPROVAL",
-                                  "CANCELLED",
-                                  "REJECTED",
-                                ].includes(event.status) &&
-                                  user?.role === "MANAGER" && (
+                              {event.status === "PENDING_APPROVAL" &&
+                                user?.role === "MANAGER" && (
+                                  <>
                                     <Button
                                       variant="outline-success"
                                       size="sm"
@@ -344,17 +383,8 @@ function EventManagement() {
                                         handleApproveEvent(event.eventID)
                                       }
                                     >
-                                      Approve
+                                      {t("approve")}
                                     </Button>
-                                  )}
-
-                                {[
-                                  "PENDING_APPROVAL",
-                                  "APPROVED",
-                                  "NOT_STARTED",
-                                  "ONGOING",
-                                ].includes(event.status) &&
-                                  user?.role === "MANAGER" && (
                                     <Button
                                       variant="outline-danger"
                                       size="sm"
@@ -363,21 +393,20 @@ function EventManagement() {
                                         handleRejectEvent(event.eventID)
                                       }
                                     >
-                                      Reject
+                                      {t("reject")}
                                     </Button>
-                                  )}
-                              </div>
-                            </td>
-                          </tr>
-                        )
-                      )}
+                                  </>
+                                )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </Table>
                 </div>
               </Card.Body>
             </Card>
 
-            {/* Component phân trang */}
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
@@ -391,6 +420,47 @@ function EventManagement() {
           </div>
         )}
       </Container>
+
+      {/* Modal for Editing Status */}
+      <Modal
+        show={showEditModal}
+        onHide={() => setShowEditModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>{t("editEventStatus")}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="statusSelect">
+              <Form.Label>{t("selectStatus")}</Form.Label>
+              <Form.Select
+                value={newStatus}
+                onChange={(e) => setNewStatus(e.target.value)}
+              >
+                <option value="">{t("selectStatusPlaceholder")}</option>
+                {allowedStatuses.map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+            {t("cancel")}
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleStatusUpdate}
+            disabled={!newStatus}
+          >
+            {t("save")}
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

@@ -19,5 +19,20 @@
     "failedToApprove": "Failed to approve event. Please try again.",
     "successfullyRejected": "Event successfully rejected!",
     "failedToReject": "Failed to reject event. Please try again.",
-    "noMatchingEvents": "No matching events found for the search criteria."
+    "noMatchingEvents": "No matching events found for the search criteria.",
+    "editEventStatus": "Edit Event Status",
+    "selectStatus": "Select Status",
+    "selectStatusPlaceholder": "Choose a status",
+    "save": "Save",
+    "cancel": "Cancel",
+    "successfullyUpdatedStatus": "Event status updated successfully",
+    "failedToUpdateStatus": "Failed to update event status",
+    "invalidStatusUpdate": "Invalid event or status",
+    "editStatus": "Edit",
+    "view": "View",
+    "reject": "Reject",
+    "approve": "Approve",
+    "addEvent": "Add Event",
+    "STT": "No.",
+    "edit": "Edit"
 }

@@ -336,6 +336,7 @@ const CourseCreation = () => {
                     accept="image/*"
                     onChange={handleImageSelect}
                     className="d-none"
+                    data-testid="file-input"
                   />
                   {isUploadingImage && <Alert variant="info" className="mt-2">{t("form.imageUpload.uploading")}</Alert>}
                   {imageUploadError && <Alert variant="danger" className="mt-2">{t("form.imageUpload.error", { error: imageUploadError })}</Alert>}

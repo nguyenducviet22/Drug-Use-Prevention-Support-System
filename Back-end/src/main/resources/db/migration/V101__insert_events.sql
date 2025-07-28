@@ -21,7 +21,7 @@ INSERT INTO event (
 (UUID_TO_BIN(UUID()), 'Chương trình Trường học Nói không với Ma túy', 'Chuyến đi giáo dục tại các trường học', 20, 300,
  'Chuyến đi giáo dục tại các trường học',
  'https://res.cloudinary.com/dunkk3bz7/image/upload/v1751812154/7207154_lt2krm.jpg',
- 'NOT_STARTED', '2025-07-10 08:00:00', '2025-07-30 17:00:00', 'SENIOR', NOW(), NOW(), 'kiet_staff', 'nhot_manager',
+ 'NOT_STARTED', '2025-07-10 08:00:00', '2025-07-30 17:00:00', 'EVERYONE', NOW(), NOW(), 'kiet_staff', 'nhot_manager',
  'Các trường trung học Quận 5', 0.0, 'Giao lưu và triển lãm lưu động'),
 
 -- Tác động của Ma túy đến Gia đình

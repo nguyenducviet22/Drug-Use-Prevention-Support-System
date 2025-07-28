@@ -83,6 +83,7 @@ public class EventService {
         return eventMapper.toDto(newEvent);
     }
 
+    @PreAuthorize("hasAnyRole('STAFF','MANAGER','ADMIN')")
     public List<EventResponse> getAllEvents() {
         List<Event> events = eventRepository.findAll();
         return events.stream()
@@ -90,9 +91,28 @@ public class EventService {
                 .toList();
     }
 
+    public List<EventResponse> getActiveAndExpiredEvents() {
+        List<EventStatus> allowedStatuses = List.of(
+                EventStatus.NOT_STARTED,
+                EventStatus.ONGOING,
+                EventStatus.EXPIRED
+        );
+
+        return eventRepository.findByStatusIn(allowedStatuses).stream()
+                .map(eventMapper::toDto)
+                .toList();
+    }
+
+
     public List<EventResponse> getUpcomingEvents() {
-        List<Event> events = eventRepository.findByStartDateAfter(LocalDateTime.now());
-        return events.stream().map(eventMapper::toDto).toList();
+        List<Event> events = eventRepository.findByStartDateAfterAndStatus(
+                LocalDateTime.now(),
+                EventStatus.NOT_STARTED
+        );
+
+        return events.stream()
+                .map(eventMapper::toDto)
+                .toList();
     }
 
 
@@ -140,7 +160,7 @@ public class EventService {
         return eventMapper.toDto(event);
     }
 
-    @PreAuthorize("hasAnyRole('MANAGER')")
+    @PreAuthorize("hasAnyRole('MANAGER', 'STAFF')")
     public EventResponse updateEventStatus(UUID eventId, EventStatus status) {
         Event event = eventMapper.toEntity(getEvent(eventId));
         event.setStatus(status);
@@ -263,7 +283,12 @@ public class EventService {
     @PreAuthorize("hasRole('MEMBER')")
     public List<EventResponse> getEventsByAgeGroup(AgeGroup ageGroup) {
         List<AgeGroup> groups = List.of(ageGroup, AgeGroup.EVERYONE);
-        List<Event> events = eventRepository.findByAgeGroupIn(groups);
+
+        List<Event> events = eventRepository.findByAgeGroupInAndStatus(
+                groups,
+                EventStatus.NOT_STARTED
+        );
+
         return events.stream()
                 .map(eventMapper::toDto)
                 .collect(Collectors.toList());
@@ -285,5 +310,30 @@ public class EventService {
         return events.stream()
                 .map(event -> eventMapper.toDto(event))
                 .toList();
+    }
+
+    ///MANAGER APPROVE REJECT EVENT
+    @PreAuthorize("hasRole('MANAGER')")
+    public EventResponse approveEvent(UUID eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+
+        event.setStatus(EventStatus.APPROVED);
+        Event savedEvent = eventRepository.save(event);
+
+        // Giả sử bạn có eventMapper để convert entity → DTO
+        return eventMapper.toDto(savedEvent);
+    }
+
+    @PreAuthorize("hasRole('MANAGER')")
+    public EventResponse rejectEvent(UUID eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+
+        event.setStatus(EventStatus.REJECTED);
+        Event savedEvent = eventRepository.save(event);
+
+        // Giả sử bạn có eventMapper để convert entity → DTO
+        return eventMapper.toDto(savedEvent);
     }
 }

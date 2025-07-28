@@ -5,5 +5,6 @@
   "by": "By {{author}}",
   "approve": "Approve",
   "reject": "Reject",
-  "view": "View"
+  "view": "View",
+  "noItems":"No Items Available"
 }

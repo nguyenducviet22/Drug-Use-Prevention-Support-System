@@ -32,4 +32,10 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
     List<Event> findByAgeGroupIn(List<AgeGroup> ageGroups);
 
     List<Event> findByStatusOrderByCreatedAtDesc(EventStatus status);
+
+    List<Event> findByStatusIn(List<EventStatus> statuses);
+
+    List<Event> findByStartDateAfterAndStatus(LocalDateTime time, EventStatus status);
+
+    List<Event> findByAgeGroupInAndStatus(List<AgeGroup> ageGroups, EventStatus status);
 }

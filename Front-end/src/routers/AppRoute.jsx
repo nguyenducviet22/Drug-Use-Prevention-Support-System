@@ -32,6 +32,8 @@ import EventList from "../pages/event/EventList";
 import EventDetails from "../pages/event/EventDetails";
 import MyEventList from "../pages/event/MyEventList";
 import EventCreation from "../pages/event/CreateEventPage";
+import EditEvent from "../pages/event/EditEventPage";
+
 
 import HomeStaff from "../pages/home/HomeStaff";
 import HomeManager from "../pages/home/HomeManager";
@@ -99,6 +101,7 @@ export default function AppRoute() {
         <Route path="/my-events" element={<MyEventList />} />
         <Route path="/events/create" element={<EventCreation />} />
         <Route path="/events/preview" element={<EventDetails isPreview />} />
+        <Route path="/events/edit/:eventID" element={<EditEvent />} />
 
         <Route path="/assessment" element={<AssessmentList />} />
         <Route path="/assessment-result/:id" element={<AssessmentResult />} />

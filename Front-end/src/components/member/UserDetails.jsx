@@ -1,48 +1,61 @@
-import { Row, Col, Card, Modal, Form, Button } from "react-bootstrap"
-import { useAuth } from "../../hooks/useAuth"
-import "./UserDetails.css"
-import { useTranslation } from "react-i18next"
-import { useEffect, useState } from "react"
-import { Briefcase, Calendar, Edit3, Mail, MapPin, Phone, Save, User, Users, X } from "lucide-react"
-import useFetch from "../../hooks/useFetch"
-import { format, parseISO } from 'date-fns'
-import { toast } from "react-toastify"
+import { Row, Col, Card, Modal, Form, Button } from "react-bootstrap";
+import { useAuth } from "../../hooks/useAuth";
+import "./UserDetails.css";
+import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
+import {
+  Briefcase,
+  Calendar,
+  Edit3,
+  Mail,
+  MapPin,
+  Phone,
+  Save,
+  User,
+  Users,
+  X,
+} from "lucide-react";
+import useFetch from "../../hooks/useFetch";
+import { format, parseISO } from "date-fns";
+import { toast } from "react-toastify";
 
 const UserDetails = () => {
-  const { t } = useTranslation("userDetails")
-  const { user, fetchUser } = useAuth()
+  const { t } = useTranslation("userDetails");
+  const { user, fetchUser } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: '',
-    dob: '',
-    gender: '',
-    phoneNumber: '',
-    email: '', // Added email to formData state
-    job: '',
-    address: ''
+    fullName: "",
+    dob: "",
+    gender: "",
+    phoneNumber: "",
+    email: "", // Added email to formData state
+    job: "",
+    address: "",
   });
-  const [errors, setErrors] = useState({})
-  const [genders, setGenders] = useState([])
-  const { get: getGenders } = useFetch()
-  const { put: putUserDetails } = useFetch()
+  const [errors, setErrors] = useState({});
+  const [genders, setGenders] = useState([]);
+  const { get: getGenders } = useFetch();
+  const { put: putUserDetails } = useFetch();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const gendersData = await getGenders("http://localhost:8080/api/user/gender")
-        setGenders(gendersData)
+        const gendersData = await getGenders(
+          "http://localhost:8080/api/user/gender"
+        );
+        setGenders(gendersData);
       } catch (error) {
         console.error("Fetch error in UserDetails:", error);
       }
-    }
-    fetchData()
-  }, [getGenders])
+    };
+    fetchData();
+  }, [getGenders]);
 
   const handleShowModal = () => {
     setFormData({
       ...user,
-      dob: user?.dob || '',
-      email: user?.email || '' // Ensure email is initialized
+      dob: user?.dob || "",
+      email: user?.email || "", // Ensure email is initialized
     });
     setShowModal(true);
   };
@@ -54,16 +67,16 @@ const UserDetails = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
 
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
   };
@@ -71,36 +84,81 @@ const UserDetails = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Use  for string inputs to catch whitespace-only entries
-    if (!formData.fullName) {
+    // Regex: chỉ cho chữ cái và khoảng trắng
+    const nameJobRegex = /^[A-Za-zÀ-ỹ\s]+$/;
+
+    // Full Name
+    if (!formData.fullName.trim()) {
       newErrors.fullName = t("form.validation.fullNameRequired");
+    } else if (!nameJobRegex.test(formData.fullName)) {
+      newErrors.fullName = t("form.validation.fullNameInvalid");
+    }
+    // Job
+    if (!formData.job.trim()) {
+      newErrors.job = t("form.validation.jobTitleRequired");
+    } else if (!nameJobRegex.test(formData.job)) {
+      newErrors.job = t("form.validation.jobTitleInvalid");
     }
 
-    if (!formData.phoneNumber) {
+    const phoneRegexList = [
+      /^\d{3}-\d{3}-\d{4}$/, // 086-288-6128
+      /^\d{3}-\d{4}-\d{4}$/, // 091-2345-6789
+    ];
+
+    const isValidPhoneNumber = (number) =>
+      phoneRegexList.some((regex) => regex.test(number.trim()));
+
+    if (!formData.phoneNumber.trim()) {
       newErrors.phoneNumber = t("form.validation.phoneNumberRequired");
+    } else if (!isValidPhoneNumber(formData.phoneNumber)) {
+      newErrors.phoneNumber = t("form.validation.phoneNumberInvalidFormat");
     }
 
-    if (!formData.dob) { // Date input's value will be '' if empty
+    // DOB
+    if (!formData.dob) {
       newErrors.dob = t("form.validation.dobRequired");
+    } else {
+      const dobDate = new Date(formData.dob);
+      const today = new Date();
+      const age = today.getFullYear() - dobDate.getFullYear();
+      const isBeforeBirthday =
+        today.getMonth() < dobDate.getMonth() ||
+        (today.getMonth() === dobDate.getMonth() &&
+          today.getDate() < dobDate.getDate());
+      const actualAge = isBeforeBirthday ? age - 1 : age;
+      if (actualAge < 6) {
+        newErrors.dob = t("form.validation.dobTooYoung");
+      }
     }
 
-    if (!formData.gender) { // Select input's value will be '' if default option is selected
+    // Gender
+    if (!formData.gender) {
       newErrors.gender = t("form.validation.genderRequired");
     }
 
-    if (!formData.email) {
+    // Email
+    if (!formData.email.trim()) {
       newErrors.email = t("form.validation.emailRequired");
-    }
-    // Basic email format validation (optional but recommended)
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = t("form.validation.emailInvalid"); // Add this translation key
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = t("form.validation.emailInvalid");
+    } else {
+      const [localPart, domainPart] = formData.email.split("@");
+
+      if (/[^a-zA-Z0-9._-]/.test(localPart)) {
+        newErrors.email = t("form.validation.emailLocalInvalid");
+      }
+
+      // Nếu domain là gmail.com, không cho phép ký tự sau .com (vd: abc@gmail.com!#)
+      if (
+        domainPart?.startsWith("gmail.com") &&
+        /[^a-zA-Z0-9.-]/.test(domainPart.replace("gmail.com", ""))
+      ) {
+        newErrors.email = t("form.validation.emailDomainInvalid");
+      }
     }
 
-    if (!formData.job) {
-      newErrors.job = t("form.validation.jobTitleRequired");
-    }
-
-    if (!formData.address) {
+    // Address
+    if (!formData.address.trim()) {
       newErrors.address = t("form.validation.addressRequired");
     }
 
@@ -114,12 +172,16 @@ const UserDetails = () => {
       const dataToSend = {
         ...formData,
         // Ensure dob is null if empty string, otherwise keep existing
-        dob: formData.dob || null
+        dob: formData.dob || null,
       };
 
       console.log("Data to send:", dataToSend);
       try {
-        const updatedUser = await putUserDetails(dataToSend, {}, `http://localhost:8080/api/user/${user?.username}`);
+        const updatedUser = await putUserDetails(
+          dataToSend,
+          {},
+          `http://localhost:8080/api/user/${user?.username}`
+        );
         console.log("Update successful:", updatedUser);
 
         if (updatedUser) {
@@ -143,8 +205,8 @@ const UserDetails = () => {
     phoneNumber: user?.phoneNumber,
     email: user?.email, // Added email to userData
     job: user?.job,
-    address: user?.address
-  }
+    address: user?.address,
+  };
   console.log(userData);
 
   return (
@@ -183,7 +245,7 @@ const UserDetails = () => {
               {t("dateOfBirth")}
             </Col>
             <Col md={9} className="details-value">
-              {user?.dob ? format(parseISO(user.dob), 'yyyy-MM-dd') : ''}
+              {user?.dob ? format(parseISO(user.dob), "yyyy-MM-dd") : ""}
             </Col>
           </Row>
           <Row className="mb-3">
@@ -264,7 +326,9 @@ const UserDetails = () => {
                     onChange={handleChange}
                     isInvalid={!!errors.gender}
                   >
-                    <option value="">{t("form.selectGenderPlaceholder")}</option>
+                    <option value="">
+                      {t("form.selectGenderPlaceholder")}
+                    </option>
                     {genders.map((gender) => (
                       <option key={gender} value={gender}>
                         {gender}
@@ -288,7 +352,11 @@ const UserDetails = () => {
                   <Form.Control
                     type="date"
                     name="dob"
-                    value={formData.dob ? format(parseISO(formData.dob), 'yyyy-MM-dd') : ''}
+                    value={
+                      formData.dob
+                        ? format(parseISO(formData.dob), "yyyy-MM-dd")
+                        : ""
+                    }
                     onChange={handleChange}
                     isInvalid={!!errors.dob}
                   />
@@ -390,7 +458,7 @@ const UserDetails = () => {
         </Modal.Footer>
       </Modal>
     </div>
-  )
-}
+  );
+};
 
-export default UserDetails
+export default UserDetails;
