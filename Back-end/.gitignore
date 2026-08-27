@@ -34,3 +34,7 @@ build/
 
 ### MySQL runtime data
 mysql/
+
+### Google OAuth tokens / Credentials
+tokens/
+StoredCredential
