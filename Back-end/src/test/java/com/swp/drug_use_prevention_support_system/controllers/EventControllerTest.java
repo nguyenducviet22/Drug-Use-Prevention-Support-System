@@ -63,7 +63,6 @@ class EventControllerTest {
                 .duration(60)
                 .quantity(100)
                 .description("Description")
-                .status(EventStatus.APPROVED)
                 .ageGroup(AgeGroup.ADULT)
                 .startDate(LocalDateTime.now().plusDays(1))
                 .endDate(LocalDateTime.now().plusDays(2))
@@ -74,7 +73,6 @@ class EventControllerTest {
         EventResponse mockResponse = EventResponse.builder()
                 .eventID(UUID.randomUUID())
                 .eventName("New Event")
-                .status(EventStatus.APPROVED)
                 .build();
         when(eventService.createEvent(request)).thenReturn(mockResponse);
 
@@ -94,7 +92,6 @@ class EventControllerTest {
                 .duration(60)
                 .quantity(100)
                 .description("Description")
-                .status(EventStatus.APPROVED)
                 .ageGroup(AgeGroup.ADULT)
                 .startDate(LocalDateTime.now().plusDays(1))
                 .endDate(LocalDateTime.now().plusDays(2))
@@ -116,7 +113,6 @@ class EventControllerTest {
                 .duration(-10) // Negative duration
                 .quantity(100)
                 .description("Description")
-                .status(EventStatus.APPROVED)
                 .ageGroup(AgeGroup.ADULT)
                 .startDate(LocalDateTime.now().plusDays(1))
                 .endDate(LocalDateTime.now().plusDays(2))
@@ -138,7 +134,6 @@ class EventControllerTest {
                 .duration(60)
                 .quantity(100)
                 .description("Description")
-                .status(EventStatus.APPROVED)
                 .ageGroup(AgeGroup.ADULT)
                 .startDate(LocalDateTime.now().minusDays(1)) // Past date
                 .endDate(LocalDateTime.now().plusDays(2))
@@ -160,7 +155,6 @@ class EventControllerTest {
                 .duration(60)
                 .quantity(100)
                 .description("Description")
-                .status(EventStatus.APPROVED)
                 .ageGroup(AgeGroup.ADULT)
                 .startDate(LocalDateTime.now().plusDays(1))
                 .endDate(LocalDateTime.now().plusDays(2))
@@ -183,7 +177,6 @@ class EventControllerTest {
                 .duration(30)
                 .quantity(50)
                 .description("Draft Description")
-                .status(EventStatus.DRAFT)
                 .ageGroup(AgeGroup.SENIOR)
                 .startDate(LocalDateTime.now().plusDays(5))
                 .endDate(LocalDateTime.now().plusDays(6))
@@ -194,7 +187,6 @@ class EventControllerTest {
         EventResponse mockResponse = EventResponse.builder()
                 .eventID(UUID.randomUUID())
                 .eventName("Draft Event")
-                .status(EventStatus.DRAFT)
                 .build();
         when(eventService.saveEventAsDraft(request)).thenReturn(mockResponse);
 
@@ -214,7 +206,6 @@ class EventControllerTest {
                 .duration(30)
                 .quantity(50)
                 .description("Draft Description")
-                .status(EventStatus.DRAFT)
                 .ageGroup(AgeGroup.SENIOR)
                 .startDate(LocalDateTime.now().plusDays(5))
                 .endDate(LocalDateTime.now().plusDays(6))
@@ -236,7 +227,6 @@ class EventControllerTest {
                 .duration(30)
                 .quantity(-10) // Negative quantity
                 .description("Draft Description")
-                .status(EventStatus.DRAFT)
                 .ageGroup(AgeGroup.SENIOR)
                 .startDate(LocalDateTime.now().plusDays(5))
                 .endDate(LocalDateTime.now().plusDays(6))
@@ -258,7 +248,6 @@ class EventControllerTest {
                 .duration(30)
                 .quantity(50)
                 .description("Draft Description")
-                .status(EventStatus.DRAFT)
                 .ageGroup(AgeGroup.SENIOR)
                 .startDate(LocalDateTime.now().minusDays(1))
                 .endDate(LocalDateTime.now().minusDays(2)) // End date in past
@@ -280,7 +269,6 @@ class EventControllerTest {
                 .duration(30)
                 .quantity(50)
                 .description("Draft Description")
-                .status(EventStatus.DRAFT)
                 .ageGroup(AgeGroup.SENIOR)
                 .startDate(LocalDateTime.now().plusDays(5))
                 .endDate(LocalDateTime.now().plusDays(6))

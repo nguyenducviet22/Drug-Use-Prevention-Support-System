@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Exclude generated mappers, configuration, context, entities, repositories, security, and DTOs from SpotBugs inspection -->
+    <Match>
+        <Package name="~com\.swp\.drug_use_prevention_support_system\.(domain|mappers|config|context|exception|security|repositories).*" />
+    </Match>
+</FindBugsFilter>
+
