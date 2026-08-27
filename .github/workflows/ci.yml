@@ -33,10 +33,10 @@ jobs:
         working-directory: Back-end
         run: ./mvnw spotbugs:check
 
-      - name: Automated Tests & JaCoCo Coverage Threshold
+      - name: Run Automated Regression Tests
         working-directory: Back-end
-        run: ./mvnw test jacoco:report jacoco:check
+        run: ./mvnw test
 
-      - name: Full Verify Lifecycle Gating
+      - name: Verify Full Build & Coverage Gating
         working-directory: Back-end
-        run: ./mvnw clean verify
+        run: ./mvnw verify
