@@ -25,6 +25,18 @@ jobs:
       - name: Grant execute permission for Maven Wrapper
         run: chmod +x Back-end/mvnw
 
-      - name: Run Full CI Gating Pipeline (Verify Lifecycle)
+      - name: Checkstyle Static Analysis
+        working-directory: Back-end
+        run: ./mvnw checkstyle:check
+
+      - name: SpotBugs Bug Detection
+        working-directory: Back-end
+        run: ./mvnw spotbugs:check
+
+      - name: Automated Tests & JaCoCo Coverage Threshold
+        working-directory: Back-end
+        run: ./mvnw test jacoco:report jacoco:check
+
+      - name: Full Verify Lifecycle Gating
         working-directory: Back-end
         run: ./mvnw clean verify

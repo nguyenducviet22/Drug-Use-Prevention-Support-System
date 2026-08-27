@@ -266,6 +266,7 @@
                 <version>3.4.0</version>
                 <configuration>
                     <configLocation>checkstyle.xml</configLocation>
+                    <configLocation>${project.basedir}/checkstyle.xml</configLocation>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
                     <failOnViolation>true</failOnViolation>
@@ -291,6 +292,7 @@
                     <threshold>Medium</threshold>
                     <failOnError>true</failOnError>
                     <maxAllowedViolations>15</maxAllowedViolations>
+                    <excludeFilterFile>${project.basedir}/spotbugs-exclude.xml</excludeFilterFile>
                 </configuration>
                 <executions>
                     <execution>
